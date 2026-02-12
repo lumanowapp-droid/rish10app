@@ -477,6 +477,13 @@ body::before {
   justify-content: center;
   transition: all 0.2s;
   box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  pointer-events: auto;
+  position: relative;
+  z-index: 10;
+}
+.qty-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.3;
 }
 .qty-btn.minus {
   background: linear-gradient(135deg, rgba(233,69,96,0.4), rgba(233,69,96,0.6));
@@ -702,6 +709,11 @@ body::before {
 @keyframes shimmer {
   0%, 100% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
 }
 
 /* Flex helper */
@@ -1526,7 +1538,11 @@ function renderOrderTab() {
     return;
   }
   if (selectedKids.length === 0) {
-    menuArea.innerHTML = '<div class="empty-state"><i class="fas fa-hand-pointer"></i><p>Select a driver above to start ordering!</p></div>';
+    menuArea.innerHTML = `<div class="empty-state" style="padding:60px 20px;">
+      <i class="fas fa-hand-pointer" style="font-size:4rem; color:var(--gold); margin-bottom:20px; animation: bounce 1s ease-in-out infinite;"></i>
+      <p style="font-size:1.2rem; font-weight:700; color:var(--gold); margin-bottom:10px;">Select a Driver First!</p>
+      <p style="font-size:0.95rem; color:var(--text-muted);">Click on a driver name above to start adding items</p>
+    </div>`;
     return;
   }
 
@@ -1559,7 +1575,7 @@ function renderOrderTab() {
         <div class="item-name"><span class="qty-badge ${qty === 0 ? 'qty-zero' : ''}">${qty}</span>${esc(item.name)}</div>
         <div class="qty-control">
           <button class="qty-btn minus" onclick="changeQty('${item.id}', -1)" ${qty === 0 ? 'disabled style="opacity:0.2"' : ''}>-</button>
-          <input type="number" class="qty-input" id="qty-${item.id}" value="${qty}" min="0" max="99" onchange="setQty('${item.id}', this.value)" oninput="setQty('${item.id}', this.value)" onclick="this.select()">
+          <input type="number" class="qty-input" id="qty-${item.id}" value="${qty}" min="0" max="99" onchange="setQty('${item.id}', this.value)" onblur="setQty('${item.id}', this.value)" onclick="this.select()">
           <button class="qty-btn plus" onclick="changeQty('${item.id}', 1)">+</button>
         </div>
       </div>`;
