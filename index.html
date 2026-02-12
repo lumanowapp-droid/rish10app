@@ -1381,6 +1381,17 @@ function isItemDisabledForKid(kidId, itemId, categoryId) {
   return false;
 }
 
+// Edit kid order directly from dashboard
+function editKidOrder(kidId, itemId, delta) {
+  if (!data.orders[kidId]) data.orders[kidId] = {};
+  const newQty = Math.max(0, (data.orders[kidId][itemId] || 0) + delta);
+  if (newQty === 0) delete data.orders[kidId][itemId];
+  else data.orders[kidId][itemId] = newQty;
+  saveData(data);
+  renderDashboard();
+  if (delta > 0 && Math.random() > 0.6) showFunnyToast();
+}
+
 function changeQty(itemId, delta) {
   if (selectedKids.length === 0) return;
   const item = data.menuItems.find(m => m.id === itemId);
@@ -1619,9 +1630,16 @@ function renderDashboard() {
       html += `<div style="margin-bottom:14px;">
         <div class="order-kid-name"><i class="fas fa-user-astronaut"></i> ${esc(kid.name)}</div>`;
       for (const entry of items) {
-        html += `<div class="order-row">
-          <span>${esc(entry.itemName)}${entry.joint ? '<span class="joint-badge">shared' + (entry.sharedWith && entry.sharedWith.length ? ' w/ ' + entry.sharedWith.map(esc).join(', ') : '') + '</span>' : ''}</span>
-          <span style="font-weight:800;color:var(--gold-light)">x${entry.qty}</span>
+        const itemId = data.menuItems.find(m => m.name === entry.itemName)?.id;
+        html += `<div class="order-row" style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;">
+          <span style="flex:1;">${esc(entry.itemName)}${entry.joint ? '<span class="joint-badge">shared' + (entry.sharedWith && entry.sharedWith.length ? ' w/ ' + entry.sharedWith.map(esc).join(', ') : '') + '</span>' : ''}</span>
+          <div style="display:flex;align-items:center;gap:8px;">
+            ${!entry.joint && itemId ? `
+              <button class="qty-btn minus" onclick="editKidOrder('${kid.id}', '${itemId}', -1)" style="width:28px;height:28px;font-size:0.9rem;"><i class="fas fa-minus"></i></button>
+              <span style="font-weight:800;color:var(--gold-light);min-width:32px;text-align:center;">x${entry.qty}</span>
+              <button class="qty-btn plus" onclick="editKidOrder('${kid.id}', '${itemId}', 1)" style="width:28px;height:28px;font-size:0.9rem;"><i class="fas fa-plus"></i></button>
+            ` : `<span style="font-weight:800;color:var(--gold-light);">x${entry.qty}</span>`}
+          </div>
         </div>`;
       }
       html += '</div>';
