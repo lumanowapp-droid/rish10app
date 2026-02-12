@@ -1,0 +1,1490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Rishaan's 10th Birthday - Food Order</title>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --dark: #0a0a0f;
+  --dark2: #12121a;
+  --dark3: #1a1a28;
+  --gold: #d4a017;
+  --gold-light: #f0d060;
+  --red: #e94560;
+  --carbon: #1e1e2a;
+  --silver: #c0c0c8;
+  --ghost: rgba(255,255,255,0.06);
+}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body {
+  font-family: 'Rajdhani', sans-serif;
+  background: var(--dark);
+  color: #e0e0e8;
+  margin: 0;
+  padding: 0;
+  padding-bottom: 74px;
+  min-height: 100vh;
+  background-image:
+    radial-gradient(ellipse at 20% 50%, rgba(212,160,23,0.04) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(233,69,96,0.04) 0%, transparent 50%);
+}
+
+/* Carbon fiber pattern overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(255,255,255,0.008) 2px,
+    rgba(255,255,255,0.008) 4px
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Header */
+.header {
+  background: linear-gradient(135deg, #0a0a0f 0%, #1a1a28 50%, #0a0a0f 100%);
+  border-bottom: 2px solid var(--gold);
+  padding: 14px 20px;
+  text-align: center;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  box-shadow: 0 4px 30px rgba(212,160,23,0.15);
+}
+.header::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold), var(--gold-light), var(--gold), transparent);
+}
+.header-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.header h1 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.1rem;
+  margin: 0;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light), var(--gold));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.header p {
+  font-size: 0.75rem;
+  margin: 4px 0 0;
+  color: var(--silver);
+  letter-spacing: 1px;
+  font-weight: 500;
+}
+.koenigsegg-shield {
+  width: 36px;
+  height: 36px;
+  position: relative;
+}
+.koenigsegg-shield svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Car Banner */
+.car-banner {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0 16px;
+  position: relative;
+}
+.car-banner-inner {
+  background: linear-gradient(135deg, var(--dark2), var(--dark3));
+  border: 1px solid rgba(212,160,23,0.2);
+  border-radius: 16px;
+  padding: 16px;
+  margin: 12px 0;
+  overflow: hidden;
+  position: relative;
+}
+.car-banner-inner::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(212,160,23,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+.car-emoji-row {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  font-size: 2rem;
+  margin-bottom: 8px;
+}
+.speed-text {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.65rem;
+  text-align: center;
+  color: var(--gold);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+/* Bottom Nav */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--dark2);
+  display: flex;
+  border-top: 1px solid rgba(212,160,23,0.3);
+  z-index: 50;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.5);
+}
+.bottom-nav button {
+  flex: 1;
+  padding: 10px 0 8px;
+  border: none;
+  background: none;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #555;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  cursor: pointer;
+  transition: all 0.3s;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  position: relative;
+}
+.bottom-nav button.active {
+  color: var(--gold);
+}
+.bottom-nav button.active::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 25%;
+  right: 25%;
+  height: 2px;
+  background: var(--gold);
+  border-radius: 0 0 2px 2px;
+}
+.bottom-nav button i { font-size: 1.2rem; }
+
+/* Tab content */
+.tab-content { display: none; padding: 16px; max-width: 600px; margin: 0 auto; position: relative; z-index: 1; }
+.tab-content.active { display: block; }
+
+/* Cards */
+.card {
+  background: linear-gradient(145deg, var(--dark2), var(--dark3));
+  border: 1px solid rgba(212,160,23,0.12);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 12px;
+  position: relative;
+  overflow: hidden;
+}
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(212,160,23,0.3), transparent);
+}
+.card-title {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: var(--gold);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* Badges */
+.badge {
+  background: linear-gradient(135deg, var(--gold), #b8860b);
+  color: var(--dark);
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.55rem;
+  padding: 2px 8px;
+  border-radius: 50px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+.badge-red {
+  background: linear-gradient(135deg, var(--red), #c53050);
+  color: white;
+}
+.badge-green {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+}
+
+/* Buttons */
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 10px;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.btn-gold {
+  background: linear-gradient(135deg, var(--gold), #b8860b);
+  color: var(--dark);
+}
+.btn-gold:hover { box-shadow: 0 4px 20px rgba(212,160,23,0.4); transform: translateY(-1px); }
+.btn-red {
+  background: linear-gradient(135deg, var(--red), #c53050);
+  color: white;
+}
+.btn-red:hover { box-shadow: 0 4px 20px rgba(233,69,96,0.3); }
+.btn-green {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+}
+.btn-sm { padding: 6px 14px; font-size: 0.75rem; border-radius: 8px; }
+.btn-danger {
+  background: rgba(233,69,96,0.15);
+  color: var(--red);
+  border: 1px solid rgba(233,69,96,0.2);
+}
+.btn-danger:hover { background: rgba(233,69,96,0.25); }
+
+/* Inputs */
+.input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid rgba(212,160,23,0.2);
+  border-radius: 10px;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  outline: none;
+  background: var(--dark);
+  color: #e0e0e8;
+  transition: border-color 0.2s;
+}
+.input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(212,160,23,0.1); }
+.input::placeholder { color: #555; }
+.select {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid rgba(212,160,23,0.2);
+  border-radius: 10px;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  outline: none;
+  background: var(--dark);
+  color: #e0e0e8;
+}
+
+/* Kid chips */
+.kid-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 16px;
+  border-radius: 50px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: var(--dark);
+  color: var(--silver);
+  margin: 3px;
+  letter-spacing: 0.5px;
+}
+.kid-chip.selected {
+  background: linear-gradient(135deg, var(--gold), #b8860b);
+  color: var(--dark);
+  border-color: var(--gold);
+  box-shadow: 0 2px 12px rgba(212,160,23,0.3);
+}
+.kid-chip .remove { font-size: 0.7rem; opacity: 0.7; cursor: pointer; }
+
+/* Menu items */
+.menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px;
+  margin-bottom: 8px;
+  background: rgba(255,255,255,0.02);
+  transition: all 0.2s;
+}
+.menu-item:hover { border-color: rgba(212,160,23,0.2); background: rgba(212,160,23,0.03); }
+.menu-item.disabled { opacity: 0.25; pointer-events: none; }
+.menu-item .item-name { font-weight: 700; font-size: 0.92rem; color: #e0e0e8; letter-spacing: 0.3px; }
+
+/* Quantity controls */
+.qty-control { display: flex; align-items: center; gap: 10px; }
+.qty-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: none;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+.qty-btn.minus { background: rgba(233,69,96,0.15); color: var(--red); border: 1px solid rgba(233,69,96,0.3); }
+.qty-btn.plus { background: rgba(212,160,23,0.15); color: var(--gold); border: 1px solid rgba(212,160,23,0.3); }
+.qty-btn:active { transform: scale(0.85); }
+.qty-val {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 800;
+  font-size: 1rem;
+  min-width: 24px;
+  text-align: center;
+  color: var(--gold-light);
+}
+
+/* Category sections */
+.category-header {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  font-size: 0.78rem;
+  color: var(--gold);
+  padding: 10px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid rgba(212,160,23,0.15);
+  margin-bottom: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+.restriction-tag {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.65rem;
+  background: rgba(233,69,96,0.15);
+  color: var(--red);
+  padding: 2px 10px;
+  border-radius: 50px;
+  font-weight: 700;
+  border: 1px solid rgba(233,69,96,0.2);
+  letter-spacing: 0.5px;
+}
+
+/* Order sections */
+.order-kid-name {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: var(--gold);
+  padding: 8px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  letter-spacing: 1px;
+}
+.order-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 7px 14px;
+  font-size: 0.85rem;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  font-weight: 500;
+}
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 14px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+.summary-row.total {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 800;
+  border-top: 2px solid var(--gold);
+  color: var(--gold);
+  margin-top: 6px;
+  padding-top: 12px;
+  font-size: 0.85rem;
+}
+
+/* Empty state */
+.empty-state { text-align: center; padding: 40px 20px; color: #555; }
+.empty-state i { font-size: 2.5rem; margin-bottom: 12px; display: block; color: rgba(212,160,23,0.3); }
+.empty-state p { font-size: 0.88rem; font-weight: 500; }
+
+/* Toggle */
+.toggle {
+  width: 44px;
+  height: 24px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.1);
+  position: relative;
+  cursor: pointer;
+  transition: background 0.3s;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+.toggle.on { background: var(--gold); border-color: var(--gold); }
+.toggle .knob {
+  width: 20px;
+  height: 20px;
+  background: white;
+  border-radius: 50%;
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  transition: left 0.3s;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+}
+.toggle.on .knob { left: 21px; background: var(--dark); }
+
+/* Joint badge */
+.joint-badge {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.6rem;
+  background: linear-gradient(135deg, var(--red), #c53050);
+  color: white;
+  padding: 1px 7px;
+  border-radius: 50px;
+  margin-left: 4px;
+  font-weight: 700;
+}
+
+/* Export */
+.export-area {
+  white-space: pre-wrap;
+  font-family: 'Courier New', monospace;
+  font-size: 0.78rem;
+  background: var(--dark);
+  border: 1px solid rgba(212,160,23,0.2);
+  border-radius: 12px;
+  padding: 14px;
+  max-height: 400px;
+  overflow-y: auto;
+  line-height: 1.6;
+  color: var(--gold-light);
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(4px);
+  z-index: 60;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.modal {
+  background: var(--dark2);
+  border-radius: 20px 20px 0 0;
+  border: 1px solid rgba(212,160,23,0.2);
+  border-bottom: none;
+  padding: 24px;
+  width: 100%;
+  max-width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
+  animation: slideUp 0.3s ease;
+}
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+/* Flex helper */
+.flex-wrap-gap { display: flex; flex-wrap: wrap; gap: 4px; }
+
+/* Stats grid */
+.stat-box {
+  border-radius: 12px;
+  padding: 14px;
+  text-align: center;
+  border: 1px solid;
+}
+.stat-box .stat-num {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 900;
+}
+.stat-box .stat-label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+/* Confetti */
+.confetti {
+  position: fixed;
+  top: -10px;
+  animation: fall linear forwards;
+  pointer-events: none;
+  z-index: 100;
+  font-size: 1.5rem;
+}
+@keyframes fall { to { top: 110vh; transform: rotate(720deg); } }
+
+/* RPM gauge animation */
+.rpm-bar {
+  height: 3px;
+  background: linear-gradient(90deg, var(--gold), var(--red), var(--gold));
+  border-radius: 2px;
+  animation: rpmPulse 2s ease-in-out infinite;
+}
+@keyframes rpmPulse {
+  0%, 100% { opacity: 0.3; transform: scaleX(0.6); }
+  50% { opacity: 1; transform: scaleX(1); }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--dark); }
+::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 4px; }
+
+/* Glow pulse on active items */
+@keyframes goldGlow {
+  0%, 100% { box-shadow: 0 0 5px rgba(212,160,23,0.1); }
+  50% { box-shadow: 0 0 15px rgba(212,160,23,0.2); }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-logo">
+    <div class="koenigsegg-shield">
+      <svg viewBox="0 0 100 120" fill="none">
+        <path d="M50 5 L90 25 L90 75 Q90 100 50 115 Q10 100 10 75 L10 25 Z" stroke="url(#goldGrad)" stroke-width="3" fill="rgba(212,160,23,0.06)"/>
+        <path d="M50 20 L35 50 L50 42 L65 50 Z" fill="url(#goldGrad)"/>
+        <path d="M50 42 L35 50 L50 80 L65 50 Z" fill="url(#goldGrad)" opacity="0.7"/>
+        <defs><linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#d4a017"/><stop offset="50%" stop-color="#f0d060"/><stop offset="100%" stop-color="#d4a017"/></linearGradient></defs>
+      </svg>
+    </div>
+    <div>
+      <h1>Rishaan's 10th</h1>
+      <p><i class="fas fa-flag-checkered"></i> 13 Feb 2026 &bull; Birthday Pit Stop <i class="fas fa-flag-checkered"></i></p>
+    </div>
+    <div class="koenigsegg-shield" style="transform: scaleX(-1);">
+      <svg viewBox="0 0 100 120" fill="none">
+        <path d="M50 5 L90 25 L90 75 Q90 100 50 115 Q10 100 10 75 L10 25 Z" stroke="url(#goldGrad2)" stroke-width="3" fill="rgba(212,160,23,0.06)"/>
+        <path d="M50 20 L35 50 L50 42 L65 50 Z" fill="url(#goldGrad2)"/>
+        <path d="M50 42 L35 50 L50 80 L65 50 Z" fill="url(#goldGrad2)" opacity="0.7"/>
+        <defs><linearGradient id="goldGrad2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#d4a017"/><stop offset="50%" stop-color="#f0d060"/><stop offset="100%" stop-color="#d4a017"/></linearGradient></defs>
+      </svg>
+    </div>
+  </div>
+  <div class="rpm-bar" style="margin-top:10px;"></div>
+</div>
+
+<!-- Music Player -->
+<div id="music-player" style="position:fixed; top:80px; right:16px; z-index:100; background:var(--dark2); border:1px solid rgba(212,160,23,0.3); border-radius:50px; padding:8px 16px; display:flex; align-items:center; gap:10px; box-shadow:0 4px 20px rgba(0,0,0,0.5);">
+  <button id="music-toggle" onclick="toggleMusic()" style="width:32px; height:32px; border-radius:50%; border:none; background:linear-gradient(135deg, var(--gold), #b8860b); color:var(--dark); cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.2s;">
+    <i class="fas fa-play" style="font-size:0.7rem; margin-left:2px;"></i>
+  </button>
+  <div style="font-family:'Orbitron',sans-serif; font-size:0.65rem; color:var(--gold); font-weight:700; letter-spacing:0.5px;">MUSIC</div>
+</div>
+
+<audio id="bg-music" loop>
+  <source src="https://www.bensound.com/bensound-music/bensound-betterdays.mp3" type="audio/mpeg">
+</audio>
+
+<!-- TAB: ORDER -->
+<div id="tab-order" class="tab-content active">
+  <div class="car-banner">
+    <div class="car-banner-inner">
+      <div class="car-emoji-row">
+        <span>🏎️</span><span>🏁</span><span>🏎️</span>
+      </div>
+      <div class="speed-text">Fueling up for an epic celebration</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><i class="fas fa-users"></i> Pit Crew - Who's Ordering?</div>
+    <div id="kid-selector" class="flex-wrap-gap">
+      <div class="empty-state" style="padding:10px;width:100%"><p style="font-size:0.8rem">Add drivers in Settings! <i class="fas fa-cog"></i></p></div>
+    </div>
+    <div style="margin-top:8px; font-size:0.72rem; color:#555; font-weight:500;">
+      <i class="fas fa-info-circle" style="color:var(--gold)"></i> Select multiple kids for a joint/shared order
+    </div>
+  </div>
+
+  <div id="menu-area">
+    <div class="empty-state">
+      <i class="fas fa-gas-pump"></i>
+      <p>No menu items yet!<br>Head to Settings to fuel up the menu.</p>
+    </div>
+  </div>
+</div>
+
+<!-- TAB: DASHBOARD -->
+<div id="tab-dashboard" class="tab-content">
+  <div class="card">
+    <div class="card-title"><i class="fas fa-gauge-high"></i> Race Dashboard</div>
+    <div id="dashboard-summary"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><i class="fas fa-helmet-safety"></i> Orders by Driver</div>
+    <div id="dashboard-by-kid"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><i class="fas fa-boxes-stacked"></i> Total Quantities</div>
+    <div id="dashboard-totals"></div>
+  </div>
+
+  <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:8px;">
+    <button class="btn btn-gold" onclick="exportOrder()"><i class="fas fa-file-export"></i> Export</button>
+    <button class="btn btn-danger btn-sm" onclick="clearAllOrders()"><i class="fas fa-trash"></i> Clear All</button>
+  </div>
+</div>
+
+<!-- TAB: SETTINGS -->
+<div id="tab-settings" class="tab-content">
+  <div class="card">
+    <div class="card-title"><i class="fas fa-helmet-safety"></i> Drivers (Kids)</div>
+    <div style="display:flex; gap:8px; margin-bottom:10px;">
+      <input id="kid-name-input" class="input" placeholder="Enter kid's name...">
+      <button class="btn btn-gold btn-sm" onclick="addKid()"><i class="fas fa-plus"></i></button>
+    </div>
+    <div id="kids-list" class="flex-wrap-gap"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><i class="fas fa-tags"></i> Categories</div>
+    <div style="display:flex; gap:8px; margin-bottom:10px;">
+      <input id="cat-name-input" class="input" placeholder="Category (Pizza, Drinks...)">
+      <button class="btn btn-gold btn-sm" onclick="addCategory()"><i class="fas fa-plus"></i></button>
+    </div>
+    <div id="categories-list"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><i class="fas fa-utensils"></i> Menu Items</div>
+    <div style="margin-bottom:10px;">
+      <select id="item-cat-select" class="select" style="margin-bottom:8px;">
+        <option value="">-- Select Category --</option>
+      </select>
+      <div style="display:flex; gap:8px;">
+        <input id="item-name-input" class="input" placeholder="Item name...">
+        <button class="btn btn-gold btn-sm" onclick="addMenuItem()"><i class="fas fa-plus"></i></button>
+      </div>
+    </div>
+    <div id="menu-items-list"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><i class="fas fa-sliders"></i> Restrictions</div>
+    <p style="font-size:0.78rem; color:#666; margin-bottom:12px; font-weight:500;">
+      Enable "Pick Only One" to limit each kid to one item from a category.
+    </p>
+    <div id="restrictions-list"></div>
+  </div>
+
+  <div class="card" style="border-color:rgba(16,185,129,0.2);">
+    <div class="card-title" style="color:#10b981"><i class="fas fa-shield-halved"></i> Data Backup</div>
+    <p style="font-size:0.78rem; color:#666; margin-bottom:12px; font-weight:500;">
+      Protect your orders! Download a backup or restore from a previous backup file.
+    </p>
+    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+      <button class="btn btn-green btn-sm" onclick="downloadBackup()">
+        <i class="fas fa-download"></i> Download Backup
+      </button>
+      <button class="btn btn-gold btn-sm" onclick="document.getElementById('restore-input').click()">
+        <i class="fas fa-upload"></i> Restore Backup
+      </button>
+      <input type="file" id="restore-input" accept=".json" style="display:none" onchange="restoreBackup(event)">
+    </div>
+  </div>
+
+  <div class="card" style="border-color:rgba(233,69,96,0.2);">
+    <div class="card-title" style="color:var(--red)"><i class="fas fa-triangle-exclamation"></i> Danger Zone</div>
+    <button class="btn btn-danger btn-sm" onclick="resetApp()" style="width:100%;justify-content:center;">
+      <i class="fas fa-bomb"></i> Reset Entire App
+    </button>
+  </div>
+</div>
+
+<!-- Bottom Navigation -->
+<nav class="bottom-nav">
+  <button class="active" onclick="switchTab('order', this)">
+    <i class="fas fa-utensils"></i><span>Order</span>
+  </button>
+  <button onclick="switchTab('dashboard', this)">
+    <i class="fas fa-gauge-high"></i><span>Dashboard</span>
+  </button>
+  <button onclick="switchTab('settings', this)">
+    <i class="fas fa-gear"></i><span>Settings</span>
+  </button>
+</nav>
+
+<!-- Export Modal -->
+<div id="export-modal" class="modal-overlay" style="display:none" onclick="if(event.target===this)this.style.display='none'">
+  <div class="modal">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+      <h3 style="font-family:'Orbitron',sans-serif; font-weight:800; font-size:0.9rem; margin:0; color:var(--gold); letter-spacing:1px;">
+        <i class="fas fa-file-export"></i> ORDER EXPORT
+      </h3>
+      <button class="btn btn-sm btn-danger" onclick="document.getElementById('export-modal').style.display='none'"><i class="fas fa-times"></i></button>
+    </div>
+    <div id="export-content" class="export-area"></div>
+    <div style="display:flex; gap:8px; margin-top:12px;">
+      <button class="btn btn-gold btn-sm" onclick="copyExport()"><i class="fas fa-copy"></i> Copy</button>
+      <button class="btn btn-green btn-sm" onclick="downloadExport()"><i class="fas fa-download"></i> Download</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ==================== DATA LAYER ====================
+const DB_KEY = 'rishaan_bday_koenigsegg';
+
+function defaultData() {
+  // Pre-populated for Rishaan's 10th Birthday Party!
+  const kids = [
+    { id: 'k1', name: 'Ayan' },
+    { id: 'k2', name: 'Kyle' },
+    { id: 'k3', name: 'Reyansh' },
+    { id: 'k4', name: 'Brian' },
+    { id: 'k5', name: 'Aveer' },
+    { id: 'k6', name: 'Arjun' },
+    { id: 'k7', name: 'Prakriti' },
+    { id: 'k8', name: 'Avni' },
+    { id: 'k9', name: 'Vivaan' },
+    { id: 'k10', name: 'Haniel' },
+    { id: 'k11', name: 'Rainer' },
+    { id: 'k12', name: 'Viha' }
+  ];
+
+  const categories = [
+    { id: 'cat1', name: 'Starters' },
+    { id: 'cat2', name: 'Main Course' },
+    { id: 'cat3', name: 'Beverage' },
+    { id: 'cat4', name: 'Desserts' }
+  ];
+
+  const menuItems = [
+    // Starters
+    { id: 'i1', categoryId: 'cat1', name: 'Peri Peri French Fries' },
+    { id: 'i2', categoryId: 'cat1', name: 'Loaded Nachos' },
+    { id: 'i3', categoryId: 'cat1', name: 'Cheese Chilli Toast' },
+    // Main Course
+    { id: 'i4', categoryId: 'cat2', name: 'Margherita Pizza' },
+    { id: 'i5', categoryId: 'cat2', name: 'BBQ Chicken Pizza' },
+    { id: 'i6', categoryId: 'cat2', name: 'Chilli Chicken Pizza' },
+    { id: 'i7', categoryId: 'cat2', name: 'Alfredo Veg Pasta' },
+    // Beverages
+    { id: 'i8', categoryId: 'cat3', name: 'Cold Coffee' },
+    { id: 'i9', categoryId: 'cat3', name: 'Iced Tea' },
+    { id: 'i10', categoryId: 'cat3', name: 'Watermelon Juice' },
+    { id: 'i11', categoryId: 'cat3', name: 'Fresh Lime Soda Sweet' },
+    { id: 'i12', categoryId: 'cat3', name: 'Hot Chocolate' },
+    { id: 'i13', categoryId: 'cat3', name: 'Bottled Water' },
+    // Desserts
+    { id: 'i14', categoryId: 'cat4', name: 'Chocolate Ice Cream Cornetto' },
+    { id: 'i15', categoryId: 'cat4', name: 'Birthday Cake' }
+  ];
+
+  const orders = {};
+  kids.forEach(k => orders[k.id] = {});
+
+  return {
+    kids,
+    categories,
+    menuItems,
+    orders,
+    jointOrders: [],
+    restrictions: {
+      'cat1': false,
+      'cat2': false,
+      'cat3': true, // Beverage: Pick one only
+      'cat4': false
+    }
+  };
+}
+
+function loadData() {
+  try {
+    const d = JSON.parse(localStorage.getItem(DB_KEY));
+    if (d) {
+      const def = defaultData();
+      for (const k in def) { if (!(k in d)) d[k] = def[k]; }
+      return d;
+    }
+  } catch(e) {}
+  const fresh = defaultData();
+  saveData(fresh);
+  return fresh;
+}
+
+function saveData(d) { localStorage.setItem(DB_KEY, JSON.stringify(d)); }
+
+let data = loadData();
+let selectedKids = [];
+
+// ==================== UTILS ====================
+function genId() { return Date.now().toString(36) + Math.random().toString(36).substr(2, 5); }
+function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.bottom-nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (name === 'dashboard') renderDashboard();
+  if (name === 'order') renderOrderTab();
+  if (name === 'settings') renderSettings();
+}
+
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.style.cssText = `position:fixed;top:20px;left:50%;transform:translateX(-50%);
+    background:linear-gradient(135deg,var(--gold),#b8860b);color:var(--dark);
+    padding:10px 24px;border-radius:50px;font-family:'Orbitron',sans-serif;
+    font-size:0.7rem;font-weight:700;z-index:999;letter-spacing:1px;
+    box-shadow:0 4px 20px rgba(212,160,23,0.4);`;
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 2000);
+}
+
+// ==================== KIDS ====================
+function addKid() {
+  const input = document.getElementById('kid-name-input');
+  const name = input.value.trim();
+  if (!name) return;
+  const id = genId();
+  data.kids.push({ id, name });
+  data.orders[id] = {};
+  input.value = '';
+  saveData(data);
+  renderSettings();
+  renderOrderTab();
+}
+
+function removeKid(id) {
+  if (!confirm('Remove this kid and their orders?')) return;
+  data.kids = data.kids.filter(k => k.id !== id);
+  delete data.orders[id];
+  data.jointOrders = data.jointOrders.filter(j => {
+    j.kidIds = j.kidIds.filter(kid => kid !== id);
+    return j.kidIds.length > 0;
+  });
+  selectedKids = selectedKids.filter(k => k !== id);
+  saveData(data);
+  renderSettings();
+  renderOrderTab();
+}
+
+// ==================== CATEGORIES ====================
+function addCategory() {
+  const input = document.getElementById('cat-name-input');
+  const name = input.value.trim();
+  if (!name) return;
+  const id = genId();
+  data.categories.push({ id, name });
+  data.restrictions[id] = false;
+  input.value = '';
+  saveData(data);
+  renderSettings();
+  renderOrderTab();
+}
+
+function removeCategory(id) {
+  if (!confirm('Remove this category and all its items?')) return;
+  data.categories = data.categories.filter(c => c.id !== id);
+  const removedItems = data.menuItems.filter(m => m.categoryId === id).map(m => m.id);
+  data.menuItems = data.menuItems.filter(m => m.categoryId !== id);
+  delete data.restrictions[id];
+  for (const kid in data.orders) {
+    for (const item of removedItems) delete data.orders[kid][item];
+  }
+  data.jointOrders = data.jointOrders.filter(j => !removedItems.includes(j.itemId));
+  saveData(data);
+  renderSettings();
+  renderOrderTab();
+}
+
+// ==================== MENU ITEMS ====================
+function addMenuItem() {
+  const catId = document.getElementById('item-cat-select').value;
+  const input = document.getElementById('item-name-input');
+  const name = input.value.trim();
+  if (!catId || !name) { showToast('Select category & enter name'); return; }
+  data.menuItems.push({ id: genId(), categoryId: catId, name });
+  input.value = '';
+  saveData(data);
+  renderSettings();
+  renderOrderTab();
+}
+
+function removeMenuItem(id) {
+  data.menuItems = data.menuItems.filter(m => m.id !== id);
+  for (const kid in data.orders) delete data.orders[kid][id];
+  data.jointOrders = data.jointOrders.filter(j => j.itemId !== id);
+  saveData(data);
+  renderSettings();
+  renderOrderTab();
+}
+
+// ==================== RESTRICTIONS ====================
+function toggleRestriction(catId) {
+  data.restrictions[catId] = !data.restrictions[catId];
+  if (data.restrictions[catId]) {
+    const catItems = data.menuItems.filter(m => m.categoryId === catId).map(m => m.id);
+    for (const kidId in data.orders) {
+      const ordered = catItems.filter(itemId => data.orders[kidId][itemId] > 0);
+      if (ordered.length > 1) {
+        for (let i = 1; i < ordered.length; i++) delete data.orders[kidId][ordered[i]];
+      }
+    }
+  }
+  saveData(data);
+  renderSettings();
+  renderOrderTab();
+}
+
+// ==================== ORDERING ====================
+function toggleKidSelection(kidId) {
+  const idx = selectedKids.indexOf(kidId);
+  if (idx >= 0) selectedKids.splice(idx, 1);
+  else selectedKids.push(kidId);
+  renderOrderTab();
+}
+
+function getKidItemQty(kidId, itemId) {
+  return (data.orders[kidId] && data.orders[kidId][itemId]) || 0;
+}
+
+function getJointQty(itemId, kidIds) {
+  const key = [...kidIds].sort().join(',');
+  const j = data.jointOrders.find(o => o.itemId === itemId && [...o.kidIds].sort().join(',') === key);
+  return j ? j.qty : 0;
+}
+
+function isItemDisabledForKid(kidId, itemId, categoryId) {
+  if (!data.restrictions[categoryId]) return false;
+  const catItems = data.menuItems.filter(m => m.categoryId === categoryId).map(m => m.id);
+  if (getKidItemQty(kidId, itemId) > 0) return false;
+  for (const ci of catItems) {
+    if (ci !== itemId && getKidItemQty(kidId, ci) > 0) return true;
+  }
+  for (const jo of data.jointOrders) {
+    if (jo.kidIds.includes(kidId) && catItems.includes(jo.itemId) && jo.itemId !== itemId && jo.qty > 0) return true;
+  }
+  return false;
+}
+
+function changeQty(itemId, delta) {
+  if (selectedKids.length === 0) return;
+  const item = data.menuItems.find(m => m.id === itemId);
+  if (!item) return;
+
+  if (selectedKids.length === 1) {
+    const kidId = selectedKids[0];
+    if (!data.orders[kidId]) data.orders[kidId] = {};
+    const newQty = Math.max(0, (data.orders[kidId][itemId] || 0) + delta);
+    if (newQty === 0) delete data.orders[kidId][itemId];
+    else data.orders[kidId][itemId] = newQty;
+  } else {
+    const kidIds = [...selectedKids].sort();
+    const key = kidIds.join(',');
+    let jo = data.jointOrders.find(o => o.itemId === itemId && [...o.kidIds].sort().join(',') === key);
+    if (!jo) {
+      jo = { itemId, kidIds: [...kidIds], qty: 0 };
+      data.jointOrders.push(jo);
+    }
+    jo.qty = Math.max(0, jo.qty + delta);
+    if (jo.qty === 0) data.jointOrders = data.jointOrders.filter(o => o !== jo);
+  }
+  saveData(data);
+  renderOrderTab();
+}
+
+function getCurrentQty(itemId) {
+  if (selectedKids.length === 0) return 0;
+  if (selectedKids.length === 1) return getKidItemQty(selectedKids[0], itemId);
+  return getJointQty(itemId, selectedKids);
+}
+
+// ==================== RENDER: ORDER TAB ====================
+function renderOrderTab() {
+  const selectorDiv = document.getElementById('kid-selector');
+  if (data.kids.length === 0) {
+    selectorDiv.innerHTML = '<div class="empty-state" style="padding:10px;width:100%"><p style="font-size:0.8rem">Add drivers in Settings! <i class="fas fa-gear"></i></p></div>';
+  } else {
+    selectorDiv.innerHTML = data.kids.map(k => `
+      <div class="kid-chip ${selectedKids.includes(k.id) ? 'selected' : ''}" onclick="toggleKidSelection('${k.id}')">
+        <i class="fas fa-${selectedKids.includes(k.id) ? 'circle-check' : 'circle'}" style="font-size:0.7rem"></i>
+        ${esc(k.name)}
+      </div>
+    `).join('');
+  }
+
+  const menuArea = document.getElementById('menu-area');
+  if (data.categories.length === 0 || data.menuItems.length === 0) {
+    menuArea.innerHTML = '<div class="empty-state"><i class="fas fa-gas-pump"></i><p>No menu items yet!<br>Head to Settings to fuel up the menu.</p></div>';
+    return;
+  }
+  if (selectedKids.length === 0) {
+    menuArea.innerHTML = '<div class="empty-state"><i class="fas fa-hand-pointer"></i><p>Select a driver above to start ordering!</p></div>';
+    return;
+  }
+
+  const isJoint = selectedKids.length > 1;
+  let html = '';
+  if (isJoint) {
+    const names = selectedKids.map(id => data.kids.find(k => k.id === id)?.name).filter(Boolean);
+    html += `<div class="card" style="border-color:rgba(233,69,96,0.3); background:linear-gradient(135deg, rgba(233,69,96,0.08), rgba(212,160,23,0.08));">
+      <div style="font-family:'Orbitron',sans-serif;font-weight:700;font-size:0.75rem;color:var(--red);letter-spacing:1px;">
+        <i class="fas fa-people-group"></i> TEAM ORDER: ${esc(names.join(' + '))}
+      </div>
+      <div style="font-size:0.72rem; color:#888; margin-top:4px; font-weight:500;">Items will be shared between selected drivers</div>
+    </div>`;
+  }
+
+  for (const cat of data.categories) {
+    const items = data.menuItems.filter(m => m.categoryId === cat.id);
+    if (items.length === 0) continue;
+    const restricted = data.restrictions[cat.id];
+    html += `<div class="category-section" style="margin-bottom:16px;">
+      <div class="category-header">
+        <i class="fas fa-chevron-right" style="font-size:0.6rem"></i> ${esc(cat.name)}
+        ${restricted ? '<span class="restriction-tag"><i class="fas fa-lock"></i> Pick One</span>' : ''}
+      </div>`;
+    for (const item of items) {
+      const qty = getCurrentQty(item.id);
+      let disabled = false;
+      if (!isJoint && restricted) disabled = isItemDisabledForKid(selectedKids[0], item.id, cat.id);
+      html += `<div class="menu-item ${disabled ? 'disabled' : ''}" ${qty > 0 ? 'style="border-color:rgba(212,160,23,0.25);background:rgba(212,160,23,0.04)"' : ''}>
+        <div class="item-name">${esc(item.name)}</div>
+        <div class="qty-control">
+          <button class="qty-btn minus" onclick="changeQty('${item.id}', -1)" ${qty === 0 ? 'disabled style="opacity:0.2"' : ''}>-</button>
+          <span class="qty-val">${qty}</span>
+          <button class="qty-btn plus" onclick="changeQty('${item.id}', 1)">+</button>
+        </div>
+      </div>`;
+    }
+    html += '</div>';
+  }
+  menuArea.innerHTML = html;
+}
+
+// ==================== RENDER: SETTINGS ====================
+function renderSettings() {
+  const kidsList = document.getElementById('kids-list');
+  if (data.kids.length === 0) {
+    kidsList.innerHTML = '<span style="font-size:0.8rem;color:#555">No drivers added yet</span>';
+  } else {
+    kidsList.innerHTML = data.kids.map(k => `
+      <div class="kid-chip selected" style="cursor:default">
+        ${esc(k.name)}
+        <i class="fas fa-times remove" onclick="removeKid('${k.id}')"></i>
+      </div>
+    `).join('');
+  }
+
+  const catsList = document.getElementById('categories-list');
+  if (data.categories.length === 0) {
+    catsList.innerHTML = '<span style="font-size:0.8rem;color:#555">No categories yet</span>';
+  } else {
+    catsList.innerHTML = data.categories.map(c => {
+      const count = data.menuItems.filter(m => m.categoryId === c.id).length;
+      return `<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border:1px solid rgba(255,255,255,0.06);border-radius:10px;margin-bottom:6px;background:rgba(255,255,255,0.02);">
+        <div>
+          <span style="font-weight:700;font-size:0.9rem">${esc(c.name)}</span>
+          <span class="badge" style="margin-left:8px">${count} items</span>
+          ${data.restrictions[c.id] ? '<span class="badge badge-red" style="margin-left:4px">Pick 1</span>' : ''}
+        </div>
+        <button class="btn btn-danger btn-sm" onclick="removeCategory('${c.id}')" style="padding:4px 10px"><i class="fas fa-trash" style="font-size:0.7rem"></i></button>
+      </div>`;
+    }).join('');
+  }
+
+  const catSelect = document.getElementById('item-cat-select');
+  catSelect.innerHTML = '<option value="">-- Select Category --</option>' +
+    data.categories.map(c => `<option value="${c.id}">${esc(c.name)}</option>`).join('');
+
+  const menuList = document.getElementById('menu-items-list');
+  if (data.menuItems.length === 0) {
+    menuList.innerHTML = '<span style="font-size:0.8rem;color:#555">No items yet</span>';
+  } else {
+    let html = '';
+    for (const cat of data.categories) {
+      const items = data.menuItems.filter(m => m.categoryId === cat.id);
+      if (items.length === 0) continue;
+      html += `<div style="font-family:'Orbitron',sans-serif;font-size:0.6rem;font-weight:700;color:var(--gold);margin:10px 0 6px;letter-spacing:2px;text-transform:uppercase">${esc(cat.name)}</div>`;
+      for (const item of items) {
+        html += `<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 14px;border:1px solid rgba(255,255,255,0.04);border-radius:8px;margin-bottom:4px;">
+          <span style="font-size:0.88rem;font-weight:600">${esc(item.name)}</span>
+          <button class="btn btn-danger btn-sm" onclick="removeMenuItem('${item.id}')" style="padding:3px 8px"><i class="fas fa-times" style="font-size:0.6rem"></i></button>
+        </div>`;
+      }
+    }
+    menuList.innerHTML = html;
+  }
+
+  const restList = document.getElementById('restrictions-list');
+  if (data.categories.length === 0) {
+    restList.innerHTML = '<span style="font-size:0.8rem;color:#555">Add categories first</span>';
+  } else {
+    restList.innerHTML = data.categories.map(c => {
+      const on = !!data.restrictions[c.id];
+      return `<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
+        <div>
+          <div style="font-weight:700;font-size:0.9rem">${esc(c.name)}</div>
+          <div style="font-size:0.72rem;color:#555;font-weight:500">Only one item per kid from this category</div>
+        </div>
+        <div class="toggle ${on ? 'on' : ''}" onclick="toggleRestriction('${c.id}')"><div class="knob"></div></div>
+      </div>`;
+    }).join('');
+  }
+}
+
+// ==================== RENDER: DASHBOARD ====================
+function renderDashboard() {
+  const summaryDiv = document.getElementById('dashboard-summary');
+  const byKidDiv = document.getElementById('dashboard-by-kid');
+  const totalsDiv = document.getElementById('dashboard-totals');
+
+  const itemTotals = {};
+  const kidSummaries = {};
+
+  for (const kidId in data.orders) {
+    if (!kidSummaries[kidId]) kidSummaries[kidId] = [];
+    for (const itemId in data.orders[kidId]) {
+      const qty = data.orders[kidId][itemId];
+      if (qty > 0) {
+        const item = data.menuItems.find(m => m.id === itemId);
+        if (item) {
+          kidSummaries[kidId].push({ itemName: item.name, qty, joint: false, categoryId: item.categoryId });
+          itemTotals[itemId] = (itemTotals[itemId] || 0) + qty;
+        }
+      }
+    }
+  }
+
+  for (const jo of data.jointOrders) {
+    if (jo.qty > 0) {
+      const item = data.menuItems.find(m => m.id === jo.itemId);
+      if (item) {
+        const names = jo.kidIds.map(id => data.kids.find(k => k.id === id)?.name).filter(Boolean);
+        for (const kidId of jo.kidIds) {
+          if (!kidSummaries[kidId]) kidSummaries[kidId] = [];
+          const otherNames = names.filter(n => n !== data.kids.find(k => k.id === kidId)?.name);
+          kidSummaries[kidId].push({ itemName: item.name, qty: jo.qty, joint: true, sharedWith: otherNames });
+        }
+        itemTotals[jo.itemId] = (itemTotals[jo.itemId] || 0) + jo.qty;
+      }
+    }
+  }
+
+  const totalItems = Object.values(itemTotals).reduce((a, b) => a + b, 0);
+  const totalKidsOrdering = data.kids.filter(k => kidSummaries[k.id] && kidSummaries[k.id].length > 0).length;
+  const totalJoint = data.jointOrders.filter(j => j.qty > 0).length;
+
+  summaryDiv.innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+      <div class="stat-box" style="background:rgba(212,160,23,0.08);border-color:rgba(212,160,23,0.2);">
+        <div class="stat-num" style="color:var(--gold)">${totalItems}</div>
+        <div class="stat-label" style="color:var(--gold)">Items</div>
+      </div>
+      <div class="stat-box" style="background:rgba(233,69,96,0.08);border-color:rgba(233,69,96,0.2);">
+        <div class="stat-num" style="color:var(--red)">${totalKidsOrdering}</div>
+        <div class="stat-label" style="color:var(--red)">Drivers</div>
+      </div>
+      <div class="stat-box" style="background:rgba(16,185,129,0.08);border-color:rgba(16,185,129,0.2);">
+        <div class="stat-num" style="color:#10b981">${totalJoint}</div>
+        <div class="stat-label" style="color:#10b981">Shared</div>
+      </div>
+    </div>`;
+
+  if (totalKidsOrdering === 0) {
+    byKidDiv.innerHTML = '<div class="empty-state" style="padding:20px"><i class="fas fa-flag-checkered"></i><p>No orders yet - race to the Order tab!</p></div>';
+  } else {
+    let html = '';
+    for (const kid of data.kids) {
+      const items = kidSummaries[kid.id];
+      if (!items || items.length === 0) continue;
+      html += `<div style="margin-bottom:14px;">
+        <div class="order-kid-name"><i class="fas fa-user-astronaut"></i> ${esc(kid.name)}</div>`;
+      for (const entry of items) {
+        html += `<div class="order-row">
+          <span>${esc(entry.itemName)}${entry.joint ? '<span class="joint-badge">shared' + (entry.sharedWith && entry.sharedWith.length ? ' w/ ' + entry.sharedWith.map(esc).join(', ') : '') + '</span>' : ''}</span>
+          <span style="font-weight:800;color:var(--gold-light)">x${entry.qty}</span>
+        </div>`;
+      }
+      html += '</div>';
+    }
+    byKidDiv.innerHTML = html;
+  }
+
+  if (Object.keys(itemTotals).length === 0) {
+    totalsDiv.innerHTML = '<div class="empty-state" style="padding:20px"><p style="font-size:0.8rem">No items ordered yet</p></div>';
+  } else {
+    let html = '';
+    for (const cat of data.categories) {
+      const catItems = data.menuItems.filter(m => m.categoryId === cat.id && itemTotals[m.id]);
+      if (catItems.length === 0) continue;
+      html += `<div style="font-family:'Orbitron',sans-serif;font-size:0.6rem;font-weight:700;color:var(--gold);margin:10px 0 4px;letter-spacing:2px;text-transform:uppercase">${esc(cat.name)}</div>`;
+      for (const item of catItems) {
+        html += `<div class="summary-row">
+          <span>${esc(item.name)}</span>
+          <span style="font-weight:800;color:var(--gold-light)">x${itemTotals[item.id]}</span>
+        </div>`;
+      }
+    }
+    html += `<div class="summary-row total"><span>TOTAL</span><span>${totalItems}</span></div>`;
+    totalsDiv.innerHTML = html;
+  }
+}
+
+// ==================== EXPORT ====================
+function exportOrder() {
+  const itemTotals = {};
+  const itemNames = {};
+
+  for (const kidId in data.orders) {
+    for (const itemId in data.orders[kidId]) {
+      const qty = data.orders[kidId][itemId];
+      if (qty > 0) {
+        itemTotals[itemId] = (itemTotals[itemId] || 0) + qty;
+        const item = data.menuItems.find(m => m.id === itemId);
+        if (item) itemNames[itemId] = item.name;
+      }
+    }
+  }
+  for (const jo of data.jointOrders) {
+    if (jo.qty > 0) {
+      itemTotals[jo.itemId] = (itemTotals[jo.itemId] || 0) + jo.qty;
+      const item = data.menuItems.find(m => m.id === jo.itemId);
+      if (item) itemNames[jo.itemId] = item.name;
+    }
+  }
+
+  let lines = [];
+  lines.push("=============================================");
+  lines.push("   RISHAAN'S 10TH BIRTHDAY - FOOD ORDER");
+  lines.push("   13th February 2026");
+  lines.push("=============================================");
+  lines.push("");
+  lines.push("ORDER LIST (by Category):");
+  lines.push("---------------------------------------------");
+  let grandTotal = 0;
+  for (const cat of data.categories) {
+    const catItems = data.menuItems.filter(m => m.categoryId === cat.id && itemTotals[m.id]);
+    if (catItems.length === 0) continue;
+    lines.push("");
+    lines.push(`[ ${cat.name.toUpperCase()} ]`);
+    for (const item of catItems) {
+      const qty = itemTotals[item.id];
+      grandTotal += qty;
+      const pad = Math.max(1, 30 - item.name.length);
+      lines.push(`  ${item.name}${' '.repeat(pad)}x ${qty}`);
+    }
+  }
+  lines.push("");
+  lines.push("---------------------------------------------");
+  lines.push(`  TOTAL ITEMS:                        ${grandTotal}`);
+  lines.push("---------------------------------------------");
+  lines.push("");
+  lines.push("INDIVIDUAL ORDERS:");
+  lines.push("---------------------------------------------");
+  for (const kid of data.kids) {
+    const items = [];
+    if (data.orders[kid.id]) {
+      for (const itemId in data.orders[kid.id]) {
+        const qty = data.orders[kid.id][itemId];
+        if (qty > 0) {
+          const item = data.menuItems.find(m => m.id === itemId);
+          if (item) items.push({ name: item.name, qty });
+        }
+      }
+    }
+    for (const jo of data.jointOrders) {
+      if (jo.qty > 0 && jo.kidIds.includes(kid.id)) {
+        const item = data.menuItems.find(m => m.id === jo.itemId);
+        const others = jo.kidIds.filter(id => id !== kid.id).map(id => data.kids.find(k => k.id === id)?.name).filter(Boolean);
+        if (item) items.push({ name: item.name + ` (shared w/ ${others.join(', ')})`, qty: jo.qty });
+      }
+    }
+    if (items.length === 0) continue;
+    lines.push("");
+    lines.push(`  ${kid.name}:`);
+    for (const i of items) lines.push(`    - ${i.name}  x${i.qty}`);
+  }
+  lines.push("");
+  lines.push("=============================================");
+
+  document.getElementById('export-content').textContent = lines.join('\n');
+  document.getElementById('export-modal').style.display = 'flex';
+}
+
+function copyExport() {
+  navigator.clipboard.writeText(document.getElementById('export-content').textContent)
+    .then(() => showToast('COPIED!'));
+}
+
+function downloadExport() {
+  const blob = new Blob([document.getElementById('export-content').textContent], { type: 'text/plain' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'rishaan_birthday_food_order.txt';
+  a.click();
+}
+
+function clearAllOrders() {
+  if (!confirm('Clear ALL orders? Cannot be undone!')) return;
+  for (const kidId in data.orders) data.orders[kidId] = {};
+  data.jointOrders = [];
+  saveData(data);
+  renderDashboard();
+  showToast('ALL ORDERS CLEARED');
+}
+
+function resetApp() {
+  if (!confirm('RESET EVERYTHING? All kids, menu items, and orders will be deleted!')) return;
+  if (!confirm('Are you absolutely sure?')) return;
+  localStorage.removeItem(DB_KEY);
+  data = defaultData();
+  selectedKids = [];
+  renderSettings();
+  renderOrderTab();
+  showToast('APP RESET');
+}
+
+// ==================== BACKUP/RESTORE ====================
+function downloadBackup() {
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
+  const filename = `rishaan-bday-backup-${timestamp}.json`;
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+  showToast('BACKUP DOWNLOADED!');
+}
+
+function restoreBackup(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const restored = JSON.parse(e.target.result);
+
+      // Validate structure
+      if (!restored.kids || !restored.categories || !restored.menuItems || !restored.orders) {
+        showToast('Invalid backup file!');
+        return;
+      }
+
+      if (!confirm('Restore from backup? Current data will be replaced!')) return;
+
+      data = restored;
+      saveData(data);
+      selectedKids = [];
+      renderSettings();
+      renderOrderTab();
+      showToast('BACKUP RESTORED!');
+    } catch (err) {
+      showToast('Failed to restore backup!');
+      console.error(err);
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = ''; // Reset input
+}
+
+// Enter key handlers
+document.getElementById('kid-name-input').addEventListener('keydown', e => { if (e.key === 'Enter') addKid(); });
+document.getElementById('cat-name-input').addEventListener('keydown', e => { if (e.key === 'Enter') addCategory(); });
+document.getElementById('item-name-input').addEventListener('keydown', e => { if (e.key === 'Enter') addMenuItem(); });
+
+// Confetti
+function launchConfetti() {
+  const items = ['🏎️','🏁','🎂','⭐','🎁','🥳','✨','🏆','💨','🔥'];
+  for (let i = 0; i < 25; i++) {
+    setTimeout(() => {
+      const c = document.createElement('div');
+      c.className = 'confetti';
+      c.textContent = items[Math.floor(Math.random() * items.length)];
+      c.style.left = Math.random() * 100 + 'vw';
+      c.style.animationDuration = (2 + Math.random() * 3) + 's';
+      document.body.appendChild(c);
+      setTimeout(() => c.remove(), 5000);
+    }, i * 120);
+  }
+}
+
+// Music Control
+let musicPlaying = false;
+function toggleMusic() {
+  const audio = document.getElementById('bg-music');
+  const btn = document.getElementById('music-toggle');
+  const icon = btn.querySelector('i');
+
+  if (musicPlaying) {
+    audio.pause();
+    icon.className = 'fas fa-play';
+    icon.style.marginLeft = '2px';
+    musicPlaying = false;
+  } else {
+    audio.play().catch(() => showToast('Enable sound first!'));
+    icon.className = 'fas fa-pause';
+    icon.style.marginLeft = '0';
+    musicPlaying = true;
+  }
+}
+
+// Init
+renderSettings();
+renderOrderTab();
+launchConfetti();
+</script>
+</body>
+</html>
