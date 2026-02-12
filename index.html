@@ -657,6 +657,54 @@ body::before {
   font-size: 0.95rem !important;
   padding: 9px 18px !important;
 }
+
+/* Big Car Overlay */
+.big-car-overlay {
+  position: fixed;
+  z-index: 999;
+  pointer-events: none;
+  filter: drop-shadow(0 8px 30px rgba(255,215,0,0.5));
+  opacity: 0.95;
+}
+
+@keyframes driftIn {
+  0% {
+    left: -300px;
+    transform: translateY(0) rotate(-5deg) scale(1);
+  }
+  20% {
+    transform: translateY(-20px) rotate(-2deg) scale(1.05);
+  }
+  40% {
+    transform: translateY(0) rotate(2deg) scale(1);
+  }
+  100% {
+    left: 110vw;
+    transform: translateY(10px) rotate(5deg) scale(1.1);
+  }
+}
+
+@keyframes driftReverse {
+  0% {
+    right: -300px;
+    transform: translateY(0) scaleX(-1) rotate(5deg) scale(1);
+  }
+  20% {
+    transform: translateY(-20px) scaleX(-1) rotate(2deg) scale(1.05);
+  }
+  40% {
+    transform: translateY(0) scaleX(-1) rotate(-2deg) scale(1);
+  }
+  100% {
+    right: 110vw;
+    transform: translateY(10px) scaleX(-1) rotate(-5deg) scale(1.1);
+  }
+}
+
+@keyframes engineGlow {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
 </style>
 </head>
 <body>
@@ -664,24 +712,49 @@ body::before {
 <!-- HEADER -->
 <div class="header">
   <div class="header-logo">
+    <!-- Koenigsegg Ghost Logo -->
     <div class="koenigsegg-shield">
-      <svg viewBox="0 0 100 120" fill="none">
-        <path d="M50 5 L90 25 L90 75 Q90 100 50 115 Q10 100 10 75 L10 25 Z" stroke="url(#goldGrad)" stroke-width="3" fill="rgba(212,160,23,0.06)"/>
-        <path d="M50 20 L35 50 L50 42 L65 50 Z" fill="url(#goldGrad)"/>
-        <path d="M50 42 L35 50 L50 80 L65 50 Z" fill="url(#goldGrad)" opacity="0.7"/>
-        <defs><linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#d4a017"/><stop offset="50%" stop-color="#f0d060"/><stop offset="100%" stop-color="#d4a017"/></linearGradient></defs>
+      <svg viewBox="0 0 80 90" fill="none" style="filter: drop-shadow(0 2px 8px rgba(255,215,0,0.4));">
+        <!-- Shield outline -->
+        <path d="M 40 5 L 70 20 L 70 60 Q 70 75 40 85 Q 10 75 10 60 L 10 20 Z"
+              stroke="url(#goldGrad)" stroke-width="2.5" fill="rgba(255,215,0,0.08)"/>
+        <!-- Koenigsegg Ghost symbol -->
+        <path d="M 40 15 L 30 35 L 40 30 L 50 35 Z" fill="url(#goldGrad)"/>
+        <path d="M 40 30 L 25 40 L 40 65 L 55 40 Z" fill="url(#goldGrad)" opacity="0.85"/>
+        <circle cx="35" cy="45" r="2" fill="#1a1a2e" opacity="0.6"/>
+        <circle cx="45" cy="45" r="2" fill="#1a1a2e" opacity="0.6"/>
+        <!-- Crown on top -->
+        <path d="M 30 18 L 35 12 L 40 15 L 45 12 L 50 18" stroke="url(#goldGrad)" stroke-width="1.5" fill="none"/>
+        <defs>
+          <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#ffd700"/>
+            <stop offset="50%" stop-color="#ffe55c"/>
+            <stop offset="100%" stop-color="#ffd700"/>
+          </linearGradient>
+        </defs>
       </svg>
     </div>
     <div>
       <h1>Rishaan's 10th</h1>
       <p><i class="fas fa-flag-checkered"></i> 13 Feb 2026 &bull; Birthday Pit Stop <i class="fas fa-flag-checkered"></i></p>
     </div>
+    <!-- Koenigsegg Ghost Logo (mirrored) -->
     <div class="koenigsegg-shield" style="transform: scaleX(-1);">
-      <svg viewBox="0 0 100 120" fill="none">
-        <path d="M50 5 L90 25 L90 75 Q90 100 50 115 Q10 100 10 75 L10 25 Z" stroke="url(#goldGrad2)" stroke-width="3" fill="rgba(212,160,23,0.06)"/>
-        <path d="M50 20 L35 50 L50 42 L65 50 Z" fill="url(#goldGrad2)"/>
-        <path d="M50 42 L35 50 L50 80 L65 50 Z" fill="url(#goldGrad2)" opacity="0.7"/>
-        <defs><linearGradient id="goldGrad2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#d4a017"/><stop offset="50%" stop-color="#f0d060"/><stop offset="100%" stop-color="#d4a017"/></linearGradient></defs>
+      <svg viewBox="0 0 80 90" fill="none" style="filter: drop-shadow(0 2px 8px rgba(255,215,0,0.4));">
+        <path d="M 40 5 L 70 20 L 70 60 Q 70 75 40 85 Q 10 75 10 60 L 10 20 Z"
+              stroke="url(#goldGrad3)" stroke-width="2.5" fill="rgba(255,215,0,0.08)"/>
+        <path d="M 40 15 L 30 35 L 40 30 L 50 35 Z" fill="url(#goldGrad3)"/>
+        <path d="M 40 30 L 25 40 L 40 65 L 55 40 Z" fill="url(#goldGrad3)" opacity="0.85"/>
+        <circle cx="35" cy="45" r="2" fill="#1a1a2e" opacity="0.6"/>
+        <circle cx="45" cy="45" r="2" fill="#1a1a2e" opacity="0.6"/>
+        <path d="M 30 18 L 35 12 L 40 15 L 45 12 L 50 18" stroke="url(#goldGrad3)" stroke-width="1.5" fill="none"/>
+        <defs>
+          <linearGradient id="goldGrad3" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#ffd700"/>
+            <stop offset="50%" stop-color="#ffe55c"/>
+            <stop offset="100%" stop-color="#ffd700"/>
+          </linearGradient>
+        </defs>
       </svg>
     </div>
   </div>
@@ -1910,6 +1983,88 @@ function createKoenigseggCar() {
   setTimeout(() => carContainer.remove(), speed * 1000 + 500);
 }
 
+// Create BIG Koenigsegg overlay car
+function createBigCarOverlay() {
+  const carContainer = document.createElement('div');
+  carContainer.className = 'big-car-overlay';
+
+  const direction = Math.random() > 0.5 ? 'forward' : 'reverse';
+  const speed = Math.random() * 2 + 4; // 4-6s for dramatic effect
+  const verticalPos = Math.random() * 30 + 35; // 35-65% from bottom
+
+  // Massive SVG Koenigsegg Agera/Jesko style
+  const bigCarSVG = `
+    <svg width="400" height="150" viewBox="0 0 200 60" style="filter: drop-shadow(0 10px 40px rgba(255,215,0,0.6));">
+      <!-- Main body - aggressive supercar shape -->
+      <path d="M 20 45 L 30 28 L 50 22 L 90 20 L 130 22 L 160 28 L 170 45 Z"
+            fill="url(#bigCarGrad)" stroke="#ffd700" stroke-width="1.5"/>
+
+      <!-- Windshield -->
+      <path d="M 60 22 L 70 15 L 120 15 L 130 22 Z"
+            fill="rgba(20,20,40,0.5)" stroke="#ffe55c" stroke-width="1"/>
+
+      <!-- Air intakes -->
+      <rect x="45" y="32" width="8" height="6" fill="#1a1a2e" stroke="#ffd700" stroke-width="0.8"/>
+      <rect x="145" y="32" width="8" height="6" fill="#1a1a2e" stroke="#ffd700" stroke-width="0.8"/>
+
+      <!-- Side vents -->
+      <path d="M 40 30 L 50 28 L 140 28 L 150 30"
+            stroke="#ffe55c" stroke-width="2" fill="none" opacity="0.8"/>
+
+      <!-- Wheels - carbon fiber look -->
+      <circle cx="55" cy="48" r="9" fill="#2a2a2a" stroke="#ffd700" stroke-width="1.5"/>
+      <circle cx="55" cy="48" r="6" fill="#1a1a2e"/>
+      <circle cx="55" cy="48" r="3" fill="#ffd700">
+        <animateTransform attributeName="transform" type="rotate" from="0 55 48" to="360 55 48" dur="0.3s" repeatCount="indefinite"/>
+      </circle>
+
+      <circle cx="135" cy="48" r="9" fill="#2a2a2a" stroke="#ffd700" stroke-width="1.5"/>
+      <circle cx="135" cy="48" r="6" fill="#1a1a2e"/>
+      <circle cx="135" cy="48" r="3" fill="#ffd700">
+        <animateTransform attributeName="transform" type="rotate" from="0 135 48" to="360 135 48" dur="0.3s" repeatCount="indefinite"/>
+      </circle>
+
+      <!-- Headlights -->
+      <circle cx="${direction === 'forward' ? '168' : '22'}" cy="32" r="4" fill="#ffe55c" opacity="0.9">
+        <animate attributeName="opacity" values="0.9;1;0.9" dur="1s" repeatCount="indefinite"/>
+      </circle>
+
+      <!-- Exhaust flames -->
+      <ellipse cx="${direction === 'forward' ? '18' : '172'}" cy="44" rx="6" ry="4" fill="#ff6b6b" opacity="0.7">
+        <animate attributeName="opacity" values="0.5;1;0.5" dur="0.2s" repeatCount="indefinite"/>
+        <animate attributeName="rx" values="6;8;6" dur="0.2s" repeatCount="indefinite"/>
+      </ellipse>
+
+      <!-- Spoiler -->
+      <rect x="140" y="18" width="30" height="3" fill="#ffd700" opacity="0.6"/>
+
+      <defs>
+        <linearGradient id="bigCarGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#ffd700" stop-opacity="1"/>
+          <stop offset="40%" stop-color="#ffed4e" stop-opacity="0.95"/>
+          <stop offset="100%" stop-color="#d4a017" stop-opacity="0.9"/>
+        </linearGradient>
+      </defs>
+    </svg>
+  `;
+
+  carContainer.innerHTML = bigCarSVG;
+
+  if (direction === 'forward') {
+    carContainer.style.top = verticalPos + '%';
+    carContainer.style.left = '-400px';
+    carContainer.style.animation = `driftIn ${speed}s cubic-bezier(0.25, 0.46, 0.45, 0.94)`;
+  } else {
+    carContainer.style.top = verticalPos + '%';
+    carContainer.style.right = '-400px';
+    carContainer.style.animation = `driftReverse ${speed}s cubic-bezier(0.25, 0.46, 0.45, 0.94)`;
+  }
+
+  document.body.appendChild(carContainer);
+
+  setTimeout(() => carContainer.remove(), speed * 1000 + 500);
+}
+
 // Create birthday balloons occasionally
 function createBirthdayBalloon() {
   const balloon = document.createElement('div');
@@ -1952,9 +2107,15 @@ function startBirthdayAnimations() {
     if (Math.random() > 0.8) createBirthdayBalloon();
   }, 4000);
 
+  // BIG dramatic car overlays
+  setInterval(() => {
+    if (Math.random() > 0.7) createBigCarOverlay();
+  }, 18000);
+
   // Initial burst of cars
   setTimeout(() => createKoenigseggCar(), 500);
   setTimeout(() => createKoenigseggCar(), 1500);
+  setTimeout(() => createBigCarOverlay(), 3000);
 }
 
 // Init
