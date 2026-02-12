@@ -591,6 +591,44 @@ body::before {
   0%, 100% { box-shadow: 0 0 5px rgba(212,160,23,0.1); }
   50% { box-shadow: 0 0 15px rgba(212,160,23,0.2); }
 }
+
+/* Koenigsegg Car Animations */
+.koenigsegg-car {
+  position: fixed;
+  z-index: 1;
+  pointer-events: none;
+  filter: drop-shadow(0 2px 8px rgba(212,160,23,0.3));
+}
+
+@keyframes raceAcross {
+  0% { left: -150px; transform: translateY(0) rotate(-2deg); }
+  100% { left: 110vw; transform: translateY(-10px) rotate(2deg); }
+}
+
+@keyframes raceReverse {
+  0% { right: -150px; transform: translateY(0) scaleX(-1) rotate(2deg); }
+  100% { right: 110vw; transform: translateY(-10px) scaleX(-1) rotate(-2deg); }
+}
+
+@keyframes speedBoost {
+  0%, 100% { filter: drop-shadow(0 2px 8px rgba(212,160,23,0.3)); }
+  50% { filter: drop-shadow(0 4px 20px rgba(212,160,23,0.6)) brightness(1.2); }
+}
+
+.car-trail {
+  position: absolute;
+  right: 100%;
+  top: 50%;
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(212,160,23,0.6), transparent);
+  animation: trail 0.3s ease-in-out infinite;
+}
+
+@keyframes trail {
+  0%, 100% { opacity: 0.3; transform: scaleX(0.8); }
+  50% { opacity: 1; transform: scaleX(1.2); }
+}
 </style>
 </head>
 <body>
@@ -861,6 +899,8 @@ body::before {
 <script>
 // ==================== DATA LAYER ====================
 const DB_KEY = 'rishaan_bday_koenigsegg';
+const ADMIN_PIN = '1212';
+let pinUnlocked = false;
 
 function defaultData() {
   // Pre-populated for Rishaan's 10th Birthday Party!
@@ -950,6 +990,22 @@ function genId() { return Date.now().toString(36) + Math.random().toString(36).s
 function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
 
 function switchTab(name, btn) {
+  // Check PIN for protected tabs
+  if ((name === 'settings' || name === 'data') && !pinUnlocked) {
+    const pin = prompt('🔒 Enter PIN to access ' + name.toUpperCase() + ':');
+    if (pin !== ADMIN_PIN) {
+      showToast('INCORRECT PIN!');
+      return;
+    }
+    pinUnlocked = true;
+    showToast('PIN ACCEPTED!');
+    // Auto-lock after 3 minutes of inactivity
+    setTimeout(() => {
+      pinUnlocked = false;
+      showToast('Session locked');
+    }, 180000);
+  }
+
   document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.bottom-nav button').forEach(b => b.classList.remove('active'));
   document.getElementById('tab-' + name).classList.add('active');
@@ -957,6 +1013,7 @@ function switchTab(name, btn) {
   if (name === 'dashboard') renderDashboard();
   if (name === 'order') renderOrderTab();
   if (name === 'settings') renderSettings();
+  if (name === 'data') {} // Data tab is static
 }
 
 function showToast(msg) {
@@ -1677,48 +1734,124 @@ function saveData(d) {
   }
 }
 
-// ==================== RACING CARS ANIMATION ====================
-function createRacingCar() {
-  const car = document.createElement('div');
-  car.style.cssText = `
+// ==================== KOENIGSEGG RACING CARS ANIMATION ====================
+function createKoenigseggCar() {
+  const carContainer = document.createElement('div');
+  carContainer.className = 'koenigsegg-car';
+
+  const direction = Math.random() > 0.5 ? 'forward' : 'reverse';
+  const speed = Math.random() * 2 + 2.5; // 2.5-4.5s
+  const lane = Math.random() * 40 + 15; // 15-55% from bottom
+  const size = Math.random() * 0.8 + 1.2; // 1.2-2rem
+
+  // SVG Koenigsegg-style supercar
+  const carSVG = `
+    <svg width="${size * 80}" height="${size * 30}" viewBox="0 0 100 35" style="filter: drop-shadow(0 2px 6px rgba(212,160,23,0.4));">
+      <!-- Car body -->
+      <path d="M 15 25 L 20 18 L 35 15 L 65 15 L 80 18 L 85 25 Z"
+            fill="url(#carGrad)" stroke="var(--gold)" stroke-width="0.8"/>
+      <!-- Windshield -->
+      <path d="M 35 15 L 40 12 L 60 12 L 65 15 Z"
+            fill="rgba(0,0,0,0.3)" stroke="var(--gold)" stroke-width="0.5"/>
+      <!-- Side details -->
+      <path d="M 25 20 L 30 18 L 70 18 L 75 20"
+            stroke="var(--gold-light)" stroke-width="1" fill="none"/>
+      <!-- Wheels -->
+      <circle cx="30" cy="26" r="4" fill="#2a2a2a" stroke="var(--gold)" stroke-width="1"/>
+      <circle cx="30" cy="26" r="2.5" fill="var(--gold)"/>
+      <circle cx="70" cy="26" r="4" fill="#2a2a2a" stroke="var(--gold)" stroke-width="1"/>
+      <circle cx="70" cy="26" r="2.5" fill="var(--gold)"/>
+      <!-- Headlights -->
+      <circle cx="${direction === 'forward' ? '82' : '18'}" cy="20" r="2" fill="var(--gold-light)" opacity="0.8"/>
+      <!-- Exhaust glow -->
+      <circle cx="${direction === 'forward' ? '15' : '85'}" cy="24" r="3" fill="var(--red)" opacity="0.6">
+        <animate attributeName="opacity" values="0.6;1;0.6" dur="0.3s" repeatCount="indefinite"/>
+      </circle>
+      <defs>
+        <linearGradient id="carGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="var(--gold)" stop-opacity="0.9"/>
+          <stop offset="50%" stop-color="#b8860b" stop-opacity="0.95"/>
+          <stop offset="100%" stop-color="#8b6914" stop-opacity="0.9"/>
+        </linearGradient>
+      </defs>
+    </svg>
+  `;
+
+  carContainer.innerHTML = carSVG;
+
+  if (direction === 'forward') {
+    carContainer.style.bottom = lane + '%';
+    carContainer.style.left = '-150px';
+    carContainer.style.animation = `raceAcross ${speed}s linear, speedBoost 0.5s ease-in-out infinite`;
+  } else {
+    carContainer.style.bottom = lane + '%';
+    carContainer.style.right = '-150px';
+    carContainer.style.animation = `raceReverse ${speed}s linear, speedBoost 0.5s ease-in-out infinite`;
+  }
+
+  // Add speed trail
+  const trail = document.createElement('div');
+  trail.className = 'car-trail';
+  if (direction === 'reverse') trail.style.left = '100%';
+  carContainer.appendChild(trail);
+
+  document.body.appendChild(carContainer);
+
+  setTimeout(() => carContainer.remove(), speed * 1000 + 500);
+}
+
+// Create birthday balloons occasionally
+function createBirthdayBalloon() {
+  const balloon = document.createElement('div');
+  balloon.style.cssText = `
     position: fixed;
-    bottom: ${Math.random() * 30 + 10}%;
-    left: -100px;
-    font-size: ${Math.random() * 1 + 1.5}rem;
-    animation: race ${Math.random() * 3 + 2}s linear;
+    bottom: -50px;
+    left: ${Math.random() * 90 + 5}%;
+    font-size: ${Math.random() * 1.5 + 1.5}rem;
     z-index: 1;
     pointer-events: none;
+    animation: floatUp ${Math.random() * 4 + 5}s ease-out forwards;
   `;
-  car.textContent = ['🏎️', '🏁', '🚗', '💨'][Math.floor(Math.random() * 4)];
+  balloon.textContent = ['🎈', '🎂', '🎁', '⭐', '🎉'][Math.floor(Math.random() * 5)];
 
   const style = document.createElement('style');
   style.textContent = `
-    @keyframes race {
-      0% { left: -100px; transform: rotate(0deg); }
-      100% { left: 110vw; transform: rotate(${Math.random() * 20 - 10}deg); }
+    @keyframes floatUp {
+      0% { bottom: -50px; opacity: 1; transform: translateX(0) rotate(0deg); }
+      100% { bottom: 110vh; opacity: 0; transform: translateX(${Math.random() * 40 - 20}px) rotate(${Math.random() * 360}deg); }
     }
   `;
   document.head.appendChild(style);
-  document.body.appendChild(car);
+  document.body.appendChild(balloon);
 
   setTimeout(() => {
-    car.remove();
+    balloon.remove();
     style.remove();
-  }, 5000);
+  }, 10000);
 }
 
-// Launch racing cars periodically
-function startRacingCars() {
+// Launch Koenigsegg cars and birthday effects
+function startBirthdayAnimations() {
+  // Koenigsegg cars
   setInterval(() => {
-    if (Math.random() > 0.7) createRacingCar();
-  }, 3000);
+    if (Math.random() > 0.65) createKoenigseggCar();
+  }, 2500);
+
+  // Birthday balloons
+  setInterval(() => {
+    if (Math.random() > 0.8) createBirthdayBalloon();
+  }, 4000);
+
+  // Initial burst of cars
+  setTimeout(() => createKoenigseggCar(), 500);
+  setTimeout(() => createKoenigseggCar(), 1500);
 }
 
 // Init
 renderSettings();
 renderOrderTab();
 launchConfetti();
-startRacingCars();
+startBirthdayAnimations();
 
 // Auto-load Firebase if config exists
 setTimeout(() => {
