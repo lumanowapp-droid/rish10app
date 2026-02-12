@@ -13,28 +13,33 @@
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 <style>
 :root {
-  --dark: #0a0a0f;
-  --dark2: #12121a;
-  --dark3: #1a1a28;
-  --gold: #d4a017;
-  --gold-light: #f0d060;
-  --red: #e94560;
-  --carbon: #1e1e2a;
-  --silver: #c0c0c8;
-  --ghost: rgba(255,255,255,0.06);
+  --dark: #1a1a2e;
+  --dark2: #252540;
+  --dark3: #2d2d44;
+  --gold: #ffd700;
+  --gold-light: #ffe55c;
+  --red: #ff6b6b;
+  --purple: #a78bfa;
+  --pink: #ec4899;
+  --blue: #60a5fa;
+  --green: #34d399;
+  --orange: #fb923c;
+  --silver: #e0e0e8;
+  --ghost: rgba(255,255,255,0.1);
 }
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 body {
   font-family: 'Rajdhani', sans-serif;
-  background: var(--dark);
-  color: #e0e0e8;
+  background: linear-gradient(135deg, #1a1a2e 0%, #252540 50%, #2d2d44 100%);
+  color: #f0f0f5;
   margin: 0;
   padding: 0;
   padding-bottom: 74px;
   min-height: 100vh;
   background-image:
-    radial-gradient(ellipse at 20% 50%, rgba(212,160,23,0.04) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 20%, rgba(233,69,96,0.04) 0%, transparent 50%);
+    radial-gradient(ellipse at 20% 50%, rgba(255,215,0,0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(255,107,107,0.08) 0%, transparent 50%);
+  position: relative;
 }
 
 /* Carbon fiber pattern overlay */
@@ -204,13 +209,14 @@ body::before {
 
 /* Cards */
 .card {
-  background: linear-gradient(145deg, var(--dark2), var(--dark3));
-  border: 1px solid rgba(212,160,23,0.12);
-  border-radius: 16px;
-  padding: 16px;
-  margin-bottom: 12px;
+  background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+  border: 2px solid rgba(255,215,0,0.2);
+  border-radius: 20px;
+  padding: 20px;
+  margin-bottom: 16px;
   position: relative;
   overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
 }
 .card::before {
   content: '';
@@ -218,20 +224,21 @@ body::before {
   top: 0;
   left: 0;
   right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(212,160,23,0.3), transparent);
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold), var(--pink), transparent);
 }
 .card-title {
   font-family: 'Orbitron', sans-serif;
-  font-weight: 700;
-  font-size: 0.8rem;
+  font-weight: 800;
+  font-size: 1.1rem;
   color: var(--gold);
-  margin-bottom: 12px;
+  margin-bottom: 16px;
   display: flex;
   align-items: center;
-  gap: 8px;
-  letter-spacing: 1px;
+  gap: 10px;
+  letter-spacing: 1.5px;
   text-transform: uppercase;
+  text-shadow: 0 2px 8px rgba(255,215,0,0.3);
 }
 
 /* Badges */
@@ -629,6 +636,27 @@ body::before {
   0%, 100% { opacity: 0.3; transform: scaleX(0.8); }
   50% { opacity: 1; transform: scaleX(1.2); }
 }
+
+@keyframes bounceIn {
+  0% { transform: translateX(-50%) scale(0.3); opacity: 0; }
+  50% { transform: translateX(-50%) scale(1.05); }
+  70% { transform: translateX(-50%) scale(0.9); }
+  100% { transform: translateX(-50%) scale(1); opacity: 1; }
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(-3deg); }
+  50% { transform: rotate(3deg); }
+}
+
+.menu-item .item-name {
+  font-size: 1.05rem !important;
+}
+
+.kid-chip {
+  font-size: 0.95rem !important;
+  padding: 9px 18px !important;
+}
 </style>
 </head>
 <body>
@@ -658,6 +686,13 @@ body::before {
     </div>
   </div>
   <div class="rpm-bar" style="margin-top:10px;"></div>
+</div>
+
+<!-- Fun Joke Banner -->
+<div id="joke-banner" style="position:fixed; bottom:80px; left:50%; transform:translateX(-50%); max-width:90%; z-index:100; background:linear-gradient(135deg, var(--purple), var(--pink)); border-radius:50px; padding:12px 24px; display:none; box-shadow:0 4px 20px rgba(167,139,250,0.4); animation:bounceIn 0.5s ease;">
+  <div style="font-family:'Rajdhani',sans-serif; font-size:0.9rem; font-weight:700; color:white; text-align:center; letter-spacing:0.5px;">
+    <span id="joke-text"></span>
+  </div>
 </div>
 
 <!-- Sync Status Indicator -->
@@ -1165,7 +1200,10 @@ function changeQty(itemId, delta) {
     if (!data.orders[kidId]) data.orders[kidId] = {};
     const newQty = Math.max(0, (data.orders[kidId][itemId] || 0) + delta);
     if (newQty === 0) delete data.orders[kidId][itemId];
-    else data.orders[kidId][itemId] = newQty;
+    else {
+      data.orders[kidId][itemId] = newQty;
+      if (delta > 0 && Math.random() > 0.6) showFunnyToast(); // Show fun toast sometimes when adding
+    }
   } else {
     const kidIds = [...selectedKids].sort();
     const key = kidIds.join(',');
@@ -1176,6 +1214,7 @@ function changeQty(itemId, delta) {
     }
     jo.qty = Math.max(0, jo.qty + delta);
     if (jo.qty === 0) data.jointOrders = data.jointOrders.filter(o => o !== jo);
+    else if (delta > 0 && Math.random() > 0.6) showFunnyToast();
   }
   saveData(data);
   renderOrderTab();
@@ -1576,6 +1615,77 @@ function restoreBackup(event) {
   reader.readAsText(file);
   event.target.value = ''; // Reset input
 }
+
+// ==================== FUN JOKES & HUMOR ====================
+const funnyJokes = [
+  "🍕 Why did the pizza go to therapy? It had too many toppings to deal with!",
+  "🥤 What's a computer's favorite drink? Screen-shots of espresso!",
+  "🍟 Why don't French fries ever get lonely? They come in bunches!",
+  "🎂 Why did the birthday cake go to school? To get a little more frosting-cation!",
+  "🏎️ Why did the race car break up with the stop sign? It needed someone faster!",
+  "🥗 What did the lettuce say to the celery? Quit stalking me!",
+  "🍔 Why did the burger blush? It saw the salad dressing!",
+  "🎈 What do you call a fake noodle? An im-PASTA!",
+  "🏁 Why don't race cars ever get tired? They always get a pit stop!",
+  "🎉 What's a pizza's favorite song? Slice, Slice Baby!",
+  "🥳 Why did the cookie go to the doctor? It felt crumbly!",
+  "🍕 How does a pizza introduce itself? Slice to meet you!",
+  "🏎️ What do you call a sleeping car? A Snore-sche!",
+  "🎂 Why did the birthday party go to jail? It was too lit!",
+  "🥤 What do you call a sad coffee? A depresso!",
+  "🎁 Why don't birthday presents ever get lost? They're always wrapped up!",
+  "🍟 What's orange and sounds like a parrot? A CARROT!",
+  "🏁 Why did the finish line break up? It couldn't handle the pressure!",
+  "🎊 What do you call cheese that isn't yours? NACHO cheese!",
+  "🏎️ Why are race cars bad at hide and seek? They always leave tracks!",
+];
+
+const funnyToasts = [
+  "TURBO MODE ACTIVATED! 🚀",
+  "ZOOM ZOOM! Order placed! 💨",
+  "That's a spicy choice! 🌶️",
+  "Excellent taste detected! 👨‍🍳",
+  "The chef approves! 👍",
+  "Now that's what I call SPEED! ⚡",
+  "Buckle up, order incoming! 🏁",
+  "You've got great taste! 😎",
+  "VIP order detected! ⭐",
+  "This kid knows food! 🍕",
+];
+
+let lastJokeIndex = -1;
+
+function showRandomJoke() {
+  const jokeBanner = document.getElementById('joke-banner');
+  const jokeText = document.getElementById('joke-text');
+
+  let randomIndex;
+  do {
+    randomIndex = Math.floor(Math.random() * funnyJokes.length);
+  } while (randomIndex === lastJokeIndex && funnyJokes.length > 1);
+
+  lastJokeIndex = randomIndex;
+  jokeText.textContent = funnyJokes[randomIndex];
+
+  jokeBanner.style.display = 'block';
+
+  setTimeout(() => {
+    jokeBanner.style.animation = 'bounceIn 0.5s ease reverse';
+    setTimeout(() => {
+      jokeBanner.style.display = 'none';
+      jokeBanner.style.animation = 'bounceIn 0.5s ease';
+    }, 500);
+  }, 5000);
+}
+
+function showFunnyToast() {
+  const randomToast = funnyToasts[Math.floor(Math.random() * funnyToasts.length)];
+  showToast(randomToast);
+}
+
+// Show jokes periodically
+setInterval(showRandomJoke, 20000); // Every 20 seconds
+setTimeout(showRandomJoke, 5000); // First joke after 5s
 
 // Enter key handlers
 document.getElementById('kid-name-input').addEventListener('keydown', e => { if (e.key === 'Enter') addKid(); });
