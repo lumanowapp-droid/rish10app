@@ -451,6 +451,15 @@ body::before {
   50% { box-shadow: 0 6px 24px rgba(255,215,0,0.8), 0 3px 12px rgba(255,237,78,0.6), inset 0 1px 0 rgba(255,255,255,0.5); }
 }
 
+.qty-badge.qty-zero {
+  background: linear-gradient(135deg, rgba(100,100,120,0.5), rgba(80,80,100,0.6));
+  color: #666;
+  opacity: 0.5;
+  border-color: rgba(100,100,120,0.4);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  animation: none;
+}
+
 /* Quantity controls */
 .qty-control { display: flex; align-items: center; gap: 10px; }
 .qty-btn {
@@ -1458,7 +1467,7 @@ function renderOrderTab() {
       let disabled = false;
       if (!isJoint && restricted) disabled = isItemDisabledForKid(selectedKids[0], item.id, cat.id);
       html += `<div class="menu-item ${disabled ? 'disabled' : ''}" ${qty > 0 ? 'style="border-color:rgba(212,160,23,0.25);background:rgba(212,160,23,0.04)"' : ''}>
-        <div class="item-name">${qty > 0 ? `<span class="qty-badge">${qty}</span>` : ''}${esc(item.name)}</div>
+        <div class="item-name"><span class="qty-badge ${qty === 0 ? 'qty-zero' : ''}">${qty}</span>${esc(item.name)}</div>
         <div class="qty-control">
           <button class="qty-btn minus" onclick="changeQty('${item.id}', -1)" ${qty === 0 ? 'disabled style="opacity:0.2"' : ''}>-</button>
           <span class="qty-val">${qty}</span>
