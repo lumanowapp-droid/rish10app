@@ -425,24 +425,25 @@ body::before {
 .menu-item.disabled { opacity: 0.25; pointer-events: none; }
 .menu-item .item-name { font-weight: 700; font-size: 1.15rem; color: #e0e0e8; letter-spacing: 0.3px; display: flex; align-items: center; gap: 10px; }
 
-/* Premium Quantity Badge */
+/* Premium Quantity Badge - Prominent Display */
 .qty-badge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 32px;
-  height: 32px;
+  min-width: 38px;
+  height: 38px;
   background: linear-gradient(135deg, var(--gold), #ffed4e);
   color: var(--dark);
   border-radius: 50%;
   font-family: 'Orbitron', sans-serif;
-  font-size: 1rem;
-  font-weight: 800;
-  box-shadow: 0 4px 16px rgba(255,215,0,0.6),
-              0 2px 8px rgba(255,237,78,0.4),
-              inset 0 1px 0 rgba(255,255,255,0.5);
-  border: 2px solid rgba(255,237,78,0.8);
+  font-size: 1.15rem;
+  font-weight: 900;
+  box-shadow: 0 4px 20px rgba(255,215,0,0.7),
+              0 2px 10px rgba(255,237,78,0.5),
+              inset 0 1px 0 rgba(255,255,255,0.6);
+  border: 2.5px solid rgba(255,237,78,0.9);
   animation: pulseGlow 2s ease-in-out infinite;
+  flex-shrink: 0;
 }
 
 @keyframes pulseGlow {
