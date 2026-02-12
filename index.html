@@ -20,6 +20,8 @@
   --gold-light: #ffe55c;
   --red: #ff6b6b;
   --purple: #a78bfa;
+  --text-muted: #9a9aaa;
+  --text-subtle: #7a7a8a;
   --pink: #ec4899;
   --blue: #60a5fa;
   --green: #34d399;
@@ -358,7 +360,7 @@ body::before {
   box-shadow: 0 0 0 3px rgba(255,215,0,0.2), 0 4px 16px rgba(255,215,0,0.15), inset 0 2px 8px rgba(0,0,0,0.4);
   background: linear-gradient(135deg, rgba(15,15,25,0.9), rgba(10,10,15,0.95));
 }
-.input::placeholder { color: #666; }
+.input::placeholder { color: var(--text-muted); }
 .select {
   width: 100%;
   padding: 10px 14px;
@@ -452,32 +454,47 @@ body::before {
 }
 
 .qty-badge.qty-zero {
-  background: linear-gradient(135deg, rgba(100,100,120,0.5), rgba(80,80,100,0.6));
-  color: #666;
-  opacity: 0.5;
-  border-color: rgba(100,100,120,0.4);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  background: linear-gradient(135deg, rgba(26,26,46,0.6), rgba(15,15,25,0.8));
+  color: var(--text-muted);
+  opacity: 0.6;
+  border-color: rgba(255,215,0,0.15);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05);
   animation: none;
 }
 
 /* Quantity controls */
 .qty-control { display: flex; align-items: center; gap: 10px; }
 .qty-btn {
-  width: 34px;
-  height: 34px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   border: none;
-  font-size: 1.1rem;
-  font-weight: 700;
+  font-size: 1.2rem;
+  font-weight: 800;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
 }
-.qty-btn.minus { background: rgba(233,69,96,0.15); color: var(--red); border: 1px solid rgba(233,69,96,0.3); }
-.qty-btn.plus { background: rgba(212,160,23,0.15); color: var(--gold); border: 1px solid rgba(212,160,23,0.3); }
-.qty-btn:active { transform: scale(0.85); }
+.qty-btn.minus {
+  background: linear-gradient(135deg, rgba(233,69,96,0.4), rgba(233,69,96,0.6));
+  color: #fff;
+  border: 2px solid rgba(233,69,96,0.8);
+  box-shadow: 0 2px 8px rgba(233,69,96,0.3);
+}
+.qty-btn.plus {
+  background: linear-gradient(135deg, var(--gold), #ffed4e);
+  color: var(--dark);
+  border: 2px solid rgba(255,237,78,0.8);
+  box-shadow: 0 2px 8px rgba(255,215,0,0.4);
+}
+.qty-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255,215,0,0.4);
+}
+.qty-btn:active { transform: scale(0.9); }
 .qty-val {
   font-family: 'Orbitron', sans-serif;
   font-weight: 800;
@@ -485,6 +502,38 @@ body::before {
   min-width: 24px;
   text-align: center;
   color: var(--gold-light);
+}
+
+/* Editable Quantity Input Field */
+.qty-input {
+  width: 50px;
+  height: 38px;
+  background: linear-gradient(135deg, rgba(200,200,210,0.95), rgba(180,180,200,0.98));
+  border: 2px solid rgba(255,215,0,0.4);
+  border-radius: 8px;
+  color: #1a1a2e;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 900;
+  text-align: center;
+  outline: none;
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.4);
+  -moz-appearance: textfield; /* Remove spinner in Firefox */
+  appearance: textfield; /* Standard property */
+}
+
+.qty-input::-webkit-inner-spin-button,
+.qty-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.qty-input:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(255,215,0,0.3), 0 2px 12px rgba(255,215,0,0.2), inset 0 1px 0 rgba(255,255,255,0.5);
+  background: linear-gradient(135deg, rgba(220,220,230,0.98), rgba(200,200,220,1));
+  color: #0a0a0f;
 }
 
 /* Category sections */
@@ -555,7 +604,7 @@ body::before {
 .empty-state {
   text-align: center;
   padding: 40px 20px;
-  color: #888;
+  color: var(--text-muted);
   background: linear-gradient(135deg, rgba(26,26,46,0.3), rgba(15,15,25,0.5));
   border-radius: 16px;
   border: 1px solid rgba(255,215,0,0.1);
@@ -920,7 +969,7 @@ body::before {
     <div id="kid-selector" class="flex-wrap-gap">
       <div class="empty-state" style="padding:10px;width:100%"><p style="font-size:0.8rem">Add drivers in Settings! <i class="fas fa-cog"></i></p></div>
     </div>
-    <div style="margin-top:8px; font-size:0.72rem; color:#555; font-weight:500;">
+    <div style="margin-top:8px; font-size:0.72rem; color:var(--text-subtle); font-weight:500;">
       <i class="fas fa-info-circle" style="color:var(--gold)"></i> Select multiple kids for a joint/shared order
     </div>
   </div>
@@ -1392,6 +1441,35 @@ function editKidOrder(kidId, itemId, delta) {
   if (delta > 0 && Math.random() > 0.6) showFunnyToast();
 }
 
+// Set quantity directly from input field
+function setQty(itemId, value) {
+  if (selectedKids.length === 0) return;
+  const newQty = Math.max(0, Math.min(99, parseInt(value) || 0));
+
+  if (selectedKids.length === 1) {
+    const kidId = selectedKids[0];
+    if (!data.orders[kidId]) data.orders[kidId] = {};
+    if (newQty === 0) delete data.orders[kidId][itemId];
+    else data.orders[kidId][itemId] = newQty;
+  } else {
+    const kidIds = [...selectedKids].sort();
+    const key = kidIds.join(',');
+    let jo = data.jointOrders.find(o => o.itemId === itemId && [...o.kidIds].sort().join(',') === key);
+    if (newQty === 0) {
+      if (jo) data.jointOrders = data.jointOrders.filter(o => o !== jo);
+    } else {
+      if (!jo) {
+        jo = { itemId, kidIds: [...kidIds], qty: 0 };
+        data.jointOrders.push(jo);
+      }
+      jo.qty = newQty;
+    }
+  }
+
+  saveData(data);
+  renderOrderTab();
+}
+
 function changeQty(itemId, delta) {
   if (selectedKids.length === 0) return;
   const item = data.menuItems.find(m => m.id === itemId);
@@ -1481,7 +1559,7 @@ function renderOrderTab() {
         <div class="item-name"><span class="qty-badge ${qty === 0 ? 'qty-zero' : ''}">${qty}</span>${esc(item.name)}</div>
         <div class="qty-control">
           <button class="qty-btn minus" onclick="changeQty('${item.id}', -1)" ${qty === 0 ? 'disabled style="opacity:0.2"' : ''}>-</button>
-          <span class="qty-val">${qty}</span>
+          <input type="number" class="qty-input" id="qty-${item.id}" value="${qty}" min="0" max="99" onchange="setQty('${item.id}', this.value)" oninput="setQty('${item.id}', this.value)" onclick="this.select()">
           <button class="qty-btn plus" onclick="changeQty('${item.id}', 1)">+</button>
         </div>
       </div>`;
@@ -1495,7 +1573,7 @@ function renderOrderTab() {
 function renderSettings() {
   const kidsList = document.getElementById('kids-list');
   if (data.kids.length === 0) {
-    kidsList.innerHTML = '<span style="font-size:0.8rem;color:#555">No drivers added yet</span>';
+    kidsList.innerHTML = '<span style="font-size:0.8rem;color:var(--text-subtle)">No drivers added yet</span>';
   } else {
     kidsList.innerHTML = data.kids.map(k => `
       <div class="kid-chip selected" style="cursor:default">
@@ -1507,7 +1585,7 @@ function renderSettings() {
 
   const catsList = document.getElementById('categories-list');
   if (data.categories.length === 0) {
-    catsList.innerHTML = '<span style="font-size:0.8rem;color:#555">No categories yet</span>';
+    catsList.innerHTML = '<span style="font-size:0.8rem;color:var(--text-subtle)">No categories yet</span>';
   } else {
     catsList.innerHTML = data.categories.map(c => {
       const count = data.menuItems.filter(m => m.categoryId === c.id).length;
@@ -1528,7 +1606,7 @@ function renderSettings() {
 
   const menuList = document.getElementById('menu-items-list');
   if (data.menuItems.length === 0) {
-    menuList.innerHTML = '<span style="font-size:0.8rem;color:#555">No items yet</span>';
+    menuList.innerHTML = '<span style="font-size:0.8rem;color:var(--text-subtle)">No items yet</span>';
   } else {
     let html = '';
     for (const cat of data.categories) {
@@ -1547,14 +1625,14 @@ function renderSettings() {
 
   const restList = document.getElementById('restrictions-list');
   if (data.categories.length === 0) {
-    restList.innerHTML = '<span style="font-size:0.8rem;color:#555">Add categories first</span>';
+    restList.innerHTML = '<span style="font-size:0.8rem;color:var(--text-subtle)">Add categories first</span>';
   } else {
     restList.innerHTML = data.categories.map(c => {
       const on = !!data.restrictions[c.id];
       return `<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
         <div>
           <div style="font-weight:700;font-size:0.9rem">${esc(c.name)}</div>
-          <div style="font-size:0.72rem;color:#555;font-weight:500">Only one item per kid from this category</div>
+          <div style="font-size:0.72rem;color:var(--text-subtle);font-weight:500">Only one item per kid from this category</div>
         </div>
         <div class="toggle ${on ? 'on' : ''}" onclick="toggleRestriction('${c.id}')"><div class="knob"></div></div>
       </div>`;
