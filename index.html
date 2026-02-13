@@ -716,9 +716,9 @@ function showRandomJoke() {
   let idx; do { idx = Math.floor(Math.random() * jokes.length); } while (idx === lastJ && jokes.length > 1); lastJ = idx;
   if (Math.random() < 0.35 && data.kids.length) { const k = data.kids[Math.floor(Math.random() * data.kids.length)]; t.textContent = k.name + " just broke the speed record for ordering food!"; }
   else t.textContent = jokes[idx];
-  b.style.display = 'block'; setTimeout(() => { b.style.display = 'none'; }, 5000);
+  b.style.display = 'block'; setTimeout(() => { b.style.display = 'none'; }, 6000);
 }
-setInterval(showRandomJoke, 20000); setTimeout(showRandomJoke, 5000);
+setInterval(showRandomJoke, 8000); setTimeout(showRandomJoke, 3000);
 
 
 // ==================== BACKGROUND MUSIC ====================
