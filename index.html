@@ -255,8 +255,10 @@ body::before {
 <button id="music-toggle" onclick="toggleMusic()" style="position:fixed;bottom:20px;right:20px;z-index:100;background:linear-gradient(135deg,var(--gold),var(--gold-dim));border:2px solid var(--gold-light);border-radius:50%;width:60px;height:60px;cursor:pointer;box-shadow:0 8px 32px rgba(255,215,0,0.5);display:flex;align-items:center;justify-content:center;transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
   <i id="music-icon" class="fas fa-volume-up" style="font-size:1.5rem;color:#000;"></i>
 </button>
-<audio id="bg-music" loop>
+<audio id="bg-music" loop preload="auto">
+  <source src="https://cdn.freesound.org/previews/625/625671_7037-lq.mp3" type="audio/mpeg">
   <source src="https://assets.mixkit.co/music/preview/mixkit-tech-house-vibes-130.mp3" type="audio/mpeg">
+  <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
 </audio>
 
 
@@ -721,34 +723,44 @@ setInterval(showRandomJoke, 20000); setTimeout(showRandomJoke, 5000);
 
 // ==================== BACKGROUND MUSIC ====================
 let musicPlaying = false;
-const bgMusic = document.getElementById('bg-music');
-const musicIcon = document.getElementById('music-icon');
+let bgMusic, musicIcon;
 
 function toggleMusic() {
+  bgMusic = bgMusic || document.getElementById('bg-music');
+  musicIcon = musicIcon || document.getElementById('music-icon');
+
   if (musicPlaying) {
     bgMusic.pause();
     musicIcon.className = 'fas fa-volume-mute';
     musicPlaying = false;
   } else {
-    bgMusic.volume = 0.3;
-    bgMusic.play().catch(err => console.log('Audio blocked:', err));
-    musicIcon.className = 'fas fa-volume-up';
-    musicPlaying = true;
+    bgMusic.volume = 0.35;
+    bgMusic.play().then(() => {
+      musicIcon.className = 'fas fa-volume-up';
+      musicPlaying = true;
+      showToast('🎵 Music Playing!');
+    }).catch(err => {
+      console.error('Audio error:', err);
+      showToast('Click the 🔊 button to play music!');
+      musicIcon.className = 'fas fa-volume-mute';
+    });
   }
 }
 
-// Auto-play on first user interaction
-let autoPlayAttempted = false;
-document.addEventListener('click', function() {
-  if (!autoPlayAttempted && !musicPlaying) {
-    autoPlayAttempted = true;
-    bgMusic.volume = 0.3;
+// Auto-play attempt on page load (after short delay)
+setTimeout(() => {
+  bgMusic = document.getElementById('bg-music');
+  musicIcon = document.getElementById('music-icon');
+  if (bgMusic) {
+    bgMusic.volume = 0.35;
     bgMusic.play().then(() => {
       musicPlaying = true;
       musicIcon.className = 'fas fa-volume-up';
-    }).catch(() => {});
+    }).catch(() => {
+      // Silently fail - user can manually start
+    });
   }
-}, { once: true });
+}, 1000);
 
 // ==================== FIREBASE ====================
 let firebaseApp = null, firebaseDB = null, firebaseSyncEnabled = false;
