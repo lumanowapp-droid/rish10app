@@ -287,6 +287,29 @@ body::before {
   </div>
 </div>
 
+<!-- TAB: GAMES -->
+<div id="tab-games" class="tab-content">
+  <div class="card">
+    <div class="card-title"><i class="fas fa-plus-circle"></i> Add New Game</div>
+    <input id="game-name-input" class="input" placeholder="Game name (e.g., Musical Chairs)" style="margin-bottom:8px;">
+    <textarea id="game-instructions-input" class="input" placeholder="Instructions (optional)..." style="min-height:80px;resize:vertical;margin-bottom:8px;"></textarea>
+    <button class="btn btn-gold" onclick="addGame()"><i class="fas fa-gamepad"></i> Create Game</button>
+  </div>
+  <div id="games-list"></div>
+</div>
+
+<!-- TAB: LEADERBOARD -->
+<div id="tab-leaderboard" class="tab-content">
+  <div class="card">
+    <div class="card-title"><i class="fas fa-trophy"></i> Overall Rankings</div>
+    <div id="overall-rankings"></div>
+  </div>
+  <div class="card">
+    <div class="card-title"><i class="fas fa-list-ol"></i> Game Results</div>
+    <div id="game-breakdown"></div>
+  </div>
+</div>
+
 <!-- TAB: SETTINGS -->
 <div id="tab-settings" class="tab-content">
   <div class="card">
@@ -322,6 +345,7 @@ body::before {
   </div>
   <div class="card" style="border-color:rgba(255,71,87,0.15);">
     <div class="card-title" style="color:var(--red);"><i class="fas fa-triangle-exclamation"></i> Danger Zone</div>
+    <button class="btn btn-danger btn-sm" onclick="clearAllBatches()" style="width:100%;justify-content:center;margin-bottom:8px;"><i class="fas fa-trash"></i> Clear All Batches</button>
     <button class="btn btn-danger btn-sm" onclick="resetApp()" style="width:100%;justify-content:center;"><i class="fas fa-bomb"></i> Reset Entire App</button>
   </div>
 </div>
@@ -365,6 +389,8 @@ body::before {
 <nav class="bottom-nav">
   <button class="active" onclick="switchTab('order',this)"><i class="fas fa-utensils"></i><span>Order</span></button>
   <button onclick="switchTab('dashboard',this)"><i class="fas fa-gauge-high"></i><span>Dashboard</span></button>
+  <button onclick="switchTab('games',this)"><i class="fas fa-gamepad"></i><span>Games</span></button>
+  <button onclick="switchTab('leaderboard',this)"><i class="fas fa-trophy"></i><span>Board</span></button>
   <button onclick="switchTab('data',this)"><i class="fas fa-database"></i><span>Data</span></button>
   <button onclick="switchTab('settings',this)"><i class="fas fa-gear"></i><span>Settings</span></button>
 </nav>
@@ -381,6 +407,25 @@ body::before {
       <button class="btn btn-gold btn-sm" onclick="copyExport()"><i class="fas fa-copy"></i> Copy</button>
       <button class="btn btn-green btn-sm" onclick="downloadExport()"><i class="fas fa-download"></i> Download</button>
     </div>
+  </div>
+</div>
+
+<!-- Record Results Modal -->
+<div id="results-modal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeResultsModal()">
+  <div class="modal">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <h3 style="font-family:'Orbitron',sans-serif;font-weight:800;font-size:0.85rem;color:var(--gold);" id="results-modal-title">
+        <i class="fas fa-medal"></i> RECORD RESULTS
+      </h3>
+      <button class="btn btn-sm btn-danger" onclick="closeResultsModal()"><i class="fas fa-times"></i></button>
+    </div>
+
+    <div id="results-form">
+    </div>
+
+    <button class="btn btn-gold" onclick="saveGameResults()" style="width:100%;justify-content:center;margin-top:12px;">
+      <i class="fas fa-save"></i> Save Results
+    </button>
   </div>
 </div>
 
@@ -404,7 +449,7 @@ function defaultData() {
     {id:'i14',categoryId:'cat4',name:'Chocolate Ice Cream Cornetto'},{id:'i15',categoryId:'cat4',name:'Birthday Cake'}
   ];
   const orders = {}; kids.forEach(k => orders[k.id] = {});
-  return {kids, categories, menuItems, orders, jointOrders: [], restrictions: {cat1:false, cat2:false, cat3:true, cat4:false}};
+  return {kids, categories, menuItems, orders, jointOrders: [], restrictions: {cat1:false, cat2:false, cat3:true, cat4:false}, games: [], gameResults: []};
 }
 
 function loadData() {
@@ -435,6 +480,8 @@ function switchTab(name, btn) {
   if (name === 'dashboard') renderDashboard();
   if (name === 'order') renderOrderTab();
   if (name === 'settings') renderSettings();
+  if (name === 'games') renderGames();
+  if (name === 'leaderboard') renderLeaderboard();
 }
 
 function showToast(msg) {
@@ -453,6 +500,10 @@ function removeKid(id) {
   if (!confirm('Remove this kid and their orders?')) return;
   data.kids = data.kids.filter(k => k.id !== id); delete data.orders[id];
   data.jointOrders = data.jointOrders.filter(j => { j.kidIds = j.kidIds.filter(k => k !== id); return j.kidIds.length > 0; });
+  data.gameResults.forEach(result => {
+    result.winners = result.winners.filter(w => w.kidId !== id);
+  });
+  data.gameResults = data.gameResults.filter(r => r.winners.length > 0);
   selectedKids = selectedKids.filter(k => k !== id);
   saveData(data); renderSettings(); renderOrderTab();
 }
@@ -486,6 +537,185 @@ function removeMenuItem(id) {
   for (const kid in data.orders) delete data.orders[kid][id];
   data.jointOrders = data.jointOrders.filter(j => j.itemId !== id);
   saveData(data); renderSettings(); renderOrderTab();
+}
+
+// ==================== GAMES ====================
+function addGame() {
+  const nameInput = document.getElementById('game-name-input');
+  const instructionsInput = document.getElementById('game-instructions-input');
+  const name = nameInput.value.trim();
+
+  if (!name) {
+    showToast('Enter game name!');
+    return;
+  }
+
+  const game = {
+    id: genId(),
+    name: name,
+    instructions: instructionsInput.value.trim()
+  };
+
+  data.games.push(game);
+  nameInput.value = '';
+  instructionsInput.value = '';
+  saveData(data);
+  renderGames();
+  showToast('Game added!');
+}
+
+function removeGame(gameId) {
+  if (!confirm('Remove this game and all its results?')) return;
+
+  data.games = data.games.filter(g => g.id !== gameId);
+  data.gameResults = data.gameResults.filter(r => r.gameId !== gameId);
+  saveData(data);
+  renderGames();
+  renderLeaderboard();
+  showToast('Game removed!');
+}
+
+function openResultsModal(gameId) {
+  const game = data.games.find(g => g.id === gameId);
+  if (!game) return;
+
+  document.getElementById('results-modal-title').innerHTML =
+    '<i class="fas fa-medal"></i> ' + esc(game.name).toUpperCase();
+
+  let html = '<div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:14px;">';
+  html += 'Select winners in order. You can mark positions as shared and assign custom points.';
+  html += '</div>';
+
+  html += '<div id="winner-slots"></div>';
+  html += '<button class="btn btn-gold btn-sm" onclick="addWinnerSlot()" style="margin-top:8px;">';
+  html += '<i class="fas fa-plus"></i> Add Winner</button>';
+
+  document.getElementById('results-form').innerHTML = html;
+  document.getElementById('results-form').dataset.gameId = gameId;
+
+  resultsFormState = {
+    gameId: gameId,
+    winners: [
+      { position: 1, kidId: '', points: 10, shared: false },
+      { position: 2, kidId: '', points: 5, shared: false },
+      { position: 3, kidId: '', points: 3, shared: false }
+    ]
+  };
+
+  renderWinnerSlots();
+  document.getElementById('results-modal').style.display = 'flex';
+}
+
+function closeResultsModal() {
+  document.getElementById('results-modal').style.display = 'none';
+  resultsFormState = null;
+}
+
+let resultsFormState = null;
+
+function renderWinnerSlots() {
+  if (!resultsFormState) return;
+
+  const container = document.getElementById('winner-slots');
+  let html = '';
+
+  const positionLabels = ['1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th', '10th'];
+
+  resultsFormState.winners.forEach((winner, idx) => {
+    html += '<div class="card" style="padding:12px;margin-bottom:8px;background:var(--bg-elevated);">';
+
+    html += '<div style="font-family:Orbitron,sans-serif;font-size:0.7rem;color:var(--gold);margin-bottom:8px;">';
+    html += '<i class="fas fa-medal"></i> ' + (positionLabels[winner.position - 1] || winner.position + 'th') + ' PLACE';
+    html += '</div>';
+
+    html += '<select class="select" style="margin-bottom:8px;" onchange="updateWinnerKid(' + idx + ',this.value)">';
+    html += '<option value="">-- Select Winner --</option>';
+    data.kids.forEach(kid => {
+      html += '<option value="' + kid.id + '"' + (winner.kidId === kid.id ? ' selected' : '') + '>';
+      html += esc(kid.name) + '</option>';
+    });
+    html += '</select>';
+
+    html += '<div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">';
+    html += '<label style="font-size:0.75rem;color:var(--text-muted);flex:1;">Points:</label>';
+    html += '<input type="number" class="input" value="' + winner.points + '" min="0" max="100" ';
+    html += 'style="width:80px;" onchange="updateWinnerPoints(' + idx + ',this.value)">';
+    html += '</div>';
+
+    html += '<div style="display:flex;gap:8px;align-items:center;">';
+    html += '<label style="font-size:0.75rem;color:var(--text-muted);flex:1;">Shared position?</label>';
+    html += '<input type="checkbox" ' + (winner.shared ? 'checked' : '') + ' ';
+    html += 'onchange="updateWinnerShared(' + idx + ',this.checked)" ';
+    html += 'style="width:20px;height:20px;cursor:pointer;">';
+    html += '</div>';
+
+    if (resultsFormState.winners.length > 1) {
+      html += '<button class="btn btn-danger btn-sm" onclick="removeWinnerSlot(' + idx + ')" ';
+      html += 'style="width:100%;justify-content:center;margin-top:8px;">';
+      html += '<i class="fas fa-times"></i> Remove</button>';
+    }
+
+    html += '</div>';
+  });
+
+  container.innerHTML = html;
+}
+
+function updateWinnerKid(idx, kidId) {
+  resultsFormState.winners[idx].kidId = kidId;
+}
+
+function updateWinnerPoints(idx, points) {
+  resultsFormState.winners[idx].points = parseInt(points) || 0;
+}
+
+function updateWinnerShared(idx, shared) {
+  resultsFormState.winners[idx].shared = shared;
+}
+
+function addWinnerSlot() {
+  const nextPosition = resultsFormState.winners.length + 1;
+  resultsFormState.winners.push({
+    position: nextPosition,
+    kidId: '',
+    points: Math.max(0, 10 - (nextPosition - 1) * 2),
+    shared: false
+  });
+  renderWinnerSlots();
+}
+
+function removeWinnerSlot(idx) {
+  resultsFormState.winners.splice(idx, 1);
+  resultsFormState.winners.forEach((w, i) => {
+    w.position = i + 1;
+  });
+  renderWinnerSlots();
+}
+
+function saveGameResults() {
+  if (!resultsFormState) return;
+
+  const validWinners = resultsFormState.winners.filter(w => w.kidId);
+
+  if (validWinners.length === 0) {
+    showToast('Select at least one winner!');
+    return;
+  }
+
+  const result = {
+    id: genId(),
+    gameId: resultsFormState.gameId,
+    timestamp: Date.now(),
+    winners: validWinners
+  };
+
+  data.gameResults.push(result);
+  saveData(data);
+  closeResultsModal();
+  renderGames();
+  renderLeaderboard();
+  showToast('Results saved!');
+  launchConfetti();
 }
 
 // ==================== RESTRICTIONS ====================
@@ -568,6 +798,11 @@ function editKidOrder(kidId, itemId, delta) {
 
 // ==================== RENDER: ORDER ====================
 function renderOrderTab() {
+  const batch = getCurrentBatchItems();
+  const batchNum = data.batches.length + 1;
+  const batchCard = document.getElementById('batch-status-card');
+  batchCard.innerHTML = '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;"><div><div style="font-family:Orbitron,sans-serif;font-weight:700;color:var(--gold);margin-bottom:4px;">CURRENT BATCH #' + batchNum + '</div><div style="font-size:0.8rem;color:var(--text-muted);">' + batch.count + ' items ready</div></div></div><button class="btn btn-gold" onclick="punchOrder()" style="width:100%;justify-content:center;' + (batch.count === 0 ? 'opacity:0.5;pointer-events:none;' : '') + '"><i class="fas fa-flag-checkered"></i> Punch Order</button>';
+
   const sel = document.getElementById('kid-selector');
   sel.innerHTML = data.kids.length === 0
     ? '<div class="empty-state" style="padding:10px;width:100%"><p>Add drivers in Settings! <i class="fas fa-gear"></i></p></div>'
@@ -714,74 +949,302 @@ function renderSettings() {
 }
 
 // ==================== RENDER: DASHBOARD ====================
-function renderDashboard() {
+function renderDashboardBatch(orders, jointOrders, batchIdx) {
   const itemTotals = {}, kidSummaries = {};
-  for (const kidId in data.orders) {
-    if (!kidSummaries[kidId]) kidSummaries[kidId] = [];
-    for (const itemId in data.orders[kidId]) {
-      const q = data.orders[kidId][itemId]; if (q > 0) {
-        const it = data.menuItems.find(m => m.id === itemId);
-        if (it) { kidSummaries[kidId].push({itemName:it.name, qty:q, joint:false}); itemTotals[itemId] = (itemTotals[itemId]||0) + q; }
-      }
-    }
-  }
-  for (const jo of data.jointOrders) {
-    if (jo.qty > 0) { const it = data.menuItems.find(m => m.id === jo.itemId); if (it) {
-      const names = jo.kidIds.map(id => data.kids.find(k => k.id === id)?.name).filter(Boolean);
-      for (const kidId of jo.kidIds) { if (!kidSummaries[kidId]) kidSummaries[kidId] = []; const others = names.filter(n => n !== data.kids.find(k => k.id === kidId)?.name); kidSummaries[kidId].push({itemName:it.name, qty:jo.qty, joint:true, sharedWith:others}); }
-      itemTotals[jo.itemId] = (itemTotals[jo.itemId]||0) + jo.qty;
-    }}
-  }
+  for (const kidId in orders) { if (!kidSummaries[kidId]) kidSummaries[kidId] = []; for (const itemId in orders[kidId]) { const q = orders[kidId][itemId]; if (q > 0) { const it = data.menuItems.find(m => m.id === itemId); if (it) { kidSummaries[kidId].push({itemName:it.name, qty:q, joint:false}); itemTotals[itemId] = (itemTotals[itemId]||0) + q; } } } }
+  for (const jo of jointOrders) { if (jo.qty > 0) { const it = data.menuItems.find(m => m.id === jo.itemId); if (it) { const names = jo.kidIds.map(id => data.kids.find(k => k.id === id)?.name).filter(Boolean); for (const kidId of jo.kidIds) { if (!kidSummaries[kidId]) kidSummaries[kidId] = []; const others = names.filter(n => n !== data.kids.find(k => k.id === kidId)?.name); kidSummaries[kidId].push({itemName:it.name, qty:jo.qty, joint:true, sharedWith:others}); } itemTotals[jo.itemId] = (itemTotals[jo.itemId]||0) + jo.qty; } } }
   const totalItems = Object.values(itemTotals).reduce((a,b)=>a+b, 0);
-  const totalKids = data.kids.filter(k => kidSummaries[k.id]?.length > 0).length;
-  const totalJoint = data.jointOrders.filter(j => j.qty > 0).length;
-
-  document.getElementById('dashboard-summary').innerHTML = '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;"><div class="stat-box" style="border-color:rgba(255,215,0,0.15);"><div class="stat-num" style="color:var(--gold)">' + totalItems + '</div><div class="stat-label" style="color:var(--gold)">Items</div></div><div class="stat-box" style="border-color:rgba(255,71,87,0.15);"><div class="stat-num" style="color:var(--red)">' + totalKids + '</div><div class="stat-label" style="color:var(--red)">Drivers</div></div><div class="stat-box" style="border-color:rgba(16,185,129,0.15);"><div class="stat-num" style="color:var(--green)">' + totalJoint + '</div><div class="stat-label" style="color:var(--green)">Shared</div></div></div>';
-
-  const byKid = document.getElementById('dashboard-by-kid');
-  if (totalKids === 0) { byKid.innerHTML = '<div class="empty-state" style="padding:20px"><i class="fas fa-flag-checkered"></i><p>No orders yet!</p></div>'; }
-  else {
-    let h = '';
-    for (const kid of data.kids) {
-      const items = kidSummaries[kid.id]; if (!items?.length) continue;
-      h += '<div style="margin-bottom:14px;"><div class="order-kid-name"><i class="fas fa-user-astronaut"></i> ' + esc(kid.name) + '</div>';
-      for (const e of items) {
-        const iid = data.menuItems.find(m => m.name === e.itemName)?.id;
-        h += '<div class="order-row"><span style="flex:1;">' + esc(e.itemName) + (e.joint ? '<span class="joint-badge">shared' + (e.sharedWith?.length ? ' w/ ' + e.sharedWith.map(esc).join(', ') : '') + '</span>' : '') + '</span><div style="display:flex;align-items:center;gap:6px;">';
-        if (!e.joint && iid) h += '<button type="button" class="qty-btn minus-btn" style="width:28px;height:28px;font-size:0.85rem;border-radius:8px;" onclick="editKidOrder(\'' + kid.id + '\',\'' + iid + '\',-1)">&#8722;</button><span style="font-weight:800;color:var(--gold-light);min-width:28px;text-align:center;">x' + e.qty + '</span><button type="button" class="qty-btn plus-btn" style="width:28px;height:28px;font-size:0.85rem;border-radius:8px;" onclick="editKidOrder(\'' + kid.id + '\',\'' + iid + '\',1)">+</button>';
-        else h += '<span style="font-weight:800;color:var(--gold-light);">x' + e.qty + '</span>';
-        h += '</div></div>';
-      }
-      h += '</div>';
-    }
-    byKid.innerHTML = h;
-  }
-
-  const totDiv = document.getElementById('dashboard-totals');
-  if (!Object.keys(itemTotals).length) { totDiv.innerHTML = '<div class="empty-state" style="padding:20px"><p>No items ordered</p></div>'; }
-  else {
-    let h = '';
-    for (const cat of data.categories) { const ci = data.menuItems.filter(m => m.categoryId === cat.id && itemTotals[m.id]); if (!ci.length) continue; h += '<div style="font-family:Orbitron,sans-serif;font-size:0.55rem;font-weight:700;color:var(--gold);margin:10px 0 4px;letter-spacing:2px;text-transform:uppercase">' + esc(cat.name) + '</div>'; for (const it of ci) h += '<div class="summary-row"><span>' + esc(it.name) + '</span><span style="font-weight:800;color:var(--gold-light)">x' + itemTotals[it.id] + '</span></div>'; }
-    h += '<div class="summary-row total"><span>TOTAL</span><span>' + totalItems + '</span></div>';
-    totDiv.innerHTML = h;
-  }
+  let h = '';
+  if (totalItems === 0) return '';
+  const isDraft = batchIdx === -1;
+  const batchLabel = isDraft ? 'CURRENT DRAFT' : 'BATCH #' + (batchIdx+1);
+  const timestamp = isDraft ? '' : new Date(data.batches[batchIdx].timestamp).toLocaleString();
+  h += '<div class="card" style="border-color:rgba(255,215,0,0.2);"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;"><div><div style="font-family:Orbitron,sans-serif;font-weight:700;color:var(--gold);font-size:0.95rem;">' + batchLabel + '</div>' + (timestamp ? '<div style="font-size:0.75rem;color:var(--text-muted);">📅 ' + timestamp + '</div>' : '') + '</div><div style="text-align:right;"><div style="font-size:1.1rem;font-weight:900;color:var(--gold-light);">' + totalItems + ' items</div></div></div>';
+  for (const kid of data.kids) { const items = kidSummaries[kid.id]; if (!items?.length) continue; h += '<div style="margin-bottom:12px;"><div class="order-kid-name"><i class="fas fa-user-astronaut"></i> ' + esc(kid.name) + '</div>'; for (const e of items) { const iid = data.menuItems.find(m => m.name === e.itemName)?.id; h += '<div class="order-row"><span style="flex:1;">' + esc(e.itemName) + (e.joint ? '<span class="joint-badge">shared' + (e.sharedWith?.length ? ' w/ ' + e.sharedWith.map(esc).join(', ') : '') + '</span>' : '') + '</span><div style="display:flex;align-items:center;gap:6px;">'; if (!e.joint && iid) h += '<button type="button" class="qty-btn minus-btn" style="width:28px;height:28px;font-size:0.85rem;border-radius:8px;" onclick="editBatchOrder(' + batchIdx + ',\'' + kid.id + '\',\'' + iid + '\',-1)">&#8722;</button><span style="font-weight:800;color:var(--gold-light);min-width:28px;text-align:center;">x' + e.qty + '</span><button type="button" class="qty-btn plus-btn" style="width:28px;height:28px;font-size:0.85rem;border-radius:8px;" onclick="editBatchOrder(' + batchIdx + ',\'' + kid.id + '\',\'' + iid + '\',1)">+</button>'; else h += '<span style="font-weight:800;color:var(--gold-light);">x' + e.qty + '</span>'; h += '</div></div>'; } h += '</div>'; } h += '</div>';
+  return h;
 }
+function renderDashboard() {
+  let allH = '';
+  const draftH = renderDashboardBatch(data.orders, data.jointOrders, -1);
+  if (draftH) allH += draftH;
+  for (let i = 0; i < data.batches.length; i++) { const b = data.batches[i]; const bH = renderDashboardBatch(b.orders, b.jointOrders, i); if (bH) allH += bH; }
+  if (!allH) allH = '<div class="empty-state" style="padding:20px"><i class="fas fa-flag-checkered"></i><p>No orders yet!</p></div>';
+  document.getElementById('dashboard-by-kid').innerHTML = allH;
+  document.getElementById('dashboard-summary').innerHTML = '';
+  document.getElementById('dashboard-totals').innerHTML = '';
+}
+
+// ==================== RENDER: GAMES ====================
+function renderGames() {
+  const list = document.getElementById('games-list');
+
+  if (data.games.length === 0) {
+    list.innerHTML = '<div class="empty-state"><i class="fas fa-gamepad"></i><p>No games yet!<br>Add your first game above.</p></div>';
+    return;
+  }
+
+  let html = '';
+
+  data.games.forEach(game => {
+    const resultsCount = data.gameResults.filter(r => r.gameId === game.id).length;
+
+    html += '<div class="card">';
+    html += '<div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:10px;">';
+    html += '<div style="flex:1;">';
+    html += '<div style="font-family:Orbitron,sans-serif;font-weight:700;font-size:0.95rem;color:var(--gold);">';
+    html += esc(game.name);
+    html += '</div>';
+
+    if (game.instructions) {
+      html += '<div style="font-size:0.8rem;color:var(--text-muted);margin-top:4px;line-height:1.4;">';
+      html += esc(game.instructions);
+      html += '</div>';
+    }
+
+    html += '</div>';
+    html += '<button class="btn btn-danger btn-sm" onclick="removeGame(\'' + game.id + '\')" style="padding:4px 10px;">';
+    html += '<i class="fas fa-trash" style="font-size:0.65rem;"></i></button>';
+    html += '</div>';
+
+    html += '<div style="display:flex;gap:8px;margin-bottom:10px;">';
+    html += '<span class="badge">' + resultsCount + ' result' + (resultsCount !== 1 ? 's' : '') + '</span>';
+    html += '</div>';
+
+    html += '<button class="btn btn-gold btn-sm" onclick="openResultsModal(\'' + game.id + '\')" style="width:100%;justify-content:center;">';
+    html += '<i class="fas fa-medal"></i> Record Results</button>';
+
+    const latestResult = data.gameResults
+      .filter(r => r.gameId === game.id)
+      .sort((a, b) => b.timestamp - a.timestamp)[0];
+
+    if (latestResult) {
+      html += '<div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);">';
+      html += '<div style="font-size:0.7rem;color:var(--text-subtle);margin-bottom:6px;">Latest Result:</div>';
+
+      latestResult.winners
+        .sort((a, b) => a.position - b.position)
+        .slice(0, 3)
+        .forEach(w => {
+          const kid = data.kids.find(k => k.id === w.kidId);
+          if (kid) {
+            const medals = ['🥇', '🥈', '🥉'];
+            html += '<div style="font-size:0.8rem;padding:4px 0;">';
+            html += '<span style="margin-right:6px;">' + (medals[w.position - 1] || '🏅') + '</span>';
+            html += esc(kid.name) + ' <span style="color:var(--gold);">(+' + w.points + ' pts';
+            if (w.shared) html += ', shared';
+            html += ')</span>';
+            html += '</div>';
+          }
+        });
+
+      html += '</div>';
+    }
+
+    html += '</div>';
+  });
+
+  list.innerHTML = html;
+}
+
+// ==================== RENDER: LEADERBOARD ====================
+function renderLeaderboard() {
+  renderOverallRankings();
+  renderGameBreakdown();
+}
+
+function renderOverallRankings() {
+  const container = document.getElementById('overall-rankings');
+
+  const kidPoints = {};
+
+  data.kids.forEach(kid => {
+    kidPoints[kid.id] = {
+      name: kid.name,
+      totalPoints: 0,
+      gamesWon: 0,
+      gamesParticipated: 0
+    };
+  });
+
+  data.gameResults.forEach(result => {
+    result.winners.forEach(winner => {
+      if (kidPoints[winner.kidId]) {
+        kidPoints[winner.kidId].totalPoints += winner.points;
+        kidPoints[winner.kidId].gamesParticipated += 1;
+        if (winner.position === 1) {
+          kidPoints[winner.kidId].gamesWon += 1;
+        }
+      }
+    });
+  });
+
+  const rankings = Object.keys(kidPoints)
+    .map(kidId => ({
+      kidId: kidId,
+      ...kidPoints[kidId]
+    }))
+    .filter(k => k.totalPoints > 0 || k.gamesParticipated > 0)
+    .sort((a, b) => {
+      if (b.totalPoints !== a.totalPoints) {
+        return b.totalPoints - a.totalPoints;
+      }
+      return b.gamesWon - a.gamesWon;
+    });
+
+  if (rankings.length === 0) {
+    container.innerHTML = '<div class="empty-state"><i class="fas fa-trophy"></i><p>No results yet!<br>Record game results to see rankings.</p></div>';
+    return;
+  }
+
+  let html = '';
+  const medals = ['🥇', '🥈', '🥉'];
+
+  rankings.forEach((kid, idx) => {
+    const position = idx + 1;
+    const medal = medals[idx] || '🏅';
+
+    html += '<div class="order-row" style="padding:12px;';
+    if (position <= 3) {
+      html += 'background:rgba(255,215,0,' + (0.08 - idx * 0.02) + ');';
+      html += 'border:1px solid rgba(255,215,0,0.2);border-radius:10px;margin-bottom:6px;';
+    }
+    html += '">';
+
+    html += '<div style="display:flex;align-items:center;gap:10px;flex:1;">';
+    html += '<span style="font-size:1.5rem;">' + medal + '</span>';
+    html += '<div>';
+    html += '<div style="font-weight:700;font-size:0.95rem;">' + esc(kid.name) + '</div>';
+    html += '<div style="font-size:0.7rem;color:var(--text-muted);">';
+    html += kid.gamesParticipated + ' game' + (kid.gamesParticipated !== 1 ? 's' : '');
+    html += ' • ' + kid.gamesWon + ' win' + (kid.gamesWon !== 1 ? 's' : '');
+    html += '</div>';
+    html += '</div>';
+    html += '</div>';
+
+    html += '<div style="font-family:Orbitron,sans-serif;font-weight:900;font-size:1.2rem;color:var(--gold);">';
+    html += kid.totalPoints;
+    html += '<span style="font-size:0.6rem;font-weight:600;margin-left:2px;">PTS</span>';
+    html += '</div>';
+
+    html += '</div>';
+  });
+
+  container.innerHTML = html;
+}
+
+function renderGameBreakdown() {
+  const container = document.getElementById('game-breakdown');
+
+  if (data.gameResults.length === 0) {
+    container.innerHTML = '<div class="empty-state" style="padding:20px;"><p>No game results recorded yet.</p></div>';
+    return;
+  }
+
+  let html = '';
+
+  data.games.forEach(game => {
+    const gameResults = data.gameResults
+      .filter(r => r.gameId === game.id)
+      .sort((a, b) => b.timestamp - a.timestamp);
+
+    if (gameResults.length === 0) return;
+
+    html += '<div style="margin-bottom:20px;">';
+    html += '<div style="font-family:Orbitron,sans-serif;font-size:0.7rem;font-weight:700;color:var(--gold);';
+    html += 'margin-bottom:8px;letter-spacing:1px;text-transform:uppercase;">';
+    html += '<i class="fas fa-gamepad"></i> ' + esc(game.name);
+    html += '</div>';
+
+    gameResults.forEach(result => {
+      const date = new Date(result.timestamp);
+      const timeStr = date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+
+      html += '<div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:10px;';
+      html += 'padding:10px;margin-bottom:6px;">';
+      html += '<div style="font-size:0.65rem;color:var(--text-subtle);margin-bottom:6px;">' + timeStr + '</div>';
+
+      result.winners
+        .sort((a, b) => a.position - b.position)
+        .forEach(winner => {
+          const kid = data.kids.find(k => k.id === winner.kidId);
+          if (!kid) return;
+
+          const medals = ['🥇', '🥈', '🥉'];
+
+          html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;">';
+          html += '<div>';
+          html += '<span style="margin-right:6px;">' + (medals[winner.position - 1] || '🏅') + '</span>';
+          html += '<span style="font-weight:600;font-size:0.85rem;">' + esc(kid.name) + '</span>';
+          if (winner.shared) {
+            html += ' <span class="badge badge-red" style="font-size:0.5rem;padding:1px 5px;">SHARED</span>';
+          }
+          html += '</div>';
+          html += '<span style="font-family:Orbitron,sans-serif;font-weight:700;color:var(--gold);font-size:0.8rem;">';
+          html += '+' + winner.points + ' pts</span>';
+          html += '</div>';
+        });
+
+      html += '</div>';
+    });
+
+    html += '</div>';
+  });
+
+  container.innerHTML = html;
+}
+
+// ==================== BATCHING ====================
+function getCurrentBatchItems() {
+  const items = {}; const kids = [];
+  for (const kid in data.orders) { for (const id in data.orders[kid]) { if (data.orders[kid][id] > 0) { items[id] = (items[id]||0) + data.orders[kid][id]; if (!kids.includes(kid)) kids.push(kid); } } }
+  for (const jo of data.jointOrders) { if (jo.qty > 0) { items[jo.itemId] = (items[jo.itemId]||0) + jo.qty; } }
+  return {items, count: Object.values(items).reduce((a,b)=>a+b,0), kids};
+}
+function punchOrder() {
+  const batch = getCurrentBatchItems();
+  if (batch.count === 0) { showToast('No items to punch!'); return; }
+  const batchNum = data.batches.length + 1;
+  data.batches.push({id:genId(), timestamp:Date.now(), batchNumber:batchNum, orders:{...data.orders}, jointOrders:[...data.jointOrders]});
+  for (const k in data.orders) data.orders[k] = {};
+  data.jointOrders = [];
+  saveData(data);
+  launchConfetti();
+  showToast('🏁 BATCH #' + batchNum + ' PUNCHED!');
+  renderOrderTab();
+}
+function editBatchOrder(batchIdx, kidId, itemId, delta) {
+  if (batchIdx === -1) { editKidOrder(kidId, itemId, delta); return; }
+  const batch = data.batches[batchIdx];
+  if (!batch) return;
+  if (!batch.orders[kidId]) batch.orders[kidId] = {};
+  const nq = Math.max(0, (batch.orders[kidId][itemId]||0) + delta);
+  if (nq === 0) delete batch.orders[kidId][itemId]; else batch.orders[kidId][itemId] = nq;
+  saveData(data);
+  renderDashboard();
+}
+function clearAllBatches() { if (!confirm('DELETE all batches? This cannot be undone!')) return; data.batches = []; saveData(data); renderDashboard(); showToast('ALL BATCHES DELETED'); }
 
 // ==================== EXPORT ====================
 function exportOrder() {
-  const it = {}; for (const kid in data.orders) for (const id in data.orders[kid]) { const q = data.orders[kid][id]; if (q > 0) it[id] = (it[id]||0) + q; }
-  for (const jo of data.jointOrders) if (jo.qty > 0) it[jo.itemId] = (it[jo.itemId]||0) + jo.qty;
-  let lines = ["=============================================","   RISHAAN'S 10TH BIRTHDAY - FOOD ORDER","   13th February 2026","=============================================","","ORDER LIST:","---------------------------------------------"], gt = 0;
-  for (const cat of data.categories) { const ci = data.menuItems.filter(m => m.categoryId === cat.id && it[m.id]); if (!ci.length) continue; lines.push("","[ " + cat.name.toUpperCase() + " ]"); for (const item of ci) { gt += it[item.id]; lines.push("  " + item.name + " ".repeat(Math.max(1, 30-item.name.length)) + "x " + it[item.id]); } }
-  lines.push("","---------------------------------------------","  TOTAL: " + gt,"---------------------------------------------","","INDIVIDUAL ORDERS:","---------------------------------------------");
-  for (const kid of data.kids) { const items = []; if (data.orders[kid.id]) for (const id in data.orders[kid.id]) { const q = data.orders[kid.id][id]; if (q > 0) { const m = data.menuItems.find(x => x.id === id); if (m) items.push({name:m.name, qty:q}); } } for (const jo of data.jointOrders) if (jo.qty > 0 && jo.kidIds.includes(kid.id)) { const m = data.menuItems.find(x => x.id === jo.itemId); if (m) items.push({name:m.name + " (shared)", qty:jo.qty}); } if (!items.length) continue; lines.push("","  " + kid.name + ":"); for (const i of items) lines.push("    - " + i.name + "  x" + i.qty); }
-  lines.push("","=============================================");
+  let lines = ["=============================================","   RISHAAN'S 10TH BIRTHDAY - FOOD ORDER","   13th February 2026","=============================================","","BATCH SUMMARY:","Total Batches: " + (data.batches.length + (getCurrentBatchItems().count > 0 ? 1 : 0)),"=============================================",""];
+  let grandTotal = 0;
+  function addBatchToExport(orders, jointOrders, batchNum, timestamp) {
+    const it = {}; for (const kid in orders) for (const id in orders[kid]) { const q = orders[kid][id]; if (q > 0) it[id] = (it[id]||0) + q; } for (const jo of jointOrders) if (jo.qty > 0) it[jo.itemId] = (it[jo.itemId]||0) + jo.qty;
+    if (Object.keys(it).length === 0) return 0;
+    lines.push("BATCH #" + batchNum); if (timestamp) lines.push("Punched: " + new Date(timestamp).toLocaleString()); lines.push("---------------------------------------------");
+    let bt = 0; for (const cat of data.categories) { const ci = data.menuItems.filter(m => m.categoryId === cat.id && it[m.id]); if (!ci.length) continue; lines.push("[ " + cat.name.toUpperCase() + " ]"); for (const item of ci) { bt += it[item.id]; lines.push("  " + item.name + " ".repeat(Math.max(1, 30-item.name.length)) + "x " + it[item.id]); } }
+    lines.push("","INDIVIDUAL ORDERS (Batch #" + batchNum + "):"); for (const kid of data.kids) { const items = []; if (orders[kid.id]) for (const id in orders[kid.id]) { const q = orders[kid.id][id]; if (q > 0) { const m = data.menuItems.find(x => x.id === id); if (m) items.push({name:m.name, qty:q}); } } for (const jo of jointOrders) if (jo.qty > 0 && jo.kidIds.includes(kid.id)) { const m = data.menuItems.find(x => x.id === jo.itemId); if (m) items.push({name:m.name + " (shared)", qty:jo.qty}); } if (!items.length) continue; lines.push("  " + kid.name + ":"); for (const i of items) lines.push("    - " + i.name + "  x" + i.qty); }
+    lines.push("","---------------------------------------------"); return bt;
+  }
+  for (let i = 0; i < data.batches.length; i++) { const b = data.batches[i]; grandTotal += addBatchToExport(b.orders, b.jointOrders, b.batchNumber, b.timestamp); lines.push(""); }
+  const draftItems = getCurrentBatchItems().count; if (draftItems > 0) { grandTotal += addBatchToExport(data.orders, data.jointOrders, data.batches.length + 1, null); lines.push(""); }
+  lines.push("=============================================","GRAND TOTAL: " + grandTotal + " items","=============================================");
   document.getElementById('export-content').textContent = lines.join('\n');
   document.getElementById('export-modal').style.display = 'flex';
 }
 function copyExport() { navigator.clipboard.writeText(document.getElementById('export-content').textContent).then(() => showToast('COPIED!')); }
 function downloadExport() { const b = new Blob([document.getElementById('export-content').textContent],{type:'text/plain'}); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'rishaan_birthday_order.txt'; a.click(); }
-function clearAllOrders() { if (!confirm('Clear ALL orders?')) return; for (const k in data.orders) data.orders[k] = {}; data.jointOrders = []; saveData(data); renderDashboard(); showToast('CLEARED'); }
+function clearAllOrders() { if (!confirm('Clear current draft orders?')) return; for (const k in data.orders) data.orders[k] = {}; data.jointOrders = []; saveData(data); renderOrderTab(); renderDashboard(); showToast('DRAFT CLEARED'); }
 function resetApp() { if (!confirm('RESET EVERYTHING?')) return; if (!confirm('Sure?')) return; localStorage.removeItem(DB_KEY); data = defaultData(); selectedKids = []; renderSettings(); renderOrderTab(); showToast('RESET'); }
 
 // ==================== BACKUP ====================
@@ -1055,6 +1518,7 @@ setInterval(() => { if (Math.random() > 0.6) createCar(); }, 3000);
 document.getElementById('kid-name-input').addEventListener('keydown', e => { if (e.key === 'Enter') addKid(); });
 document.getElementById('cat-name-input').addEventListener('keydown', e => { if (e.key === 'Enter') addCategory(); });
 document.getElementById('item-name-input').addEventListener('keydown', e => { if (e.key === 'Enter') addMenuItem(); });
+document.getElementById('game-name-input').addEventListener('keydown', e => { if (e.key === 'Enter') addGame(); });
 
 // ==================== INIT ====================
 renderSettings(); renderOrderTab(); launchConfetti();
