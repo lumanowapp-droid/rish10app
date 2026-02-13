@@ -604,6 +604,83 @@ function renderOrderTab() {
   area.innerHTML = h;
 }
 
+// ==================== DRAG & DROP ====================
+let draggedCatIndex = null;
+let draggedItemId = null;
+let draggedItemCatId = null;
+
+function dragStartCat(e) {
+  draggedCatIndex = parseInt(e.target.dataset.index);
+  e.dataTransfer.effectAllowed = 'move';
+  e.target.style.opacity = '0.4';
+}
+
+function dragOverCat(e) {
+  if (e.preventDefault) e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  e.currentTarget.style.borderColor = 'var(--gold)';
+  return false;
+}
+
+function dropCat(e) {
+  if (e.stopPropagation) e.stopPropagation();
+  e.currentTarget.style.borderColor = 'var(--border)';
+
+  const dropIndex = parseInt(e.currentTarget.dataset.index);
+  if (draggedCatIndex !== null && draggedCatIndex !== dropIndex) {
+    const item = data.categories.splice(draggedCatIndex, 1)[0];
+    data.categories.splice(dropIndex, 0, item);
+    saveData(data);
+    renderSettings();
+    renderOrderTab();
+  }
+
+  document.querySelectorAll('[draggable]').forEach(el => el.style.opacity = '1');
+  draggedCatIndex = null;
+  return false;
+}
+
+function dragStartItem(e) {
+  draggedItemId = e.currentTarget.dataset.itemId;
+  draggedItemCatId = e.currentTarget.dataset.catId;
+  e.dataTransfer.effectAllowed = 'move';
+  e.currentTarget.style.opacity = '0.4';
+}
+
+function dragOverItem(e) {
+  if (e.preventDefault) e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  e.currentTarget.style.borderColor = 'var(--gold)';
+  return false;
+}
+
+function dropItem(e) {
+  if (e.stopPropagation) e.stopPropagation();
+  e.currentTarget.style.borderColor = 'rgba(255,255,255,0.03)';
+
+  const dropItemId = e.currentTarget.dataset.itemId;
+  const dropCatId = e.currentTarget.dataset.catId;
+
+  // Only allow reordering within same category
+  if (draggedItemId && draggedItemCatId === dropCatId && draggedItemId !== dropItemId) {
+    const dragIdx = data.menuItems.findIndex(m => m.id === draggedItemId);
+    const dropIdx = data.menuItems.findIndex(m => m.id === dropItemId);
+
+    const item = data.menuItems.splice(dragIdx, 1)[0];
+    const newDropIdx = data.menuItems.findIndex(m => m.id === dropItemId);
+    data.menuItems.splice(newDropIdx, 0, item);
+
+    saveData(data);
+    renderSettings();
+    renderOrderTab();
+  }
+
+  document.querySelectorAll('[draggable]').forEach(el => el.style.opacity = '1');
+  draggedItemId = null;
+  draggedItemCatId = null;
+  return false;
+}
+
 // ==================== RENDER: SETTINGS ====================
 function renderSettings() {
   document.getElementById('kids-list').innerHTML = data.kids.length === 0
@@ -612,7 +689,7 @@ function renderSettings() {
 
   document.getElementById('categories-list').innerHTML = data.categories.length === 0
     ? '<span style="font-size:0.8rem;color:var(--text-subtle)">No categories yet</span>'
-    : data.categories.map(c => '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border:1px solid var(--border);border-radius:10px;margin-bottom:6px;background:var(--bg-elevated);"><div><span style="font-weight:700;font-size:0.88rem">' + esc(c.name) + '</span> <span class="badge" style="margin-left:6px">' + data.menuItems.filter(m => m.categoryId === c.id).length + '</span>' + (data.restrictions[c.id] ? ' <span class="badge badge-red" style="margin-left:4px">Pick 1</span>' : '') + '</div><button class="btn btn-danger btn-sm" onclick="removeCategory(\'' + c.id + '\')" style="padding:4px 10px"><i class="fas fa-trash" style="font-size:0.65rem"></i></button></div>').join('');
+    : data.categories.map((c, idx) => '<div draggable="true" data-cat-id="' + c.id + '" data-index="' + idx + '" ondragstart="dragStartCat(event)" ondragover="dragOverCat(event)" ondrop="dropCat(event)" style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border:1px solid var(--border);border-radius:10px;margin-bottom:6px;background:var(--bg-elevated);cursor:move;"><div><i class="fas fa-grip-vertical" style="color:var(--text-subtle);margin-right:8px;"></i><span style="font-weight:700;font-size:0.88rem">' + esc(c.name) + '</span> <span class="badge" style="margin-left:6px">' + data.menuItems.filter(m => m.categoryId === c.id).length + '</span>' + (data.restrictions[c.id] ? ' <span class="badge badge-red" style="margin-left:4px">Pick 1</span>' : '') + '</div><button class="btn btn-danger btn-sm" onclick="removeCategory(\'' + c.id + '\')" style="padding:4px 10px"><i class="fas fa-trash" style="font-size:0.65rem"></i></button></div>').join('');
 
   document.getElementById('item-cat-select').innerHTML = '<option value="">-- Select Category --</option>' + data.categories.map(c => '<option value="' + c.id + '">' + esc(c.name) + '</option>').join('');
 
@@ -623,7 +700,10 @@ function renderSettings() {
     for (const cat of data.categories) {
       const items = data.menuItems.filter(m => m.categoryId === cat.id); if (!items.length) continue;
       h += '<div style="font-family:Orbitron,sans-serif;font-size:0.55rem;font-weight:700;color:var(--gold);margin:10px 0 6px;letter-spacing:2px;text-transform:uppercase">' + esc(cat.name) + '</div>';
-      for (const item of items) h += '<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 12px;border:1px solid rgba(255,255,255,0.03);border-radius:8px;margin-bottom:3px;"><span style="font-size:0.85rem;font-weight:600">' + esc(item.name) + '</span><button class="btn btn-danger btn-sm" onclick="removeMenuItem(\'' + item.id + '\')" style="padding:3px 8px"><i class="fas fa-times" style="font-size:0.55rem"></i></button></div>';
+      for (let i = 0; i < items.length; i++) {
+        const item = items[i];
+        h += '<div draggable="true" data-item-id="' + item.id + '" data-cat-id="' + cat.id + '" data-index="' + i + '" ondragstart="dragStartItem(event)" ondragover="dragOverItem(event)" ondrop="dropItem(event)" style="display:flex;align-items:center;justify-content:space-between;padding:7px 12px;border:1px solid rgba(255,255,255,0.03);border-radius:8px;margin-bottom:3px;cursor:move;"><span style="font-size:0.85rem;font-weight:600"><i class="fas fa-grip-vertical" style="color:var(--text-subtle);margin-right:8px;font-size:0.65rem;"></i>' + esc(item.name) + '</span><button class="btn btn-danger btn-sm" onclick="removeMenuItem(\'' + item.id + '\')" style="padding:3px 8px"><i class="fas fa-times" style="font-size:0.55rem"></i></button></div>';
+      }
     }
     ml.innerHTML = h;
   }
