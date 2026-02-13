@@ -22,7 +22,7 @@ A sleek, Koenigsegg-themed food ordering application built for Rishaan's 10th bi
 
 Simply open `index.html` in any modern web browser. No server required!
 
-**Live Demo**: [https://YOUR_USERNAME.github.io/Rish10/](https://YOUR_USERNAME.github.io/Rish10/)
+**Live Demo**: [https://lumanowapp-droid.github.io/rish10app/](https://lumanowapp-droid.github.io/rish10app/)
 
 ## 📱 How to Use
 
