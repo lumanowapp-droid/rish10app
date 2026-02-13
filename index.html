@@ -240,9 +240,9 @@ body::before {
   <div class="rpm-bar"></div>
 </div>
 
-<!-- Joke Banner -->
-<div id="joke-banner" style="position:fixed;bottom:85px;left:50%;transform:translateX(-50%);max-width:90%;z-index:100;background:linear-gradient(135deg,var(--purple),var(--pink));border-radius:50px;padding:12px 24px;display:none;box-shadow:0 4px 20px rgba(167,139,250,0.4);animation:bounceIn 0.5s ease;">
-  <div style="font-family:'Rajdhani',sans-serif;font-size:0.9rem;font-weight:700;color:white;text-align:center;"><span id="joke-text"></span></div>
+<!-- Message Overlay Bar -->
+<div id="joke-banner" style="position:fixed;bottom:70px;left:0;right:0;z-index:100;background:linear-gradient(90deg,rgba(20,20,30,0.95),rgba(30,25,40,0.95),rgba(20,20,30,0.95));border-top:1px solid rgba(255,215,0,0.3);border-bottom:1px solid rgba(255,215,0,0.3);padding:10px 16px;display:none;box-shadow:0 -2px 20px rgba(0,0,0,0.8);backdrop-filter:blur(10px);transform:translateY(100%);transition:transform 0.4s ease;">
+  <div style="font-family:'Rajdhani',sans-serif;font-size:0.75rem;font-weight:600;color:var(--gold);text-align:center;letter-spacing:0.8px;text-transform:uppercase;opacity:0.9;"><span id="joke-text"></span></div>
 </div>
 
 <!-- Sync Status -->
@@ -981,7 +981,12 @@ function showRandomJoke() {
     t.textContent = funMessages[idx];
   }
 
-  b.style.display = 'block'; setTimeout(() => { b.style.display = 'none'; }, 7000);
+  b.style.display = 'block';
+  setTimeout(() => { b.style.transform = 'translateY(0)'; }, 10);
+  setTimeout(() => {
+    b.style.transform = 'translateY(100%)';
+    setTimeout(() => { b.style.display = 'none'; }, 400);
+  }, 7000);
 }
 setInterval(showRandomJoke, 10000); setTimeout(showRandomJoke, 2000);
 
