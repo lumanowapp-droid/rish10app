@@ -789,16 +789,22 @@ function downloadBackup() { const b = new Blob([JSON.stringify(data,null,2)],{ty
 function restoreBackup(event) { const f = event.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = function(e) { try { const d = JSON.parse(e.target.result); if (!d.kids || !d.orders) { showToast('Invalid!'); return; } if (!confirm('Replace data?')) return; data = d; saveData(data); selectedKids = []; renderSettings(); renderOrderTab(); showToast('RESTORED!'); } catch(e) { showToast('Failed!'); } }; r.readAsText(f); event.target.value = ''; }
 
 // ==================== JOKES ====================
-const jokes = ["What does a pizza say? Slice to meet you!","Race cars eat fast food!","French fry went to school to be a SMART chip!","Birthday cakes like music they can LAYER on!","Race car won because it never took a BRAKE!","Fake noodle? An im-PASTA!","Sleeping race car? A nap-mobile!","Birthday cake was tier-iffic!","Not your cheese? NACHO cheese!","Balloon's fave music? POP!"];
+const jokes = ["What does a pizza say? Slice to meet you!","Race cars eat fast food!","French fry went to school to be a SMART chip!","Birthday cakes like music they can LAYER on!","Race car won because it never took a BRAKE!","Fake noodle? An im-PASTA!","Sleeping race car? A nap-mobile!","Birthday cake was tier-iffic!","Not your cheese? NACHO cheese!","Balloon's fave music? POP!","Why did the cookie go to the doctor? It felt crummy!","Racing driver's favorite meal? Fast food!","What's a race car's favorite snack? Traffic jam!","Birthday boy is WHEELIE awesome!","Speed limit at this party? No limits!","Why did the pizza win the race? It was well-rounded!","Rishaan is turning 10 with TURBO power!","These nachos are on FIRE! 🔥","Life is a highway, eat at every pit stop!","Ready, set, NOM NOM NOM!"];
+const kidMessages = [" is racing to the finish line!"," just hit the turbo boost!"," is drifting into the party zone!"," crossed the checkered flag!"," is burning rubber on the dance floor!"," just lapped everyone!"," is the speed champion!"," shifted into PARTY gear!"," is leaving everyone in the dust!"," just unlocked nitrous mode!"," scored a pole position!"," is revving up the fun!"];
 let lastJ = -1;
 function showRandomJoke() {
   const b = document.getElementById('joke-banner'), t = document.getElementById('joke-text');
-  let idx; do { idx = Math.floor(Math.random() * jokes.length); } while (idx === lastJ && jokes.length > 1); lastJ = idx;
-  if (Math.random() < 0.35 && data.kids.length) { const k = data.kids[Math.floor(Math.random() * data.kids.length)]; t.textContent = k.name + " just broke the speed record for ordering food!"; }
-  else t.textContent = jokes[idx];
-  b.style.display = 'block'; setTimeout(() => { b.style.display = 'none'; }, 6000);
+  if (Math.random() < 0.5 && data.kids.length) {
+    const k = data.kids[Math.floor(Math.random() * data.kids.length)];
+    const msg = kidMessages[Math.floor(Math.random() * kidMessages.length)];
+    t.textContent = k.name + msg;
+  } else {
+    let idx; do { idx = Math.floor(Math.random() * jokes.length); } while (idx === lastJ && jokes.length > 1); lastJ = idx;
+    t.textContent = jokes[idx];
+  }
+  b.style.display = 'block'; setTimeout(() => { b.style.display = 'none'; }, 7000);
 }
-setInterval(showRandomJoke, 8000); setTimeout(showRandomJoke, 3000);
+setInterval(showRandomJoke, 10000); setTimeout(showRandomJoke, 2000);
 
 
 // ==================== BACKGROUND MUSIC ====================
