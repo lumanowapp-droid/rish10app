@@ -411,6 +411,30 @@ body::before {
   </div>
 </div>
 
+<!-- Edit Game Modal -->
+<div id="edit-game-modal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeEditGameModal()">
+  <div class="modal">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <h3 style="font-family:'Orbitron',sans-serif;font-weight:800;font-size:0.85rem;color:var(--gold);">
+        <i class="fas fa-edit"></i> EDIT GAME
+      </h3>
+      <button class="btn btn-sm btn-danger" onclick="closeEditGameModal()"><i class="fas fa-times"></i></button>
+    </div>
+
+    <input id="edit-game-name" class="input" placeholder="Game name..." style="margin-bottom:12px;">
+    <textarea id="edit-game-instructions" class="input" placeholder="Game instructions..." style="min-height:200px;resize:vertical;margin-bottom:12px;"></textarea>
+
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-gold" onclick="saveEditedGame()" style="flex:1;justify-content:center;">
+        <i class="fas fa-save"></i> Save Changes
+      </button>
+      <button class="btn btn-danger btn-sm" onclick="closeEditGameModal()" style="flex:1;justify-content:center;">
+        <i class="fas fa-times"></i> Cancel
+      </button>
+    </div>
+  </div>
+</div>
+
 <!-- Record Results Modal -->
 <div id="results-modal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeResultsModal()">
   <div class="modal">
@@ -588,6 +612,47 @@ function removeGame(gameId) {
   renderGames();
   renderLeaderboard();
   showToast('Game removed!');
+}
+
+let editingGameId = null;
+
+function openEditGameModal(gameId) {
+  editingGameId = gameId;
+  const game = data.games.find(g => g.id === gameId);
+  if (!game) return;
+
+  document.getElementById('edit-game-name').value = game.name;
+  document.getElementById('edit-game-instructions').value = game.instructions;
+  document.getElementById('edit-game-modal').style.display = 'flex';
+}
+
+function closeEditGameModal() {
+  document.getElementById('edit-game-modal').style.display = 'none';
+  editingGameId = null;
+  document.getElementById('edit-game-name').value = '';
+  document.getElementById('edit-game-instructions').value = '';
+}
+
+function saveEditedGame() {
+  if (!editingGameId) return;
+
+  const name = document.getElementById('edit-game-name').value.trim();
+  const instructions = document.getElementById('edit-game-instructions').value.trim();
+
+  if (!name) {
+    showToast('Enter game name!');
+    return;
+  }
+
+  const game = data.games.find(g => g.id === editingGameId);
+  if (game) {
+    game.name = name;
+    game.instructions = instructions;
+    saveData(data);
+    renderGames();
+    closeEditGameModal();
+    showToast('Game updated!');
+  }
 }
 
 function openResultsModal(gameId) {
@@ -1020,8 +1085,12 @@ function renderGames() {
     }
 
     html += '</div>';
+    html += '<div style="display:flex;gap:6px;">';
+    html += '<button class="btn btn-gold btn-sm" onclick="openEditGameModal(\'' + game.id + '\')" style="padding:4px 10px;flex:1;justify-content:center;">';
+    html += '<i class="fas fa-edit" style="font-size:0.65rem;"></i> Edit</button>';
     html += '<button class="btn btn-danger btn-sm" onclick="removeGame(\'' + game.id + '\')" style="padding:4px 10px;">';
     html += '<i class="fas fa-trash" style="font-size:0.65rem;"></i></button>';
+    html += '</div>';
     html += '</div>';
 
     html += '<div style="display:flex;gap:8px;margin-bottom:10px;">';
