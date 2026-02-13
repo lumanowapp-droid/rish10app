@@ -3,7 +3,14 @@
     "allow": [
       "Bash(start \"\" \"c:\\\\Users\\\\tusha\\\\Rish10\\\\index.html\")",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(gh:*)",
+      "Bash(git remote add:*)",
+      "Bash(git push:*)",
+      "Bash(git config:*)",
+      "Bash(git remote remove:*)",
+      "Bash(dir:*)",
+      "Bash(git hash-object:*)"
     ]
   }
 }
