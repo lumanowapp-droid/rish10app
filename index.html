@@ -411,6 +411,24 @@ body::before {
   </div>
 </div>
 
+<!-- View Game Instructions Modal -->
+<div id="view-instructions-modal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeViewInstructionsModal()">
+  <div class="modal">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <h3 style="font-family:'Orbitron',sans-serif;font-weight:800;font-size:0.95rem;color:var(--gold);" id="instructions-modal-title">
+        <i class="fas fa-book-open"></i> HOW TO PLAY
+      </h3>
+      <button class="btn btn-sm btn-danger" onclick="closeViewInstructionsModal()"><i class="fas fa-times"></i></button>
+    </div>
+
+    <div id="instructions-content" style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:12px;padding:16px;max-height:60vh;overflow-y:auto;font-size:0.95rem;line-height:1.8;color:var(--text);white-space:pre-wrap;word-wrap:break-word;"></div>
+
+    <button class="btn btn-gold" onclick="closeViewInstructionsModal()" style="width:100%;justify-content:center;margin-top:12px;">
+      <i class="fas fa-times"></i> Close
+    </button>
+  </div>
+</div>
+
 <!-- Edit Game Modal -->
 <div id="edit-game-modal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeEditGameModal()">
   <div class="modal">
@@ -615,6 +633,20 @@ function removeGame(gameId) {
 }
 
 let editingGameId = null;
+
+function openViewInstructionsModal(gameId) {
+  const game = data.games.find(g => g.id === gameId);
+  if (!game) return;
+
+  const gameNum = data.games.findIndex(g => g.id === gameId) + 1;
+  document.getElementById('instructions-modal-title').innerHTML = '<i class="fas fa-book-open"></i> GAME ' + gameNum + ': ' + esc(game.name).toUpperCase();
+  document.getElementById('instructions-content').textContent = game.instructions || 'No instructions provided.';
+  document.getElementById('view-instructions-modal').style.display = 'flex';
+}
+
+function closeViewInstructionsModal() {
+  document.getElementById('view-instructions-modal').style.display = 'none';
+}
 
 function openEditGameModal(gameId) {
   editingGameId = gameId;
@@ -1078,20 +1110,19 @@ function renderGames() {
     html += '<span style="font-size:0.75rem;color:var(--text-muted);margin-right:6px;">GAME ' + gameNum + ':</span>' + esc(game.name);
     html += '</div>';
 
-    if (game.instructions) {
-      html += '<div style="font-size:0.8rem;color:var(--text-muted);margin-top:4px;line-height:1.4;">';
-      html += esc(game.instructions);
-      html += '</div>';
-    }
-
     html += '</div>';
-    html += '<div style="display:flex;gap:6px;">';
+    html += '<div style="display:flex;gap:6px;margin-bottom:10px;">';
     html += '<button class="btn btn-gold btn-sm" onclick="openEditGameModal(\'' + game.id + '\')" style="padding:4px 10px;flex:1;justify-content:center;">';
     html += '<i class="fas fa-edit" style="font-size:0.65rem;"></i> Edit</button>';
     html += '<button class="btn btn-danger btn-sm" onclick="removeGame(\'' + game.id + '\')" style="padding:4px 10px;">';
     html += '<i class="fas fa-trash" style="font-size:0.65rem;"></i></button>';
     html += '</div>';
     html += '</div>';
+
+    if (game.instructions) {
+      html += '<button class="btn btn-gold btn-sm" onclick="openViewInstructionsModal(\'' + game.id + '\')" style="width:100%;justify-content:center;margin-bottom:10px;">';
+      html += '<i class="fas fa-book-open" style="font-size:0.7rem;"></i> View Instructions</button>';
+    }
 
     html += '<div style="display:flex;gap:8px;margin-bottom:10px;">';
     html += '<span class="badge">' + resultsCount + ' result' + (resultsCount !== 1 ? 's' : '') + '</span>';
