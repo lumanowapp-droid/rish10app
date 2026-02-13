@@ -12,872 +12,206 @@
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 <style>
+/* ============================================
+   ULTRA PREMIUM DARK THEME
+   ============================================ */
 :root {
-  --dark: #0a0a0f;
-  --dark2: #151520;
-  --dark3: #1f1f2a;
+  --bg-primary: #030305;
+  --bg-secondary: #08080e;
+  --bg-card: #0c0c14;
+  --bg-elevated: #101018;
   --gold: #ffd700;
+  --gold-dim: #b8860b;
   --gold-light: #ffe55c;
-  --red: #ff6b6b;
+  --red: #ff4757;
+  --green: #10b981;
   --purple: #a78bfa;
-  --text-muted: #9a9aaa;
-  --text-subtle: #7a7a8a;
   --pink: #ec4899;
   --blue: #60a5fa;
-  --green: #34d399;
-  --orange: #fb923c;
-  --silver: #e0e0e8;
-  --ghost: rgba(255,255,255,0.1);
-}
-* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-body {
-  font-family: 'Rajdhani', sans-serif;
-  background: linear-gradient(135deg, #1a1a2e 0%, #252540 50%, #2d2d44 100%);
-  color: #f0f0f5;
-  margin: 0;
-  padding: 0;
-  padding-bottom: 74px;
-  min-height: 100vh;
-  background-image:
-    radial-gradient(ellipse at 20% 50%, rgba(255,215,0,0.08) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 20%, rgba(255,107,107,0.08) 0%, transparent 50%);
-  position: relative;
+  --text: #eaeaf0;
+  --text-muted: #6a6a7a;
+  --text-subtle: #4a4a5a;
+  --border: rgba(255,215,0,0.12);
+  --border-bright: rgba(255,215,0,0.3);
+  --glow-gold: rgba(255,215,0,0.15);
 }
 
-/* Carbon fiber pattern overlay */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: 'Rajdhani', sans-serif;
+  background: var(--bg-primary);
+  color: var(--text);
+  min-height: 100vh;
+  padding-bottom: 80px;
+  overflow-x: hidden;
+}
+
+/* Subtle vignette */
 body::before {
   content: '';
   position: fixed;
   inset: 0;
-  background-image: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 2px,
-    rgba(255,255,255,0.008) 2px,
-    rgba(255,255,255,0.008) 4px
-  );
+  background: radial-gradient(ellipse at 50% 0%, rgba(255,215,0,0.03) 0%, transparent 60%),
+              radial-gradient(ellipse at 50% 100%, rgba(0,0,0,0.5) 0%, transparent 60%);
   pointer-events: none;
   z-index: 0;
 }
 
-/* Premium Luxury Header */
+/* ============================================ HEADER */
 .header {
-  background: linear-gradient(135deg, rgba(10,10,15,0.98) 0%, rgba(26,26,40,0.95) 50%, rgba(10,10,15,0.98) 100%);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
-  border-bottom: 2px solid var(--gold);
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-bright);
   padding: 14px 20px;
   text-align: center;
   position: sticky;
   top: 0;
   z-index: 50;
-  box-shadow: 0 8px 50px rgba(0,0,0,0.8),
-              0 2px 20px rgba(255,215,0,0.2),
-              inset 0 -1px 0 rgba(255,215,0,0.3);
+  box-shadow: 0 4px 30px rgba(0,0,0,0.9);
 }
-.header::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--gold), var(--gold-light), var(--gold), transparent);
-}
-.header-logo {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-}
+.header-logo { display: flex; align-items: center; justify-content: center; gap: 10px; }
+.shield { width: 34px; height: 34px; }
 .header h1 {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 1.1rem;
-  margin: 0;
-  font-weight: 800;
-  background: linear-gradient(135deg, var(--gold), var(--gold-light), #fff, var(--gold-light), var(--gold));
-  background-size: 200% 100%;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  animation: shimmer 3s ease-in-out infinite;
-  text-shadow: 0 0 20px rgba(255,215,0,0.5);
+  font-family: 'Orbitron', sans-serif; font-size: 1.1rem; font-weight: 800;
+  background: linear-gradient(135deg, var(--gold), #fff, var(--gold)); background-size: 200% 100%;
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  letter-spacing: 2px; text-transform: uppercase; animation: shimmer 3s ease-in-out infinite;
 }
-.header p {
-  font-size: 0.75rem;
-  margin: 4px 0 0;
-  color: var(--silver);
-  letter-spacing: 1px;
-  font-weight: 500;
-}
-.koenigsegg-shield {
-  width: 36px;
-  height: 36px;
-  position: relative;
-}
-.koenigsegg-shield svg {
-  width: 100%;
-  height: 100%;
-}
+.header p { font-size: 0.72rem; color: var(--text-muted); letter-spacing: 1px; font-weight: 500; margin-top: 2px; }
+.rpm-bar { height: 2px; margin-top: 10px; background: linear-gradient(90deg, transparent, var(--gold), var(--red), var(--gold), transparent); border-radius: 2px; animation: rpmPulse 2s ease-in-out infinite; }
 
-/* Car Banner */
-.car-banner {
-  width: 100%;
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 0 16px;
-  position: relative;
-}
-.car-banner-inner {
-  background: linear-gradient(135deg, var(--dark2), var(--dark3));
-  border: 1px solid rgba(212,160,23,0.2);
-  border-radius: 16px;
-  padding: 16px;
-  margin: 12px 0;
-  overflow: hidden;
-  position: relative;
-}
-.car-banner-inner::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  right: -20%;
-  width: 200px;
-  height: 200px;
-  background: radial-gradient(circle, rgba(212,160,23,0.08) 0%, transparent 70%);
-  pointer-events: none;
-}
-.car-emoji-row {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  font-size: 2rem;
-  margin-bottom: 8px;
-}
-.speed-text {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 0.65rem;
-  text-align: center;
-  color: var(--gold);
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  opacity: 0.7;
-}
+/* ============================================ BOTTOM NAV */
+.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg-secondary); border-top: 1px solid var(--border-bright); display: flex; z-index: 50; box-shadow: 0 -4px 30px rgba(0,0,0,0.9); }
+.bottom-nav button { flex: 1; padding: 10px 0 8px; border: none; background: none; font-family: 'Rajdhani', sans-serif; font-size: 0.68rem; font-weight: 600; color: var(--text-subtle); display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; letter-spacing: 1px; text-transform: uppercase; position: relative; transition: color 0.2s; }
+.bottom-nav button.active { color: var(--gold); }
+.bottom-nav button.active::after { content: ''; position: absolute; top: 0; left: 25%; right: 25%; height: 2px; background: var(--gold); }
+.bottom-nav button i { font-size: 1.15rem; }
 
-/* Premium Bottom Navigation with Glass Effect */
-.bottom-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: linear-gradient(180deg, rgba(15,15,25,0.95), rgba(10,10,15,0.98));
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  display: flex;
-  border-top: 2px solid rgba(255,215,0,0.3);
-  z-index: 50;
-  box-shadow: 0 -8px 40px rgba(0,0,0,0.8),
-              0 -2px 20px rgba(255,215,0,0.15);
-}
-.bottom-nav button {
-  flex: 1;
-  padding: 10px 0 8px;
-  border: none;
-  background: none;
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 0.7rem;
-  font-weight: 600;
-  color: #555;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 3px;
-  cursor: pointer;
-  transition: all 0.3s;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  position: relative;
-}
-.bottom-nav button.active {
-  color: var(--gold);
-}
-.bottom-nav button.active::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 25%;
-  right: 25%;
-  height: 2px;
-  background: var(--gold);
-  border-radius: 0 0 2px 2px;
-}
-.bottom-nav button i { font-size: 1.2rem; }
-
-/* Tab content */
+/* ============================================ TABS */
 .tab-content { display: none; padding: 16px; max-width: 600px; margin: 0 auto; position: relative; z-index: 1; }
 .tab-content.active { display: block; }
 
-/* Koenigsegg watermark background logo */
-.tab-content::before {
-  content: '';
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 280px;
-  height: 320px;
-  background-image: url('data:image/svg+xml,<svg viewBox="0 0 80 90" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="wg" x1="0%25" y1="0%25" x2="0%25" y2="100%25"><stop offset="0%25" stop-color="%23ffd700" stop-opacity="0.04"/><stop offset="100%25" stop-color="%23d4a017" stop-opacity="0.02"/></linearGradient></defs><path d="M 40 5 L 70 20 L 70 60 Q 70 75 40 85 Q 10 75 10 60 L 10 20 Z" stroke="url(%23wg)" stroke-width="2.5" fill="url(%23wg)"/><path d="M 40 15 L 30 35 L 40 30 L 50 35 Z" fill="url(%23wg)"/><path d="M 40 30 L 25 40 L 40 65 L 55 40 Z" fill="url(%23wg)" opacity="0.6"/><circle cx="35" cy="45" r="2" fill="%23ffd700" opacity="0.15"/><circle cx="45" cy="45" r="2" fill="%23ffd700" opacity="0.15"/><path d="M 30 18 L 35 12 L 40 15 L 45 12 L 50 18" stroke="url(%23wg)" stroke-width="1.5" fill="none"/></svg>');
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: contain;
-  opacity: 0.18;
-  pointer-events: none;
-  z-index: -1;
-}
+/* ============================================ CARDS */
+.card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 18px; margin-bottom: 14px; position: relative; overflow: hidden; }
+.card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--gold), transparent); }
+.card-title { font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 0.85rem; color: var(--gold); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; letter-spacing: 1.5px; text-transform: uppercase; }
 
-/* Premium Cards with Glass Morphism */
-.card {
-  background: linear-gradient(145deg, rgba(26,26,46,0.9), rgba(15,15,25,0.95));
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1.5px solid rgba(255,215,0,0.25);
-  border-radius: 20px;
-  padding: 20px;
-  margin-bottom: 16px;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 8px 40px rgba(0,0,0,0.6),
-              0 2px 12px rgba(255,215,0,0.15),
-              inset 0 1px 0 rgba(255,255,255,0.1);
-}
-.card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--gold), var(--pink), transparent);
-}
-.card-title {
-  font-family: 'Orbitron', sans-serif;
-  font-weight: 800;
-  font-size: 1.1rem;
-  color: var(--gold);
-  margin-bottom: 16px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  text-shadow: 0 2px 8px rgba(255,215,0,0.3);
-}
+/* ============================================ CAR BANNER */
+.car-banner { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 14px; margin-bottom: 14px; text-align: center; }
+.car-emoji-row { display: flex; justify-content: center; gap: 12px; font-size: 2rem; margin-bottom: 6px; }
+.speed-text { font-family: 'Orbitron', sans-serif; font-size: 0.6rem; color: var(--gold); letter-spacing: 3px; text-transform: uppercase; opacity: 0.6; }
 
-/* Badges */
-.badge {
-  background: linear-gradient(135deg, var(--gold), #b8860b);
-  color: var(--dark);
-  font-family: 'Orbitron', sans-serif;
-  font-size: 0.55rem;
-  padding: 2px 8px;
-  border-radius: 50px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-}
-.badge-red {
-  background: linear-gradient(135deg, var(--red), #c53050);
-  color: white;
-}
-.badge-green {
-  background: linear-gradient(135deg, #10b981, #059669);
-  color: white;
-}
+/* ============================================ KID CHIPS */
+.kid-chip { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 50px; font-size: 1rem; font-weight: 700; cursor: pointer; border: 1px solid rgba(255,255,255,0.08); background: var(--bg-elevated); color: var(--text-muted); margin: 3px; letter-spacing: 0.5px; transition: all 0.15s; user-select: none; -webkit-user-select: none; }
+.kid-chip.selected { background: linear-gradient(135deg, var(--gold), var(--gold-dim)); color: #000; border-color: var(--gold); box-shadow: 0 2px 12px rgba(255,215,0,0.3); }
+.kid-chip .remove { font-size: 0.65rem; opacity: 0.7; cursor: pointer; }
 
-/* Buttons */
-.btn {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 10px;
-  font-family: 'Rajdhani', sans-serif;
-  font-weight: 700;
-  font-size: 0.85rem;
-  cursor: pointer;
-  transition: all 0.2s;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-}
-.btn-gold {
-  background: linear-gradient(135deg, var(--gold), #b8860b);
-  color: var(--dark);
-  box-shadow: 0 4px 12px rgba(255,215,0,0.25);
-}
-.btn-gold:hover {
-  box-shadow: 0 6px 30px rgba(255,215,0,0.5), 0 2px 12px rgba(255,215,0,0.3);
-  transform: translateY(-2px);
-  filter: brightness(1.1);
-}
-.btn-red {
-  background: linear-gradient(135deg, var(--red), #c53050);
-  color: white;
-}
-.btn-red:hover { box-shadow: 0 4px 20px rgba(233,69,96,0.3); }
-.btn-green {
-  background: linear-gradient(135deg, #10b981, #059669);
-  color: white;
-}
-.btn-sm { padding: 6px 14px; font-size: 0.9rem; border-radius: 8px; }
-.btn-danger {
-  background: rgba(233,69,96,0.15);
-  color: var(--red);
-  border: 1px solid rgba(233,69,96,0.2);
-}
-.btn-danger:hover { background: rgba(233,69,96,0.25); }
+/* ============================================ MENU ITEMS */
+.menu-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; border: 1px solid rgba(255,255,255,0.04); border-radius: 12px; margin-bottom: 6px; background: var(--bg-elevated); gap: 8px; }
+.menu-item.has-qty { border-color: rgba(255,215,0,0.2); background: rgba(255,215,0,0.03); }
+.menu-item.disabled { opacity: 0.2; pointer-events: none; }
+.item-name { font-weight: 700; font-size: 1rem; color: var(--text); display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
+.item-name .name-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-/* Premium Inputs */
-.input {
-  width: 100%;
-  padding: 10px 14px;
-  border: 1.5px solid rgba(255,215,0,0.25);
-  border-radius: 10px;
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 0.9rem;
-  font-weight: 500;
-  outline: none;
-  background: linear-gradient(135deg, rgba(15,15,25,0.8), rgba(10,10,15,0.9));
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  color: #e0e0e8;
-  transition: all 0.3s ease;
-  box-shadow: inset 0 2px 8px rgba(0,0,0,0.4);
-}
-.input:focus {
-  border-color: var(--gold);
-  box-shadow: 0 0 0 3px rgba(255,215,0,0.2), 0 4px 16px rgba(255,215,0,0.15), inset 0 2px 8px rgba(0,0,0,0.4);
-  background: linear-gradient(135deg, rgba(15,15,25,0.9), rgba(10,10,15,0.95));
-}
-.input::placeholder { color: var(--text-muted); }
-.select {
-  width: 100%;
-  padding: 10px 14px;
-  border: 1.5px solid rgba(255,215,0,0.25);
-  border-radius: 10px;
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 0.9rem;
-  font-weight: 500;
-  outline: none;
-  background: linear-gradient(135deg, rgba(15,15,25,0.8), rgba(10,10,15,0.9));
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  color: #e0e0e8;
-  box-shadow: inset 0 2px 8px rgba(0,0,0,0.4);
-}
+/* ============================================ QTY BADGE */
+.qty-badge { display: inline-flex; align-items: center; justify-content: center; min-width: 32px; height: 32px; border-radius: 50%; font-family: 'Orbitron', sans-serif; font-size: 1rem; font-weight: 900; flex-shrink: 0; border: 2px solid; }
+.qty-badge.has-qty { background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: #000; border-color: var(--gold-light); box-shadow: 0 2px 12px rgba(255,215,0,0.4); }
+.qty-badge.no-qty { background: var(--bg-secondary); color: var(--text-subtle); border-color: rgba(255,255,255,0.06); }
 
-/* Kid chips */
-.kid-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 7px 16px;
-  border-radius: 50px;
-  font-size: 1.05rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.3s;
-  border: 1px solid rgba(255,255,255,0.1);
-  background: var(--dark);
-  color: var(--silver);
-  margin: 3px;
-  letter-spacing: 0.5px;
-}
-.kid-chip.selected {
-  background: linear-gradient(135deg, var(--gold), #b8860b);
-  color: var(--dark);
-  border-color: var(--gold);
-  box-shadow: 0 4px 20px rgba(255,215,0,0.5),
-              0 2px 10px rgba(255,215,0,0.3),
-              inset 0 1px 0 rgba(255,255,255,0.3);
-}
-.kid-chip .remove { font-size: 0.7rem; opacity: 0.7; cursor: pointer; }
-
-/* Premium Menu Items */
-.menu-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 14px;
-  border: 1px solid rgba(255,215,0,0.15);
-  border-radius: 12px;
-  margin-bottom: 8px;
-  background: linear-gradient(135deg, rgba(26,26,46,0.4), rgba(15,15,25,0.6));
-  backdrop-filter: blur(8px);
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-}
-.menu-item:hover {
-  border-color: rgba(255,215,0,0.4);
-  background: linear-gradient(135deg, rgba(26,26,46,0.6), rgba(15,15,25,0.8));
-  box-shadow: 0 4px 16px rgba(255,215,0,0.15), 0 2px 8px rgba(0,0,0,0.4);
-  transform: translateY(-1px);
-}
-.menu-item.disabled { opacity: 0.25; pointer-events: none; }
-.menu-item .item-name { font-weight: 700; font-size: 1.15rem; color: #e0e0e8; letter-spacing: 0.3px; display: flex; align-items: center; gap: 10px; }
-
-/* Premium Quantity Badge - Prominent Display */
-.qty-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 38px;
-  height: 38px;
-  background: linear-gradient(135deg, var(--gold), #ffed4e);
-  color: var(--dark);
-  border-radius: 50%;
-  font-family: 'Orbitron', sans-serif;
-  font-size: 1.15rem;
-  font-weight: 900;
-  box-shadow: 0 4px 20px rgba(255,215,0,0.7),
-              0 2px 10px rgba(255,237,78,0.5),
-              inset 0 1px 0 rgba(255,255,255,0.6);
-  border: 2.5px solid rgba(255,237,78,0.9);
-  flex-shrink: 0;
-}
-
-@keyframes pulseGlow {
-  0%, 100% { box-shadow: 0 4px 16px rgba(255,215,0,0.6), 0 2px 8px rgba(255,237,78,0.4), inset 0 1px 0 rgba(255,255,255,0.5); }
-  50% { box-shadow: 0 6px 24px rgba(255,215,0,0.8), 0 3px 12px rgba(255,237,78,0.6), inset 0 1px 0 rgba(255,255,255,0.5); }
-}
-
-.qty-badge.qty-zero {
-  background: linear-gradient(135deg, rgba(26,26,46,0.6), rgba(15,15,25,0.8));
-  color: var(--text-muted);
-  opacity: 0.6;
-  border-color: rgba(255,215,0,0.15);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05);
-  animation: none;
-}
-
-/* Quantity controls */
-.qty-control { display: flex; align-items: center; gap: 10px; }
+/* ============================================ QTY CONTROLS */
+.qty-control { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
 .qty-btn {
-  width: 40px;
-  height: 40px;
-  border-radius: 8px;
-  font-size: 1.3rem;
-  font-weight: 900;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
-  pointer-events: auto;
-  position: relative;
-  z-index: 10;
-  user-select: none;
+  width: 44px; height: 44px; border: none; border-radius: 12px;
+  font-size: 1.5rem; font-weight: 900; line-height: 1;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  padding: 0; margin: 0; outline: none;
+  -webkit-appearance: none; appearance: none;
+  user-select: none; -webkit-user-select: none;
+  touch-action: manipulation;
+  position: relative; z-index: 5;
+  transition: transform 0.1s, opacity 0.1s;
 }
-.qty-btn:disabled {
-  cursor: not-allowed;
-  opacity: 0.3;
-  pointer-events: none;
-}
-.qty-btn.minus {
-  background: #ff4444;
-  color: #fff;
-  border: 2px solid #cc0000;
-}
-.qty-btn.plus {
-  background: #ffd700;
-  color: #000;
-  border: 2px solid #ffaa00;
-}
-.qty-btn:active {
-  opacity: 0.8;
-}
-.qty-val {
-  font-family: 'Orbitron', sans-serif;
-  font-weight: 800;
-  font-size: 1.2rem;
-  min-width: 24px;
-  text-align: center;
-  color: var(--gold-light);
-}
+.qty-btn:active { transform: scale(0.9); }
+.qty-btn.minus-btn { background: #dc2626; color: #fff; box-shadow: 0 2px 8px rgba(220,38,38,0.4); }
+.qty-btn.plus-btn { background: var(--gold); color: #000; box-shadow: 0 2px 8px rgba(255,215,0,0.4); }
+.qty-btn.dim { opacity: 0.25; }
 
-/* Editable Quantity Input Field */
-.qty-input {
-  width: 50px;
-  height: 38px;
-  background: linear-gradient(135deg, rgba(200,200,210,0.95), rgba(180,180,200,0.98));
-  border: 2px solid rgba(255,215,0,0.4);
-  border-radius: 8px;
-  color: #1a1a2e;
-  font-family: 'Orbitron', sans-serif;
-  font-size: 1.2rem;
-  font-weight: 900;
-  text-align: center;
-  outline: none;
-  transition: all 0.2s;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.4);
-  -moz-appearance: textfield; /* Remove spinner in Firefox */
-  appearance: textfield; /* Standard property */
-}
+.qty-input { width: 48px; height: 40px; background: #1a1a28; border: 2px solid rgba(255,215,0,0.25); border-radius: 8px; color: var(--gold-light); font-family: 'Orbitron', sans-serif; font-size: 1.1rem; font-weight: 900; text-align: center; outline: none; -moz-appearance: textfield; appearance: textfield; }
+.qty-input::-webkit-inner-spin-button, .qty-input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+.qty-input:focus { border-color: var(--gold); box-shadow: 0 0 0 2px rgba(255,215,0,0.2); }
 
-.qty-input::-webkit-inner-spin-button,
-.qty-input::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
+/* ============================================ CATEGORY */
+.category-header { font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 0.8rem; color: var(--gold); padding: 8px 0; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--border); margin-bottom: 8px; letter-spacing: 1.5px; text-transform: uppercase; }
+.restriction-tag { font-family: 'Rajdhani', sans-serif; font-size: 0.75rem; background: rgba(255,71,87,0.12); color: var(--red); padding: 2px 10px; border-radius: 50px; font-weight: 700; border: 1px solid rgba(255,71,87,0.2); }
 
-.qty-input:focus {
-  border-color: var(--gold);
-  box-shadow: 0 0 0 3px rgba(255,215,0,0.3), 0 2px 12px rgba(255,215,0,0.2), inset 0 1px 0 rgba(255,255,255,0.5);
-  background: linear-gradient(135deg, rgba(220,220,230,0.98), rgba(200,200,220,1));
-  color: #0a0a0f;
-}
+/* ============================================ BADGES */
+.badge { background: linear-gradient(135deg, var(--gold), var(--gold-dim)); color: #000; font-family: 'Orbitron', sans-serif; font-size: 0.5rem; padding: 2px 8px; border-radius: 50px; font-weight: 700; }
+.badge-red { background: linear-gradient(135deg, var(--red), #c53050); color: white; }
+.badge-green { background: linear-gradient(135deg, var(--green), #059669); color: white; }
+.joint-badge { font-size: 0.6rem; background: var(--red); color: white; padding: 1px 7px; border-radius: 50px; margin-left: 4px; font-weight: 700; }
 
-/* Category sections */
-.category-header {
-  font-family: 'Orbitron', sans-serif;
-  font-weight: 700;
-  font-size: 0.95rem;
-  color: var(--gold);
-  padding: 10px 0;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  border-bottom: 1px solid rgba(212,160,23,0.15);
-  margin-bottom: 10px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-}
-.restriction-tag {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 0.8rem;
-  background: rgba(233,69,96,0.15);
-  color: var(--red);
-  padding: 2px 10px;
-  border-radius: 50px;
-  font-weight: 700;
-  border: 1px solid rgba(233,69,96,0.2);
-  letter-spacing: 0.5px;
-}
+/* ============================================ BUTTONS */
+.btn { padding: 10px 20px; border: none; border-radius: 10px; font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 0.85rem; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; letter-spacing: 0.5px; text-transform: uppercase; transition: opacity 0.15s; }
+.btn:active { opacity: 0.8; }
+.btn-gold { background: linear-gradient(135deg, var(--gold), var(--gold-dim)); color: #000; }
+.btn-red { background: var(--red); color: white; }
+.btn-green { background: var(--green); color: white; }
+.btn-sm { padding: 6px 14px; font-size: 0.85rem; border-radius: 8px; }
+.btn-danger { background: rgba(255,71,87,0.12); color: var(--red); border: 1px solid rgba(255,71,87,0.2); }
 
-/* Order sections */
-.order-kid-name {
-  font-family: 'Orbitron', sans-serif;
-  font-weight: 700;
-  font-size: 1rem;
-  color: var(--gold);
-  padding: 8px 0;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  letter-spacing: 1px;
-}
-.order-row {
-  display: flex;
-  justify-content: space-between;
-  padding: 7px 14px;
-  font-size: 1.05rem;
-  border-bottom: 1px solid rgba(255,255,255,0.04);
-  font-weight: 500;
-}
-.summary-row {
-  display: flex;
-  justify-content: space-between;
-  padding: 8px 14px;
-  font-size: 1.1rem;
-  font-weight: 600;
-}
-.summary-row.total {
-  font-family: 'Orbitron', sans-serif;
-  font-weight: 800;
-  border-top: 2px solid var(--gold);
-  color: var(--gold);
-  margin-top: 6px;
-  padding-top: 12px;
-  font-size: 0.85rem;
-}
+/* ============================================ INPUTS */
+.input, .select { width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: 10px; font-family: 'Rajdhani', sans-serif; font-size: 0.9rem; font-weight: 500; outline: none; background: var(--bg-elevated); color: var(--text); transition: border-color 0.2s; }
+.input:focus, .select:focus { border-color: var(--gold); box-shadow: 0 0 0 2px var(--glow-gold); }
+.input::placeholder { color: var(--text-subtle); }
 
-/* Premium Empty State */
-.empty-state {
-  text-align: center;
-  padding: 40px 20px;
-  color: var(--text-muted);
-  background: linear-gradient(135deg, rgba(26,26,46,0.3), rgba(15,15,25,0.5));
-  border-radius: 16px;
-  border: 1px solid rgba(255,215,0,0.1);
-}
-.empty-state i {
-  font-size: 2.5rem;
-  margin-bottom: 12px;
-  display: block;
-  color: rgba(255,215,0,0.4);
-  text-shadow: 0 2px 12px rgba(255,215,0,0.2);
-}
-.empty-state p { font-size: 0.88rem; font-weight: 500; }
+/* ============================================ ORDER ROWS */
+.order-kid-name { font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 0.85rem; color: var(--gold); padding: 8px 0; display: flex; align-items: center; gap: 8px; letter-spacing: 1px; }
+.order-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; font-size: 0.95rem; border-bottom: 1px solid rgba(255,255,255,0.03); font-weight: 500; }
+.summary-row { display: flex; justify-content: space-between; padding: 8px 14px; font-size: 1rem; font-weight: 600; }
+.summary-row.total { font-family: 'Orbitron', sans-serif; font-weight: 800; border-top: 2px solid var(--gold); color: var(--gold); margin-top: 6px; padding-top: 12px; font-size: 0.85rem; }
 
-/* Toggle */
-.toggle {
-  width: 44px;
-  height: 24px;
-  border-radius: 12px;
-  background: rgba(255,255,255,0.1);
-  position: relative;
-  cursor: pointer;
-  transition: background 0.3s;
-  border: 1px solid rgba(255,255,255,0.1);
-}
-.toggle.on { background: var(--gold); border-color: var(--gold); box-shadow: 0 4px 16px rgba(255,215,0,0.4); }
-.toggle .knob {
-  width: 20px;
-  height: 20px;
-  background: linear-gradient(135deg, #e0e0e8, #a0a0b0);
-  border-radius: 50%;
-  position: absolute;
-  top: 1px;
-  left: 1px;
-  transition: left 0.3s;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.3);
-}
-.toggle.on .knob { left: 21px; background: linear-gradient(135deg, var(--dark), var(--dark2)); box-shadow: 0 2px 8px rgba(0,0,0,0.6), 0 0 12px rgba(255,215,0,0.3); }
+/* ============================================ STAT BOXES */
+.stat-box { border-radius: 12px; padding: 14px; text-align: center; border: 1px solid; background: var(--bg-elevated); }
+.stat-num { font-family: 'Orbitron', sans-serif; font-size: 1.5rem; font-weight: 900; }
+.stat-label { font-size: 0.65rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-top: 2px; }
 
-/* Joint badge */
-.joint-badge {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 0.6rem;
-  background: linear-gradient(135deg, var(--red), #c53050);
-  color: white;
-  padding: 1px 7px;
-  border-radius: 50px;
-  margin-left: 4px;
-  font-weight: 700;
-}
+/* ============================================ TOGGLE */
+.toggle { width: 44px; height: 24px; border-radius: 12px; background: rgba(255,255,255,0.08); position: relative; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); transition: background 0.2s; flex-shrink: 0; }
+.toggle.on { background: var(--gold); border-color: var(--gold); }
+.toggle .knob { width: 20px; height: 20px; background: #ccc; border-radius: 50%; position: absolute; top: 1px; left: 1px; transition: left 0.2s; }
+.toggle.on .knob { left: 21px; background: #111; }
 
-/* Export */
-.export-area {
-  white-space: pre-wrap;
-  font-family: 'Courier New', monospace;
-  font-size: 0.78rem;
-  background: var(--dark);
-  border: 1px solid rgba(212,160,23,0.2);
-  border-radius: 12px;
-  padding: 14px;
-  max-height: 400px;
-  overflow-y: auto;
-  line-height: 1.6;
-  color: var(--gold-light);
-}
+/* ============================================ EMPTY STATE */
+.empty-state { text-align: center; padding: 40px 20px; color: var(--text-muted); background: var(--bg-elevated); border-radius: 14px; border: 1px solid var(--border); }
+.empty-state i { font-size: 2.5rem; margin-bottom: 12px; display: block; color: rgba(255,215,0,0.3); }
+.empty-state p { font-size: 0.85rem; font-weight: 500; }
 
-/* Premium Modal */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  z-index: 60;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-}
-.modal {
-  background: linear-gradient(180deg, rgba(15,15,25,0.98), rgba(10,10,15,0.99));
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-radius: 20px 20px 0 0;
-  border: 2px solid rgba(255,215,0,0.3);
-  border-bottom: none;
-  padding: 24px;
-  box-shadow: 0 -8px 40px rgba(0,0,0,0.8), 0 -2px 20px rgba(255,215,0,0.2);
-  width: 100%;
-  max-width: 600px;
-  max-height: 80vh;
-  overflow-y: auto;
-  animation: slideUp 0.3s ease;
-}
-@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+/* ============================================ EXPORT / MODAL */
+.export-area { white-space: pre-wrap; font-family: 'Courier New', monospace; font-size: 0.75rem; background: var(--bg-primary); border: 1px solid var(--border); border-radius: 10px; padding: 14px; max-height: 400px; overflow-y: auto; line-height: 1.6; color: var(--gold-light); }
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 60; display: flex; align-items: flex-end; justify-content: center; }
+.modal { background: var(--bg-card); border-radius: 20px 20px 0 0; border: 1px solid var(--border-bright); border-bottom: none; padding: 24px; width: 100%; max-width: 600px; max-height: 80vh; overflow-y: auto; animation: slideUp 0.25s ease; }
 
-@keyframes shimmer {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-}
-
-@keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
-}
-
-/* Flex helper */
+/* ============================================ HELPERS & ANIMATIONS */
 .flex-wrap-gap { display: flex; flex-wrap: wrap; gap: 4px; }
 
-/* Premium Stats Grid */
-.stat-box {
-  border-radius: 12px;
-  padding: 14px;
-  text-align: center;
-  border: 1.5px solid;
-  background: linear-gradient(135deg, rgba(26,26,46,0.5), rgba(15,15,25,0.7));
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  box-shadow: 0 4px 16px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05);
-}
-.stat-box .stat-num {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 1.6rem;
-  font-weight: 900;
-}
-.stat-box .stat-label {
-  font-size: 0.68rem;
-  font-weight: 600;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  margin-top: 2px;
-}
-
-/* Confetti */
-.confetti {
-  position: fixed;
-  top: -10px;
-  animation: fall linear forwards;
-  pointer-events: none;
-  z-index: 100;
-  font-size: 1.5rem;
-}
+@keyframes shimmer { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+@keyframes rpmPulse { 0%, 100% { opacity: 0.3; transform: scaleX(0.6); } 50% { opacity: 1; transform: scaleX(1); } }
+@keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+@keyframes bounceIn { 0% { transform: translateX(-50%) scale(0.3); opacity: 0; } 50% { transform: translateX(-50%) scale(1.05); } 100% { transform: translateX(-50%) scale(1); opacity: 1; } }
+.confetti { position: fixed; top: -10px; animation: fall linear forwards; pointer-events: none; z-index: 100; font-size: 1.5rem; }
 @keyframes fall { to { top: 110vh; transform: rotate(720deg); } }
-
-/* RPM gauge animation */
-.rpm-bar {
-  height: 3px;
-  background: linear-gradient(90deg, var(--gold), var(--red), var(--gold));
-  border-radius: 2px;
-  animation: rpmPulse 2s ease-in-out infinite;
-}
-@keyframes rpmPulse {
-  0%, 100% { opacity: 0.3; transform: scaleX(0.6); }
-  50% { opacity: 1; transform: scaleX(1); }
-}
-
-/* Scrollbar */
+.koenigsegg-car { position: fixed; z-index: 1; pointer-events: none; }
+@keyframes raceAcross { 0% { left: -80px; } 100% { left: 110vw; } }
+@keyframes raceReverse { 0% { right: -80px; } 100% { right: 110vw; } }
 ::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: var(--dark); }
-::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 4px; }
-
-/* Glow pulse on active items */
-@keyframes goldGlow {
-  0%, 100% { box-shadow: 0 0 5px rgba(212,160,23,0.1); }
-  50% { box-shadow: 0 0 15px rgba(212,160,23,0.2); }
-}
-
-/* Koenigsegg Car Animations */
-.koenigsegg-car {
-  position: fixed;
-  z-index: 1;
-  pointer-events: none;
-  filter: drop-shadow(0 2px 8px rgba(212,160,23,0.3));
-}
-
-@keyframes raceAcross {
-  0% { left: -150px; transform: translateY(0) rotate(-2deg); }
-  100% { left: 110vw; transform: translateY(-10px) rotate(2deg); }
-}
-
-@keyframes raceReverse {
-  0% { right: -150px; transform: translateY(0) scaleX(-1) rotate(2deg); }
-  100% { right: 110vw; transform: translateY(-10px) scaleX(-1) rotate(-2deg); }
-}
-
-@keyframes speedBoost {
-  0%, 100% { filter: drop-shadow(0 2px 8px rgba(212,160,23,0.3)); }
-  50% { filter: drop-shadow(0 4px 20px rgba(212,160,23,0.6)) brightness(1.2); }
-}
-
-.car-trail {
-  position: absolute;
-  right: 100%;
-  top: 50%;
-  width: 60px;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, rgba(212,160,23,0.6), transparent);
-  animation: trail 0.3s ease-in-out infinite;
-}
-
-@keyframes trail {
-  0%, 100% { opacity: 0.3; transform: scaleX(0.8); }
-  50% { opacity: 1; transform: scaleX(1.2); }
-}
-
-@keyframes bounceIn {
-  0% { transform: translateX(-50%) scale(0.3); opacity: 0; }
-  50% { transform: translateX(-50%) scale(1.05); }
-  70% { transform: translateX(-50%) scale(0.9); }
-  100% { transform: translateX(-50%) scale(1); opacity: 1; }
-}
-
-@keyframes wiggle {
-  0%, 100% { transform: rotate(-3deg); }
-  50% { transform: rotate(3deg); }
-}
-
-.menu-item .item-name {
-  font-size: 1.05rem !important;
-}
-
-.kid-chip {
-  font-size: 1.15rem !important;
-  padding: 9px 18px !important;
-}
-
-/* Big Car Overlay */
-.big-car-overlay {
-  position: fixed;
-  z-index: 999;
-  pointer-events: none;
-  filter: drop-shadow(0 8px 30px rgba(255,215,0,0.5));
-  opacity: 0.95;
-}
-
-@keyframes driftIn {
-  0% {
-    left: -300px;
-    transform: translateY(0) rotate(-5deg) scale(1);
-  }
-  20% {
-    transform: translateY(-20px) rotate(-2deg) scale(1.05);
-  }
-  40% {
-    transform: translateY(0) rotate(2deg) scale(1);
-  }
-  100% {
-    left: 110vw;
-    transform: translateY(10px) rotate(5deg) scale(1.1);
-  }
-}
-
-@keyframes driftReverse {
-  0% {
-    right: -300px;
-    transform: translateY(0) scaleX(-1) rotate(5deg) scale(1);
-  }
-  20% {
-    transform: translateY(-20px) scaleX(-1) rotate(2deg) scale(1.05);
-  }
-  40% {
-    transform: translateY(0) scaleX(-1) rotate(-2deg) scale(1);
-  }
-  100% {
-    right: 110vw;
-    transform: translateY(10px) scaleX(-1) rotate(-5deg) scale(1.1);
-  }
-}
-
-@keyframes engineGlow {
-  0%, 100% { opacity: 0.5; }
-  50% { opacity: 1; }
-}
+::-webkit-scrollbar-track { background: var(--bg-primary); }
+::-webkit-scrollbar-thumb { background: var(--gold-dim); border-radius: 4px; }
 </style>
 </head>
 <body>
@@ -885,128 +219,70 @@ body::before {
 <!-- HEADER -->
 <div class="header">
   <div class="header-logo">
-    <!-- Koenigsegg Ghost Logo -->
-    <div class="koenigsegg-shield">
-      <svg viewBox="0 0 80 90" fill="none" style="filter: drop-shadow(0 2px 8px rgba(255,215,0,0.4));">
-        <!-- Shield outline -->
-        <path d="M 40 5 L 70 20 L 70 60 Q 70 75 40 85 Q 10 75 10 60 L 10 20 Z"
-              stroke="url(#goldGrad)" stroke-width="2.5" fill="rgba(255,215,0,0.08)"/>
-        <!-- Koenigsegg Ghost symbol -->
-        <path d="M 40 15 L 30 35 L 40 30 L 50 35 Z" fill="url(#goldGrad)"/>
-        <path d="M 40 30 L 25 40 L 40 65 L 55 40 Z" fill="url(#goldGrad)" opacity="0.85"/>
-        <circle cx="35" cy="45" r="2" fill="#1a1a2e" opacity="0.6"/>
-        <circle cx="45" cy="45" r="2" fill="#1a1a2e" opacity="0.6"/>
-        <!-- Crown on top -->
-        <path d="M 30 18 L 35 12 L 40 15 L 45 12 L 50 18" stroke="url(#goldGrad)" stroke-width="1.5" fill="none"/>
-        <defs>
-          <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#ffd700"/>
-            <stop offset="50%" stop-color="#ffe55c"/>
-            <stop offset="100%" stop-color="#ffd700"/>
-          </linearGradient>
-        </defs>
-      </svg>
-    </div>
+    <svg class="shield" viewBox="0 0 80 90" fill="none">
+      <path d="M40 5 L70 20 L70 60 Q70 75 40 85 Q10 75 10 60 L10 20Z" stroke="url(#hg)" stroke-width="2.5" fill="rgba(255,215,0,0.06)"/>
+      <path d="M40 15 L30 35 L40 30 L50 35Z" fill="url(#hg)"/>
+      <path d="M40 30 L25 40 L40 65 L55 40Z" fill="url(#hg)" opacity="0.8"/>
+      <path d="M30 18 L35 12 L40 15 L45 12 L50 18" stroke="url(#hg)" stroke-width="1.5" fill="none"/>
+      <defs><linearGradient id="hg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ffd700"/><stop offset="100%" stop-color="#ffe55c"/></linearGradient></defs>
+    </svg>
     <div>
       <h1>Rishaan's 10th</h1>
       <p><i class="fas fa-flag-checkered"></i> 13 Feb 2026 &bull; Birthday Pit Stop <i class="fas fa-flag-checkered"></i></p>
     </div>
-    <!-- Koenigsegg Ghost Logo (mirrored) -->
-    <div class="koenigsegg-shield" style="transform: scaleX(-1);">
-      <svg viewBox="0 0 80 90" fill="none" style="filter: drop-shadow(0 2px 8px rgba(255,215,0,0.4));">
-        <path d="M 40 5 L 70 20 L 70 60 Q 70 75 40 85 Q 10 75 10 60 L 10 20 Z"
-              stroke="url(#goldGrad3)" stroke-width="2.5" fill="rgba(255,215,0,0.08)"/>
-        <path d="M 40 15 L 30 35 L 40 30 L 50 35 Z" fill="url(#goldGrad3)"/>
-        <path d="M 40 30 L 25 40 L 40 65 L 55 40 Z" fill="url(#goldGrad3)" opacity="0.85"/>
-        <circle cx="35" cy="45" r="2" fill="#1a1a2e" opacity="0.6"/>
-        <circle cx="45" cy="45" r="2" fill="#1a1a2e" opacity="0.6"/>
-        <path d="M 30 18 L 35 12 L 40 15 L 45 12 L 50 18" stroke="url(#goldGrad3)" stroke-width="1.5" fill="none"/>
-        <defs>
-          <linearGradient id="goldGrad3" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#ffd700"/>
-            <stop offset="50%" stop-color="#ffe55c"/>
-            <stop offset="100%" stop-color="#ffd700"/>
-          </linearGradient>
-        </defs>
-      </svg>
-    </div>
+    <svg class="shield" viewBox="0 0 80 90" fill="none" style="transform:scaleX(-1)">
+      <path d="M40 5 L70 20 L70 60 Q70 75 40 85 Q10 75 10 60 L10 20Z" stroke="#ffd700" stroke-width="2.5" fill="rgba(255,215,0,0.06)"/>
+      <path d="M40 15 L30 35 L40 30 L50 35Z" fill="#ffd700"/>
+      <path d="M40 30 L25 40 L40 65 L55 40Z" fill="#ffd700" opacity="0.8"/>
+      <path d="M30 18 L35 12 L40 15 L45 12 L50 18" stroke="#ffd700" stroke-width="1.5" fill="none"/>
+    </svg>
   </div>
-  <div class="rpm-bar" style="margin-top:10px;"></div>
+  <div class="rpm-bar"></div>
 </div>
 
-<!-- Fun Joke Banner -->
-<div id="joke-banner" style="position:fixed; bottom:80px; left:50%; transform:translateX(-50%); max-width:90%; z-index:100; background:linear-gradient(135deg, var(--purple), var(--pink)); border-radius:50px; padding:12px 24px; display:none; box-shadow:0 4px 20px rgba(167,139,250,0.4); animation:bounceIn 0.5s ease;">
-  <div style="font-family:'Rajdhani',sans-serif; font-size:0.9rem; font-weight:700; color:white; text-align:center; letter-spacing:0.5px;">
-    <span id="joke-text"></span>
-  </div>
+<!-- Joke Banner -->
+<div id="joke-banner" style="position:fixed;bottom:85px;left:50%;transform:translateX(-50%);max-width:90%;z-index:100;background:linear-gradient(135deg,var(--purple),var(--pink));border-radius:50px;padding:12px 24px;display:none;box-shadow:0 4px 20px rgba(167,139,250,0.4);animation:bounceIn 0.5s ease;">
+  <div style="font-family:'Rajdhani',sans-serif;font-size:0.9rem;font-weight:700;color:white;text-align:center;"><span id="joke-text"></span></div>
 </div>
 
-<!-- Sync Status Indicator -->
-<div id="sync-status" style="position:fixed; top:80px; left:16px; z-index:100; background:var(--dark2); border:1px solid rgba(16,185,129,0.3); border-radius:50px; padding:8px 16px; display:flex; align-items:center; gap:8px; box-shadow:0 4px 20px rgba(0,0,0,0.5);">
-  <div id="sync-dot" style="width:8px; height:8px; border-radius:50%; background:#10b981; box-shadow:0 0 8px #10b981;"></div>
-  <div style="font-family:'Orbitron',sans-serif; font-size:0.6rem; color:#10b981; font-weight:700; letter-spacing:0.5px;">SYNCED</div>
+<!-- Sync Status -->
+<div id="sync-status" style="position:fixed;top:80px;left:12px;z-index:100;background:var(--bg-card);border:1px solid rgba(16,185,129,0.3);border-radius:50px;padding:6px 14px;display:flex;align-items:center;gap:8px;">
+  <div id="sync-dot" style="width:7px;height:7px;border-radius:50%;background:#10b981;box-shadow:0 0 6px #10b981;"></div>
+  <div style="font-family:'Orbitron',sans-serif;font-size:0.55rem;color:#10b981;font-weight:700;">SYNCED</div>
 </div>
 
 <!-- Music Player -->
-<div id="music-player" style="position:fixed; top:80px; right:16px; z-index:100; background:var(--dark2); border:1px solid rgba(212,160,23,0.3); border-radius:50px; padding:8px 16px; display:flex; align-items:center; gap:10px; box-shadow:0 4px 20px rgba(0,0,0,0.5);">
-  <button id="music-toggle" onclick="toggleMusic()" style="width:32px; height:32px; border-radius:50%; border:none; background:linear-gradient(135deg, var(--gold), #b8860b); color:var(--dark); cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.2s;">
-    <i class="fas fa-play" style="font-size:0.7rem; margin-left:2px;"></i>
+<div id="music-player" style="position:fixed;top:80px;right:12px;z-index:100;background:var(--bg-card);border:1px solid var(--border-bright);border-radius:50px;padding:8px 16px;display:flex;align-items:center;gap:10px;box-shadow:0 0 20px rgba(255,215,0,0.3);animation:bounce 2s ease-in-out infinite;">
+  <button id="music-toggle" onclick="toggleMusic()" style="width:36px;height:36px;border-radius:50%;border:none;background:var(--gold);color:#000;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(255,215,0,0.4);">
+    <i class="fas fa-play" style="font-size:0.85rem;margin-left:2px;"></i>
   </button>
-  <div style="font-family:'Orbitron',sans-serif; font-size:0.65rem; color:var(--gold); font-weight:700; letter-spacing:0.5px;">MUSIC</div>
+  <div style="font-family:'Orbitron',sans-serif;font-size:0.65rem;color:var(--gold);font-weight:700;">CLICK TO PLAY</div>
 </div>
-
-<audio id="bg-music" loop>
-  <source src="https://assets.mixkit.co/active_storage/sfx/2686/2686-preview.mp3" type="audio/mpeg">
-  <!-- F1 Racing Engine Sound - Royalty Free -->
+<audio id="bg-music" loop preload="auto" volume="0.6">
+  <source src="https://assets.mixkit.co/music/preview/mixkit-racing-213.mp3" type="audio/mpeg">
+  <source src="https://assets.mixkit.co/music/preview/mixkit-tech-house-vibes-130.mp3" type="audio/mpeg">
 </audio>
 
 <!-- TAB: ORDER -->
 <div id="tab-order" class="tab-content active">
   <div class="car-banner">
-    <div class="car-banner-inner">
-      <div class="car-emoji-row">
-        <span>🏎️</span><span>🏁</span><span>🏎️</span>
-      </div>
-      <div class="speed-text">Fueling up for an epic celebration</div>
-    </div>
+    <div class="car-emoji-row"><span>🏎️</span><span>🏁</span><span>🏎️</span></div>
+    <div class="speed-text">Fueling up for an epic celebration</div>
   </div>
-
   <div class="card">
     <div class="card-title"><i class="fas fa-users"></i> Pit Crew - Who's Ordering?</div>
-    <div id="kid-selector" class="flex-wrap-gap">
-      <div class="empty-state" style="padding:10px;width:100%"><p style="font-size:0.8rem">Add drivers in Settings! <i class="fas fa-cog"></i></p></div>
-    </div>
-    <div style="margin-top:8px; font-size:0.72rem; color:var(--text-subtle); font-weight:500;">
-      <i class="fas fa-info-circle" style="color:var(--gold)"></i> Select multiple kids for a joint/shared order
-    </div>
+    <div id="kid-selector" class="flex-wrap-gap"></div>
+    <div style="margin-top:8px;font-size:0.7rem;color:var(--text-subtle);font-weight:500;"><i class="fas fa-info-circle" style="color:var(--gold);"></i> Select multiple kids for a joint/shared order</div>
   </div>
-
-  <div id="menu-area">
-    <div class="empty-state">
-      <i class="fas fa-gas-pump"></i>
-      <p>No menu items yet!<br>Head to Settings to fuel up the menu.</p>
-    </div>
-  </div>
+  <div id="menu-area"></div>
 </div>
 
 <!-- TAB: DASHBOARD -->
 <div id="tab-dashboard" class="tab-content">
-  <div class="card">
-    <div class="card-title"><i class="fas fa-gauge-high"></i> Race Dashboard</div>
-    <div id="dashboard-summary"></div>
-  </div>
-
-  <div class="card">
-    <div class="card-title"><i class="fas fa-helmet-safety"></i> Orders by Driver</div>
-    <div id="dashboard-by-kid"></div>
-  </div>
-
-  <div class="card">
-    <div class="card-title"><i class="fas fa-boxes-stacked"></i> Total Quantities</div>
-    <div id="dashboard-totals"></div>
-  </div>
-
-  <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:8px;">
+  <div class="card"><div class="card-title"><i class="fas fa-gauge-high"></i> Race Dashboard</div><div id="dashboard-summary"></div></div>
+  <div class="card"><div class="card-title"><i class="fas fa-helmet-safety"></i> Orders by Driver</div><div id="dashboard-by-kid"></div></div>
+  <div class="card"><div class="card-title"><i class="fas fa-boxes-stacked"></i> Total Quantities</div><div id="dashboard-totals"></div></div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
     <button class="btn btn-gold" onclick="exportOrder()"><i class="fas fa-file-export"></i> Export</button>
     <button class="btn btn-danger btn-sm" onclick="clearAllOrders()"><i class="fas fa-trash"></i> Clear All</button>
   </div>
@@ -1016,162 +292,93 @@ body::before {
 <div id="tab-settings" class="tab-content">
   <div class="card">
     <div class="card-title"><i class="fas fa-helmet-safety"></i> Drivers (Kids)</div>
-    <div style="display:flex; gap:8px; margin-bottom:10px;">
-      <input id="kid-name-input" class="input" placeholder="Enter kid's name...">
-      <button class="btn btn-gold btn-sm" onclick="addKid()"><i class="fas fa-plus"></i></button>
-    </div>
+    <div style="display:flex;gap:8px;margin-bottom:10px;"><input id="kid-name-input" class="input" placeholder="Enter kid's name..."><button class="btn btn-gold btn-sm" onclick="addKid()"><i class="fas fa-plus"></i></button></div>
     <div id="kids-list" class="flex-wrap-gap"></div>
   </div>
-
   <div class="card">
     <div class="card-title"><i class="fas fa-tags"></i> Categories</div>
-    <div style="display:flex; gap:8px; margin-bottom:10px;">
-      <input id="cat-name-input" class="input" placeholder="Category (Pizza, Drinks...)">
-      <button class="btn btn-gold btn-sm" onclick="addCategory()"><i class="fas fa-plus"></i></button>
-    </div>
+    <div style="display:flex;gap:8px;margin-bottom:10px;"><input id="cat-name-input" class="input" placeholder="Category (Pizza, Drinks...)"><button class="btn btn-gold btn-sm" onclick="addCategory()"><i class="fas fa-plus"></i></button></div>
     <div id="categories-list"></div>
   </div>
-
   <div class="card">
     <div class="card-title"><i class="fas fa-utensils"></i> Menu Items</div>
     <div style="margin-bottom:10px;">
-      <select id="item-cat-select" class="select" style="margin-bottom:8px;">
-        <option value="">-- Select Category --</option>
-      </select>
-      <div style="display:flex; gap:8px;">
-        <input id="item-name-input" class="input" placeholder="Item name...">
-        <button class="btn btn-gold btn-sm" onclick="addMenuItem()"><i class="fas fa-plus"></i></button>
-      </div>
+      <select id="item-cat-select" class="select" style="margin-bottom:8px;"><option value="">-- Select Category --</option></select>
+      <div style="display:flex;gap:8px;"><input id="item-name-input" class="input" placeholder="Item name..."><button class="btn btn-gold btn-sm" onclick="addMenuItem()"><i class="fas fa-plus"></i></button></div>
     </div>
     <div id="menu-items-list"></div>
   </div>
-
   <div class="card">
     <div class="card-title"><i class="fas fa-sliders"></i> Restrictions</div>
-    <p style="font-size:0.78rem; color:#666; margin-bottom:12px; font-weight:500;">
-      Enable "Pick Only One" to limit each kid to one item from a category.
-    </p>
+    <p style="font-size:0.75rem;color:var(--text-subtle);margin-bottom:12px;">Enable "Pick Only One" to limit each kid to one item from a category.</p>
     <div id="restrictions-list"></div>
   </div>
-
-  <div class="card" style="border-color:rgba(16,185,129,0.2);">
-    <div class="card-title" style="color:#10b981"><i class="fas fa-shield-halved"></i> Data Backup</div>
-    <p style="font-size:0.78rem; color:#666; margin-bottom:12px; font-weight:500;">
-      Protect your orders! Download a backup or restore from a previous backup file.
-    </p>
-    <div style="display:flex; gap:8px; flex-wrap:wrap;">
-      <button class="btn btn-green btn-sm" onclick="downloadBackup()">
-        <i class="fas fa-download"></i> Download Backup
-      </button>
-      <button class="btn btn-gold btn-sm" onclick="document.getElementById('restore-input').click()">
-        <i class="fas fa-upload"></i> Restore Backup
-      </button>
+  <div class="card" style="border-color:rgba(16,185,129,0.15);">
+    <div class="card-title" style="color:var(--green);"><i class="fas fa-shield-halved"></i> Data Backup</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button class="btn btn-green btn-sm" onclick="downloadBackup()"><i class="fas fa-download"></i> Download</button>
+      <button class="btn btn-gold btn-sm" onclick="document.getElementById('restore-input').click()"><i class="fas fa-upload"></i> Restore</button>
       <input type="file" id="restore-input" accept=".json" style="display:none" onchange="restoreBackup(event)">
     </div>
   </div>
-
-  <div class="card" style="border-color:rgba(233,69,96,0.2);">
-    <div class="card-title" style="color:var(--red)"><i class="fas fa-triangle-exclamation"></i> Danger Zone</div>
-    <button class="btn btn-danger btn-sm" onclick="resetApp()" style="width:100%;justify-content:center;">
-      <i class="fas fa-bomb"></i> Reset Entire App
-    </button>
+  <div class="card" style="border-color:rgba(255,71,87,0.15);">
+    <div class="card-title" style="color:var(--red);"><i class="fas fa-triangle-exclamation"></i> Danger Zone</div>
+    <button class="btn btn-danger btn-sm" onclick="resetApp()" style="width:100%;justify-content:center;"><i class="fas fa-bomb"></i> Reset Entire App</button>
   </div>
 </div>
 
 <!-- TAB: DATA -->
 <div id="tab-data" class="tab-content">
-  <div class="card" style="border-color:rgba(212,160,23,0.3);">
+  <div class="card">
     <div class="card-title"><i class="fas fa-cloud"></i> Cloud Sync Setup</div>
-    <p style="font-size:0.78rem; color:#666; margin-bottom:12px; font-weight:500;">
-      Enable real-time cloud sync so all devices see the same orders instantly!
-    </p>
-
-    <div id="firebase-setup" style="margin-top:12px;">
-      <div style="background:rgba(212,160,23,0.05); border:1px solid rgba(212,160,23,0.2); border-radius:12px; padding:14px; margin-bottom:12px;">
-        <div style="font-size:0.75rem; font-weight:700; color:var(--gold); margin-bottom:8px;">
-          <i class="fas fa-lightbulb"></i> Quick Setup (2 minutes)
-        </div>
-        <ol style="font-size:0.75rem; color:#888; line-height:1.6; padding-left:20px; margin:0;">
-          <li>Go to <a href="https://console.firebase.google.com" target="_blank" style="color:var(--gold); text-decoration:underline;">Firebase Console</a></li>
-          <li>Click "Add project" → Name it "Rishaan-Birthday"</li>
-          <li>Click "Realtime Database" → "Create Database" → Start in <strong>test mode</strong></li>
-          <li>Go to Project Settings (⚙️) → "Your apps" → Web app (</>) → Register app</li>
-          <li>Copy your Firebase config and paste below</li>
+    <div id="firebase-setup">
+      <div style="background:rgba(255,215,0,0.03);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:12px;">
+        <div style="font-size:0.72rem;font-weight:700;color:var(--gold);margin-bottom:8px;"><i class="fas fa-lightbulb"></i> Quick Setup</div>
+        <ol style="font-size:0.72rem;color:var(--text-muted);line-height:1.6;padding-left:20px;">
+          <li>Go to <a href="https://console.firebase.google.com" target="_blank" style="color:var(--gold);text-decoration:underline;">Firebase Console</a></li>
+          <li>Create project → Realtime Database → test mode</li>
+          <li>Project Settings → Web app → Copy config</li>
         </ol>
       </div>
-
-      <div style="margin-bottom:12px;">
-        <label style="font-size:0.75rem; font-weight:600; color:var(--gold); display:block; margin-bottom:6px;">
-          Paste Firebase Config JSON:
-        </label>
-        <textarea id="firebase-config-input" class="input" placeholder='{"apiKey":"...","authDomain":"...","databaseURL":"...","projectId":"...","storageBucket":"...","messagingSenderId":"...","appId":"..."}'
-          style="min-height:120px; font-family:monospace; font-size:0.7rem; resize:vertical;"></textarea>
-      </div>
-
-      <button class="btn btn-gold" onclick="enableFirebaseSync()" style="width:100%; justify-content:center;">
-        <i class="fas fa-rocket"></i> Enable Cloud Sync
-      </button>
+      <label style="font-size:0.72rem;font-weight:600;color:var(--gold);display:block;margin-bottom:6px;">Paste Firebase Config JSON:</label>
+      <textarea id="firebase-config-input" class="input" placeholder='{"apiKey":"...","databaseURL":"..."}' style="min-height:100px;font-family:monospace;font-size:0.68rem;resize:vertical;"></textarea>
+      <button class="btn btn-gold" onclick="enableFirebaseSync()" style="width:100%;justify-content:center;margin-top:10px;"><i class="fas fa-rocket"></i> Enable Cloud Sync</button>
     </div>
-
     <div id="firebase-active" style="display:none;">
-      <div style="background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.3); border-radius:12px; padding:14px; text-align:center;">
-        <i class="fas fa-check-circle" style="font-size:2rem; color:#10b981; margin-bottom:8px; display:block;"></i>
-        <div style="font-family:'Orbitron',sans-serif; font-weight:700; font-size:0.85rem; color:#10b981; margin-bottom:4px;">
-          CLOUD SYNC ACTIVE
-        </div>
-        <div style="font-size:0.72rem; color:#888;">
-          All devices are syncing in real-time!
-        </div>
+      <div style="background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.2);border-radius:10px;padding:14px;text-align:center;">
+        <i class="fas fa-check-circle" style="font-size:2rem;color:var(--green);margin-bottom:8px;display:block;"></i>
+        <div style="font-family:'Orbitron',sans-serif;font-weight:700;font-size:0.8rem;color:var(--green);">CLOUD SYNC ACTIVE</div>
       </div>
-      <button class="btn btn-danger btn-sm" onclick="disableFirebaseSync()" style="width:100%; justify-content:center; margin-top:12px;">
-        <i class="fas fa-power-off"></i> Disable Cloud Sync
-      </button>
+      <button class="btn btn-danger btn-sm" onclick="disableFirebaseSync()" style="width:100%;justify-content:center;margin-top:10px;"><i class="fas fa-power-off"></i> Disable</button>
     </div>
   </div>
-
   <div class="card">
-    <div class="card-title"><i class="fas fa-database"></i> Local Data Manager</div>
-    <div style="display:flex; gap:8px; flex-wrap:wrap;">
-      <button class="btn btn-green btn-sm" onclick="downloadBackup()">
-        <i class="fas fa-download"></i> Download Backup
-      </button>
-      <button class="btn btn-gold btn-sm" onclick="document.getElementById('restore-input').click()">
-        <i class="fas fa-upload"></i> Restore Backup
-      </button>
-      <button class="btn btn-primary btn-sm" onclick="viewRawData()" style="background:linear-gradient(135deg,#7c3aed,#6d28d9); color:white;">
-        <i class="fas fa-code"></i> View Raw JSON
-      </button>
+    <div class="card-title"><i class="fas fa-database"></i> Local Data</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button class="btn btn-green btn-sm" onclick="downloadBackup()"><i class="fas fa-download"></i> Backup</button>
+      <button class="btn btn-gold btn-sm" onclick="document.getElementById('restore-input').click()"><i class="fas fa-upload"></i> Restore</button>
+      <button class="btn btn-sm" onclick="viewRawData()" style="background:#7c3aed;color:white;"><i class="fas fa-code"></i> Raw JSON</button>
     </div>
   </div>
 </div>
 
-<!-- Bottom Navigation -->
+<!-- Bottom Nav -->
 <nav class="bottom-nav">
-  <button class="active" onclick="switchTab('order', this)">
-    <i class="fas fa-utensils"></i><span>Order</span>
-  </button>
-  <button onclick="switchTab('dashboard', this)">
-    <i class="fas fa-gauge-high"></i><span>Dashboard</span>
-  </button>
-  <button onclick="switchTab('data', this)">
-    <i class="fas fa-database"></i><span>Data</span>
-  </button>
-  <button onclick="switchTab('settings', this)">
-    <i class="fas fa-gear"></i><span>Settings</span>
-  </button>
+  <button class="active" onclick="switchTab('order',this)"><i class="fas fa-utensils"></i><span>Order</span></button>
+  <button onclick="switchTab('dashboard',this)"><i class="fas fa-gauge-high"></i><span>Dashboard</span></button>
+  <button onclick="switchTab('data',this)"><i class="fas fa-database"></i><span>Data</span></button>
+  <button onclick="switchTab('settings',this)"><i class="fas fa-gear"></i><span>Settings</span></button>
 </nav>
 
 <!-- Export Modal -->
 <div id="export-modal" class="modal-overlay" style="display:none" onclick="if(event.target===this)this.style.display='none'">
   <div class="modal">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-      <h3 style="font-family:'Orbitron',sans-serif; font-weight:800; font-size:0.9rem; margin:0; color:var(--gold); letter-spacing:1px;">
-        <i class="fas fa-file-export"></i> ORDER EXPORT
-      </h3>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <h3 style="font-family:'Orbitron',sans-serif;font-weight:800;font-size:0.85rem;color:var(--gold);"><i class="fas fa-file-export"></i> EXPORT</h3>
       <button class="btn btn-sm btn-danger" onclick="document.getElementById('export-modal').style.display='none'"><i class="fas fa-times"></i></button>
     </div>
     <div id="export-content" class="export-area"></div>
-    <div style="display:flex; gap:8px; margin-top:12px;">
+    <div style="display:flex;gap:8px;margin-top:12px;">
       <button class="btn btn-gold btn-sm" onclick="copyExport()"><i class="fas fa-copy"></i> Copy</button>
       <button class="btn btn-green btn-sm" onclick="downloadExport()"><i class="fas fa-download"></i> Download</button>
     </div>
@@ -1179,90 +386,34 @@ body::before {
 </div>
 
 <script>
-// ==================== DATA LAYER ====================
+// ==================== DATA ====================
 const DB_KEY = 'rishaan_bday_koenigsegg';
 const ADMIN_PIN = '1212';
 let pinUnlocked = false;
 
 function defaultData() {
-  // Pre-populated for Rishaan's 10th Birthday Party!
   const kids = [
-    { id: 'k1', name: 'Ayan' },
-    { id: 'k2', name: 'Kyle' },
-    { id: 'k3', name: 'Reyansh' },
-    { id: 'k4', name: 'Brian' },
-    { id: 'k5', name: 'Aveer' },
-    { id: 'k6', name: 'Arjun' },
-    { id: 'k7', name: 'Prakriti' },
-    { id: 'k8', name: 'Avni' },
-    { id: 'k9', name: 'Vivaan' },
-    { id: 'k10', name: 'Haniel' },
-    { id: 'k11', name: 'Rainer' },
-    { id: 'k12', name: 'Viha' }
+    {id:'k1',name:'Ayan'},{id:'k2',name:'Kyle'},{id:'k3',name:'Reyansh'},{id:'k4',name:'Brian'},
+    {id:'k5',name:'Aveer'},{id:'k6',name:'Arjun'},{id:'k7',name:'Prakriti'},{id:'k8',name:'Avni'},
+    {id:'k9',name:'Vivaan'},{id:'k10',name:'Haniel'},{id:'k11',name:'Rainer'},{id:'k12',name:'Viha'}
   ];
-
-  const categories = [
-    { id: 'cat1', name: 'Starters' },
-    { id: 'cat2', name: 'Main Course' },
-    { id: 'cat3', name: 'Beverage' },
-    { id: 'cat4', name: 'Desserts' }
-  ];
-
+  const categories = [{id:'cat1',name:'Starters'},{id:'cat2',name:'Main Course'},{id:'cat3',name:'Beverage'},{id:'cat4',name:'Desserts'}];
   const menuItems = [
-    // Starters
-    { id: 'i1', categoryId: 'cat1', name: 'Peri Peri French Fries' },
-    { id: 'i2', categoryId: 'cat1', name: 'Loaded Nachos' },
-    { id: 'i3', categoryId: 'cat1', name: 'Cheese Chilli Toast' },
-    // Main Course
-    { id: 'i4', categoryId: 'cat2', name: 'Margherita Pizza' },
-    { id: 'i5', categoryId: 'cat2', name: 'BBQ Chicken Pizza' },
-    { id: 'i6', categoryId: 'cat2', name: 'Chilli Chicken Pizza' },
-    { id: 'i7', categoryId: 'cat2', name: 'Alfredo Veg Pasta' },
-    // Beverages
-    { id: 'i8', categoryId: 'cat3', name: 'Cold Coffee' },
-    { id: 'i9', categoryId: 'cat3', name: 'Iced Tea' },
-    { id: 'i10', categoryId: 'cat3', name: 'Watermelon Juice' },
-    { id: 'i11', categoryId: 'cat3', name: 'Fresh Lime Soda Sweet' },
-    { id: 'i12', categoryId: 'cat3', name: 'Hot Chocolate' },
-    { id: 'i13', categoryId: 'cat3', name: 'Bottled Water' },
-    // Desserts
-    { id: 'i14', categoryId: 'cat4', name: 'Chocolate Ice Cream Cornetto' },
-    { id: 'i15', categoryId: 'cat4', name: 'Birthday Cake' }
+    {id:'i1',categoryId:'cat1',name:'Peri Peri French Fries'},{id:'i2',categoryId:'cat1',name:'Loaded Nachos'},{id:'i3',categoryId:'cat1',name:'Cheese Chilli Toast'},
+    {id:'i4',categoryId:'cat2',name:'Margherita Pizza'},{id:'i5',categoryId:'cat2',name:'BBQ Chicken Pizza'},{id:'i6',categoryId:'cat2',name:'Chilli Chicken Pizza'},{id:'i7',categoryId:'cat2',name:'Alfredo Veg Pasta'},
+    {id:'i8',categoryId:'cat3',name:'Cold Coffee'},{id:'i9',categoryId:'cat3',name:'Iced Tea'},{id:'i10',categoryId:'cat3',name:'Watermelon Juice'},{id:'i11',categoryId:'cat3',name:'Fresh Lime Soda Sweet'},{id:'i12',categoryId:'cat3',name:'Hot Chocolate'},{id:'i13',categoryId:'cat3',name:'Bottled Water'},
+    {id:'i14',categoryId:'cat4',name:'Chocolate Ice Cream Cornetto'},{id:'i15',categoryId:'cat4',name:'Birthday Cake'}
   ];
-
-  const orders = {};
-  kids.forEach(k => orders[k.id] = {});
-
-  return {
-    kids,
-    categories,
-    menuItems,
-    orders,
-    jointOrders: [],
-    restrictions: {
-      'cat1': false,
-      'cat2': false,
-      'cat3': true, // Beverage: Pick one only
-      'cat4': false
-    }
-  };
+  const orders = {}; kids.forEach(k => orders[k.id] = {});
+  return {kids, categories, menuItems, orders, jointOrders: [], restrictions: {cat1:false, cat2:false, cat3:true, cat4:false}};
 }
 
 function loadData() {
-  try {
-    const d = JSON.parse(localStorage.getItem(DB_KEY));
-    if (d) {
-      const def = defaultData();
-      for (const k in def) { if (!(k in d)) d[k] = def[k]; }
-      return d;
-    }
-  } catch(e) {}
-  const fresh = defaultData();
-  saveData(fresh);
-  return fresh;
+  try { const d = JSON.parse(localStorage.getItem(DB_KEY)); if (d) { const def = defaultData(); for (const k in def) if (!(k in d)) d[k] = def[k]; return d; } } catch(e) {}
+  const fresh = defaultData(); _saveLocal(fresh); return fresh;
 }
-
-function saveData(d) { localStorage.setItem(DB_KEY, JSON.stringify(d)); }
+function _saveLocal(d) { localStorage.setItem(DB_KEY, JSON.stringify(d)); }
+function saveData(d) { _saveLocal(d); if (firebaseSyncEnabled && firebaseDB) firebaseDB.ref('rishaan-birthday').set(d); }
 
 let data = loadData();
 let selectedKids = [];
@@ -1272,22 +423,12 @@ function genId() { return Date.now().toString(36) + Math.random().toString(36).s
 function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
 
 function switchTab(name, btn) {
-  // Check PIN for protected tabs
   if ((name === 'settings' || name === 'data') && !pinUnlocked) {
-    const pin = prompt('🔒 Enter PIN to access ' + name.toUpperCase() + ':');
-    if (pin !== ADMIN_PIN) {
-      showToast('INCORRECT PIN!');
-      return;
-    }
-    pinUnlocked = true;
-    showToast('PIN ACCEPTED!');
-    // Auto-lock after 3 minutes of inactivity
-    setTimeout(() => {
-      pinUnlocked = false;
-      showToast('Session locked');
-    }, 180000);
+    const pin = prompt('Enter PIN to access ' + name.toUpperCase() + ':');
+    if (pin !== ADMIN_PIN) { showToast('INCORRECT PIN!'); return; }
+    pinUnlocked = true; showToast('PIN ACCEPTED!');
+    setTimeout(() => { pinUnlocked = false; }, 180000);
   }
-
   document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.bottom-nav button').forEach(b => b.classList.remove('active'));
   document.getElementById('tab-' + name).classList.add('active');
@@ -1295,98 +436,57 @@ function switchTab(name, btn) {
   if (name === 'dashboard') renderDashboard();
   if (name === 'order') renderOrderTab();
   if (name === 'settings') renderSettings();
-  if (name === 'data') {} // Data tab is static
 }
 
 function showToast(msg) {
   const t = document.createElement('div');
-  t.style.cssText = `position:fixed;top:20px;left:50%;transform:translateX(-50%);
-    background:linear-gradient(135deg,var(--gold),#b8860b);color:var(--dark);
-    padding:10px 24px;border-radius:50px;font-family:'Orbitron',sans-serif;
-    font-size:0.7rem;font-weight:700;z-index:999;letter-spacing:1px;
-    box-shadow:0 4px 20px rgba(212,160,23,0.4);`;
-  t.textContent = msg;
-  document.body.appendChild(t);
-  setTimeout(() => t.remove(), 2000);
+  t.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);background:var(--gold);color:#000;padding:10px 24px;border-radius:50px;font-family:Orbitron,sans-serif;font-size:0.7rem;font-weight:700;z-index:999;letter-spacing:1px;box-shadow:0 4px 20px rgba(255,215,0,0.3);';
+  t.textContent = msg; document.body.appendChild(t); setTimeout(() => t.remove(), 2000);
 }
 
 // ==================== KIDS ====================
 function addKid() {
-  const input = document.getElementById('kid-name-input');
-  const name = input.value.trim();
-  if (!name) return;
-  const id = genId();
-  data.kids.push({ id, name });
-  data.orders[id] = {};
-  input.value = '';
-  saveData(data);
-  renderSettings();
-  renderOrderTab();
+  const input = document.getElementById('kid-name-input'); const name = input.value.trim(); if (!name) return;
+  const id = genId(); data.kids.push({id, name}); data.orders[id] = {}; input.value = '';
+  saveData(data); renderSettings(); renderOrderTab();
 }
-
 function removeKid(id) {
   if (!confirm('Remove this kid and their orders?')) return;
-  data.kids = data.kids.filter(k => k.id !== id);
-  delete data.orders[id];
-  data.jointOrders = data.jointOrders.filter(j => {
-    j.kidIds = j.kidIds.filter(kid => kid !== id);
-    return j.kidIds.length > 0;
-  });
+  data.kids = data.kids.filter(k => k.id !== id); delete data.orders[id];
+  data.jointOrders = data.jointOrders.filter(j => { j.kidIds = j.kidIds.filter(k => k !== id); return j.kidIds.length > 0; });
   selectedKids = selectedKids.filter(k => k !== id);
-  saveData(data);
-  renderSettings();
-  renderOrderTab();
+  saveData(data); renderSettings(); renderOrderTab();
 }
 
 // ==================== CATEGORIES ====================
 function addCategory() {
-  const input = document.getElementById('cat-name-input');
-  const name = input.value.trim();
-  if (!name) return;
-  const id = genId();
-  data.categories.push({ id, name });
-  data.restrictions[id] = false;
-  input.value = '';
-  saveData(data);
-  renderSettings();
-  renderOrderTab();
+  const input = document.getElementById('cat-name-input'); const name = input.value.trim(); if (!name) return;
+  const id = genId(); data.categories.push({id, name}); data.restrictions[id] = false; input.value = '';
+  saveData(data); renderSettings(); renderOrderTab();
 }
-
 function removeCategory(id) {
-  if (!confirm('Remove this category and all its items?')) return;
+  if (!confirm('Remove category and all items?')) return;
   data.categories = data.categories.filter(c => c.id !== id);
-  const removedItems = data.menuItems.filter(m => m.categoryId === id).map(m => m.id);
-  data.menuItems = data.menuItems.filter(m => m.categoryId !== id);
-  delete data.restrictions[id];
-  for (const kid in data.orders) {
-    for (const item of removedItems) delete data.orders[kid][item];
-  }
-  data.jointOrders = data.jointOrders.filter(j => !removedItems.includes(j.itemId));
-  saveData(data);
-  renderSettings();
-  renderOrderTab();
+  const removed = data.menuItems.filter(m => m.categoryId === id).map(m => m.id);
+  data.menuItems = data.menuItems.filter(m => m.categoryId !== id); delete data.restrictions[id];
+  for (const kid in data.orders) for (const item of removed) delete data.orders[kid][item];
+  data.jointOrders = data.jointOrders.filter(j => !removed.includes(j.itemId));
+  saveData(data); renderSettings(); renderOrderTab();
 }
 
 // ==================== MENU ITEMS ====================
 function addMenuItem() {
   const catId = document.getElementById('item-cat-select').value;
-  const input = document.getElementById('item-name-input');
-  const name = input.value.trim();
+  const input = document.getElementById('item-name-input'); const name = input.value.trim();
   if (!catId || !name) { showToast('Select category & enter name'); return; }
-  data.menuItems.push({ id: genId(), categoryId: catId, name });
-  input.value = '';
-  saveData(data);
-  renderSettings();
-  renderOrderTab();
+  data.menuItems.push({id: genId(), categoryId: catId, name}); input.value = '';
+  saveData(data); renderSettings(); renderOrderTab();
 }
-
 function removeMenuItem(id) {
   data.menuItems = data.menuItems.filter(m => m.id !== id);
   for (const kid in data.orders) delete data.orders[kid][id];
   data.jointOrders = data.jointOrders.filter(j => j.itemId !== id);
-  saveData(data);
-  renderSettings();
-  renderOrderTab();
+  saveData(data); renderSettings(); renderOrderTab();
 }
 
 // ==================== RESTRICTIONS ====================
@@ -1396,1052 +496,290 @@ function toggleRestriction(catId) {
     const catItems = data.menuItems.filter(m => m.categoryId === catId).map(m => m.id);
     for (const kidId in data.orders) {
       const ordered = catItems.filter(itemId => data.orders[kidId][itemId] > 0);
-      if (ordered.length > 1) {
-        for (let i = 1; i < ordered.length; i++) delete data.orders[kidId][ordered[i]];
-      }
+      if (ordered.length > 1) for (let i = 1; i < ordered.length; i++) delete data.orders[kidId][ordered[i]];
     }
   }
-  saveData(data);
-  renderSettings();
-  renderOrderTab();
+  saveData(data); renderSettings(); renderOrderTab();
 }
 
 // ==================== ORDERING ====================
 function toggleKidSelection(kidId) {
   const idx = selectedKids.indexOf(kidId);
-  if (idx >= 0) selectedKids.splice(idx, 1);
-  else selectedKids.push(kidId);
+  if (idx >= 0) selectedKids.splice(idx, 1); else selectedKids.push(kidId);
   renderOrderTab();
 }
-
-function getKidItemQty(kidId, itemId) {
-  return (data.orders[kidId] && data.orders[kidId][itemId]) || 0;
-}
-
+function getKidItemQty(kidId, itemId) { return (data.orders[kidId] && data.orders[kidId][itemId]) || 0; }
 function getJointQty(itemId, kidIds) {
   const key = [...kidIds].sort().join(',');
   const j = data.jointOrders.find(o => o.itemId === itemId && [...o.kidIds].sort().join(',') === key);
   return j ? j.qty : 0;
 }
-
-function isItemDisabledForKid(kidId, itemId, categoryId) {
-  if (!data.restrictions[categoryId]) return false;
-  const catItems = data.menuItems.filter(m => m.categoryId === categoryId).map(m => m.id);
-  if (getKidItemQty(kidId, itemId) > 0) return false;
-  for (const ci of catItems) {
-    if (ci !== itemId && getKidItemQty(kidId, ci) > 0) return true;
-  }
-  for (const jo of data.jointOrders) {
-    if (jo.kidIds.includes(kidId) && catItems.includes(jo.itemId) && jo.itemId !== itemId && jo.qty > 0) return true;
-  }
-  return false;
-}
-
-// Edit kid order directly from dashboard
-function editKidOrder(kidId, itemId, delta) {
-  if (!data.orders[kidId]) data.orders[kidId] = {};
-  const newQty = Math.max(0, (data.orders[kidId][itemId] || 0) + delta);
-  if (newQty === 0) delete data.orders[kidId][itemId];
-  else data.orders[kidId][itemId] = newQty;
-  saveData(data);
-  renderDashboard();
-  if (delta > 0 && Math.random() > 0.6) showFunnyToast();
-}
-
-// Set quantity directly from input field
-function setQty(itemId, value) {
-  if (selectedKids.length === 0) return;
-  const newQty = Math.max(0, Math.min(99, parseInt(value) || 0));
-
-  if (selectedKids.length === 1) {
-    const kidId = selectedKids[0];
-    if (!data.orders[kidId]) data.orders[kidId] = {};
-    if (newQty === 0) delete data.orders[kidId][itemId];
-    else data.orders[kidId][itemId] = newQty;
-  } else {
-    const kidIds = [...selectedKids].sort();
-    const key = kidIds.join(',');
-    let jo = data.jointOrders.find(o => o.itemId === itemId && [...o.kidIds].sort().join(',') === key);
-    if (newQty === 0) {
-      if (jo) data.jointOrders = data.jointOrders.filter(o => o !== jo);
-    } else {
-      if (!jo) {
-        jo = { itemId, kidIds: [...kidIds], qty: 0 };
-        data.jointOrders.push(jo);
-      }
-      jo.qty = newQty;
-    }
-  }
-
-  saveData(data);
-  renderOrderTab();
-}
-
-function changeQty(itemId, delta) {
-  // Debug: Check if function is called
-  console.log('changeQty called:', itemId, delta, 'selectedKids:', selectedKids);
-
-  if (selectedKids.length === 0) {
-    alert('Please select a driver first!');
-    return;
-  }
-
-  const item = data.menuItems.find(m => m.id === itemId);
-  if (!item) {
-    console.error('Item not found:', itemId);
-    return;
-  }
-
-  if (selectedKids.length === 1) {
-    const kidId = selectedKids[0];
-    if (!data.orders[kidId]) data.orders[kidId] = {};
-    const newQty = Math.max(0, (data.orders[kidId][itemId] || 0) + delta);
-    console.log('New quantity:', newQty);
-    if (newQty === 0) delete data.orders[kidId][itemId];
-    else data.orders[kidId][itemId] = newQty;
-  } else {
-    const kidIds = [...selectedKids].sort();
-    const key = kidIds.join(',');
-    let jo = data.jointOrders.find(o => o.itemId === itemId && [...o.kidIds].sort().join(',') === key);
-    if (!jo) {
-      jo = { itemId, kidIds: [...kidIds], qty: 0 };
-      data.jointOrders.push(jo);
-    }
-    jo.qty = Math.max(0, jo.qty + delta);
-    if (jo.qty === 0) data.jointOrders = data.jointOrders.filter(o => o !== jo);
-  }
-
-  saveData(data);
-  renderOrderTab();
-  console.log('Order updated and rendered');
-}
-
 function getCurrentQty(itemId) {
   if (selectedKids.length === 0) return 0;
   if (selectedKids.length === 1) return getKidItemQty(selectedKids[0], itemId);
   return getJointQty(itemId, selectedKids);
 }
+function isItemDisabledForKid(kidId, itemId, categoryId) {
+  if (!data.restrictions[categoryId]) return false;
+  const catItems = data.menuItems.filter(m => m.categoryId === categoryId).map(m => m.id);
+  if (getKidItemQty(kidId, itemId) > 0) return false;
+  for (const ci of catItems) if (ci !== itemId && getKidItemQty(kidId, ci) > 0) return true;
+  for (const jo of data.jointOrders) if (jo.kidIds.includes(kidId) && catItems.includes(jo.itemId) && jo.itemId !== itemId && jo.qty > 0) return true;
+  return false;
+}
 
-// ==================== RENDER: ORDER TAB ====================
-function renderOrderTab() {
-  const selectorDiv = document.getElementById('kid-selector');
-  if (data.kids.length === 0) {
-    selectorDiv.innerHTML = '<div class="empty-state" style="padding:10px;width:100%"><p style="font-size:0.8rem">Add drivers in Settings! <i class="fas fa-gear"></i></p></div>';
+function changeQty(itemId, delta) {
+  if (selectedKids.length === 0) { alert('Please select a driver first!'); return; }
+  if (selectedKids.length === 1) {
+    const kidId = selectedKids[0];
+    if (!data.orders[kidId]) data.orders[kidId] = {};
+    const nq = Math.max(0, (data.orders[kidId][itemId] || 0) + delta);
+    if (nq === 0) delete data.orders[kidId][itemId]; else data.orders[kidId][itemId] = nq;
   } else {
-    selectorDiv.innerHTML = data.kids.map(k => `
-      <div class="kid-chip ${selectedKids.includes(k.id) ? 'selected' : ''}" onclick="toggleKidSelection('${k.id}')">
-        <i class="fas fa-${selectedKids.includes(k.id) ? 'circle-check' : 'circle'}" style="font-size:0.7rem"></i>
-        ${esc(k.name)}
-      </div>
-    `).join('');
+    const kidIds = [...selectedKids].sort(); const key = kidIds.join(',');
+    let jo = data.jointOrders.find(o => o.itemId === itemId && [...o.kidIds].sort().join(',') === key);
+    if (!jo) { jo = {itemId, kidIds:[...kidIds], qty:0}; data.jointOrders.push(jo); }
+    jo.qty = Math.max(0, jo.qty + delta);
+    if (jo.qty === 0) data.jointOrders = data.jointOrders.filter(o => o !== jo);
   }
+  saveData(data); renderOrderTab();
+}
 
-  const menuArea = document.getElementById('menu-area');
-  if (data.categories.length === 0 || data.menuItems.length === 0) {
-    menuArea.innerHTML = '<div class="empty-state"><i class="fas fa-gas-pump"></i><p>No menu items yet!<br>Head to Settings to fuel up the menu.</p></div>';
-    return;
+function setQty(itemId, value) {
+  if (selectedKids.length === 0) return;
+  const nq = Math.max(0, Math.min(99, parseInt(value) || 0));
+  if (selectedKids.length === 1) {
+    const kidId = selectedKids[0]; if (!data.orders[kidId]) data.orders[kidId] = {};
+    if (nq === 0) delete data.orders[kidId][itemId]; else data.orders[kidId][itemId] = nq;
+  } else {
+    const kidIds = [...selectedKids].sort(); const key = kidIds.join(',');
+    let jo = data.jointOrders.find(o => o.itemId === itemId && [...o.kidIds].sort().join(',') === key);
+    if (nq === 0) { if (jo) data.jointOrders = data.jointOrders.filter(o => o !== jo); }
+    else { if (!jo) { jo = {itemId, kidIds:[...kidIds], qty:0}; data.jointOrders.push(jo); } jo.qty = nq; }
   }
-  if (selectedKids.length === 0) {
-    menuArea.innerHTML = `<div class="empty-state" style="padding:60px 20px;">
-      <i class="fas fa-hand-pointer" style="font-size:4rem; color:var(--gold); margin-bottom:20px; animation: bounce 1s ease-in-out infinite;"></i>
-      <p style="font-size:1.2rem; font-weight:700; color:var(--gold); margin-bottom:10px;">Select a Driver First!</p>
-      <p style="font-size:0.95rem; color:var(--text-muted);">Click on a driver name above to start adding items</p>
-    </div>`;
-    return;
-  }
+  saveData(data); renderOrderTab();
+}
+
+function editKidOrder(kidId, itemId, delta) {
+  if (!data.orders[kidId]) data.orders[kidId] = {};
+  const nq = Math.max(0, (data.orders[kidId][itemId] || 0) + delta);
+  if (nq === 0) delete data.orders[kidId][itemId]; else data.orders[kidId][itemId] = nq;
+  saveData(data); renderDashboard();
+}
+
+// ==================== RENDER: ORDER ====================
+function renderOrderTab() {
+  const sel = document.getElementById('kid-selector');
+  sel.innerHTML = data.kids.length === 0
+    ? '<div class="empty-state" style="padding:10px;width:100%"><p>Add drivers in Settings! <i class="fas fa-gear"></i></p></div>'
+    : data.kids.map(k => '<div class="kid-chip ' + (selectedKids.includes(k.id) ? 'selected' : '') + '" onclick="toggleKidSelection(\'' + k.id + '\')"><i class="fas fa-' + (selectedKids.includes(k.id) ? 'circle-check' : 'circle') + '" style="font-size:0.65rem"></i> ' + esc(k.name) + '</div>').join('');
+
+  const area = document.getElementById('menu-area');
+  if (!data.categories.length || !data.menuItems.length) { area.innerHTML = '<div class="empty-state"><i class="fas fa-gas-pump"></i><p>No menu items yet!<br>Head to Settings.</p></div>'; return; }
+  if (!selectedKids.length) { area.innerHTML = '<div class="empty-state" style="padding:50px 20px;"><i class="fas fa-hand-pointer" style="font-size:3.5rem;color:var(--gold);margin-bottom:16px;animation:bounce 1s ease-in-out infinite;"></i><p style="font-size:1.1rem;font-weight:700;color:var(--gold);margin-bottom:8px;">Select a Driver First!</p><p style="color:var(--text-muted);">Tap a driver name above to start ordering</p></div>'; return; }
 
   const isJoint = selectedKids.length > 1;
-  let html = '';
+  let h = '';
   if (isJoint) {
     const names = selectedKids.map(id => data.kids.find(k => k.id === id)?.name).filter(Boolean);
-    html += `<div class="card" style="border-color:rgba(233,69,96,0.3); background:linear-gradient(135deg, rgba(233,69,96,0.08), rgba(212,160,23,0.08));">
-      <div style="font-family:'Orbitron',sans-serif;font-weight:700;font-size:0.75rem;color:var(--red);letter-spacing:1px;">
-        <i class="fas fa-people-group"></i> TEAM ORDER: ${esc(names.join(' + '))}
-      </div>
-      <div style="font-size:0.72rem; color:#888; margin-top:4px; font-weight:500;">Items will be shared between selected drivers</div>
-    </div>`;
+    h += '<div class="card" style="border-color:rgba(255,71,87,0.2);background:rgba(255,71,87,0.03);"><div style="font-family:Orbitron,sans-serif;font-weight:700;font-size:0.7rem;color:var(--red);letter-spacing:1px;"><i class="fas fa-people-group"></i> TEAM: ' + esc(names.join(' + ')) + '</div></div>';
   }
-
   for (const cat of data.categories) {
     const items = data.menuItems.filter(m => m.categoryId === cat.id);
-    if (items.length === 0) continue;
+    if (!items.length) continue;
     const restricted = data.restrictions[cat.id];
-    html += `<div class="category-section" style="margin-bottom:16px;">
-      <div class="category-header">
-        <i class="fas fa-chevron-right" style="font-size:0.6rem"></i> ${esc(cat.name)}
-        ${restricted ? '<span class="restriction-tag"><i class="fas fa-lock"></i> Pick One</span>' : ''}
-      </div>`;
+    h += '<div style="margin-bottom:14px;"><div class="category-header"><i class="fas fa-chevron-right" style="font-size:0.55rem"></i> ' + esc(cat.name) + (restricted ? ' <span class="restriction-tag"><i class="fas fa-lock"></i> Pick One</span>' : '') + '</div>';
     for (const item of items) {
       const qty = getCurrentQty(item.id);
-      let disabled = false;
-      if (!isJoint && restricted) disabled = isItemDisabledForKid(selectedKids[0], item.id, cat.id);
-      html += `<div class="menu-item ${disabled ? 'disabled' : ''}" ${qty > 0 ? 'style="border-color:rgba(212,160,23,0.25);background:rgba(212,160,23,0.04)"' : ''}>
-        <div class="item-name"><span class="qty-badge ${qty === 0 ? 'qty-zero' : ''}">${qty}</span>${esc(item.name)}</div>
-        <div class="qty-control">
-          <button class="qty-btn minus" onclick="changeQty('${item.id}', -1)" ${qty === 0 ? 'disabled style="opacity:0.2"' : ''}>-</button>
-          <input type="number" class="qty-input" id="qty-${item.id}" value="${qty}" min="0" max="99" onchange="setQty('${item.id}', this.value)" onblur="setQty('${item.id}', this.value)" onclick="this.select()">
-          <button class="qty-btn plus" onclick="changeQty('${item.id}', 1)">+</button>
-        </div>
-      </div>`;
+      let disabled = !isJoint && restricted && isItemDisabledForKid(selectedKids[0], item.id, cat.id);
+      h += '<div class="menu-item' + (disabled ? ' disabled' : '') + (qty > 0 ? ' has-qty' : '') + '">'
+        + '<div class="item-name"><span class="qty-badge ' + (qty > 0 ? 'has-qty' : 'no-qty') + '">' + qty + '</span><span class="name-text">' + esc(item.name) + '</span></div>'
+        + '<div class="qty-control">'
+        + '<button type="button" class="qty-btn minus-btn' + (qty === 0 ? ' dim' : '') + '" onclick="changeQty(\'' + item.id + '\',-1)">&#8722;</button>'
+        + '<input type="number" class="qty-input" value="' + qty + '" min="0" max="99" onchange="setQty(\'' + item.id + '\',this.value)" onblur="setQty(\'' + item.id + '\',this.value)" onclick="this.select()">'
+        + '<button type="button" class="qty-btn plus-btn" onclick="changeQty(\'' + item.id + '\',1)">+</button>'
+        + '</div></div>';
     }
-    html += '</div>';
+    h += '</div>';
   }
-  menuArea.innerHTML = html;
+  area.innerHTML = h;
 }
 
 // ==================== RENDER: SETTINGS ====================
 function renderSettings() {
-  const kidsList = document.getElementById('kids-list');
-  if (data.kids.length === 0) {
-    kidsList.innerHTML = '<span style="font-size:0.8rem;color:var(--text-subtle)">No drivers added yet</span>';
-  } else {
-    kidsList.innerHTML = data.kids.map(k => `
-      <div class="kid-chip selected" style="cursor:default">
-        ${esc(k.name)}
-        <i class="fas fa-times remove" onclick="removeKid('${k.id}')"></i>
-      </div>
-    `).join('');
-  }
+  document.getElementById('kids-list').innerHTML = data.kids.length === 0
+    ? '<span style="font-size:0.8rem;color:var(--text-subtle)">No drivers yet</span>'
+    : data.kids.map(k => '<div class="kid-chip selected" style="cursor:default">' + esc(k.name) + ' <i class="fas fa-times remove" onclick="removeKid(\'' + k.id + '\')"></i></div>').join('');
 
-  const catsList = document.getElementById('categories-list');
-  if (data.categories.length === 0) {
-    catsList.innerHTML = '<span style="font-size:0.8rem;color:var(--text-subtle)">No categories yet</span>';
-  } else {
-    catsList.innerHTML = data.categories.map(c => {
-      const count = data.menuItems.filter(m => m.categoryId === c.id).length;
-      return `<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border:1.5px solid rgba(255,215,0,0.15);border-radius:10px;margin-bottom:6px;background:linear-gradient(135deg, rgba(26,26,46,0.4), rgba(15,15,25,0.6));backdrop-filter:blur(8px);box-shadow:0 2px 8px rgba(0,0,0,0.3);">
-        <div>
-          <span style="font-weight:700;font-size:0.9rem">${esc(c.name)}</span>
-          <span class="badge" style="margin-left:8px">${count} items</span>
-          ${data.restrictions[c.id] ? '<span class="badge badge-red" style="margin-left:4px">Pick 1</span>' : ''}
-        </div>
-        <button class="btn btn-danger btn-sm" onclick="removeCategory('${c.id}')" style="padding:4px 10px"><i class="fas fa-trash" style="font-size:0.7rem"></i></button>
-      </div>`;
-    }).join('');
-  }
+  document.getElementById('categories-list').innerHTML = data.categories.length === 0
+    ? '<span style="font-size:0.8rem;color:var(--text-subtle)">No categories yet</span>'
+    : data.categories.map(c => '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border:1px solid var(--border);border-radius:10px;margin-bottom:6px;background:var(--bg-elevated);"><div><span style="font-weight:700;font-size:0.88rem">' + esc(c.name) + '</span> <span class="badge" style="margin-left:6px">' + data.menuItems.filter(m => m.categoryId === c.id).length + '</span>' + (data.restrictions[c.id] ? ' <span class="badge badge-red" style="margin-left:4px">Pick 1</span>' : '') + '</div><button class="btn btn-danger btn-sm" onclick="removeCategory(\'' + c.id + '\')" style="padding:4px 10px"><i class="fas fa-trash" style="font-size:0.65rem"></i></button></div>').join('');
 
-  const catSelect = document.getElementById('item-cat-select');
-  catSelect.innerHTML = '<option value="">-- Select Category --</option>' +
-    data.categories.map(c => `<option value="${c.id}">${esc(c.name)}</option>`).join('');
+  document.getElementById('item-cat-select').innerHTML = '<option value="">-- Select Category --</option>' + data.categories.map(c => '<option value="' + c.id + '">' + esc(c.name) + '</option>').join('');
 
-  const menuList = document.getElementById('menu-items-list');
-  if (data.menuItems.length === 0) {
-    menuList.innerHTML = '<span style="font-size:0.8rem;color:var(--text-subtle)">No items yet</span>';
-  } else {
-    let html = '';
+  const ml = document.getElementById('menu-items-list');
+  if (!data.menuItems.length) { ml.innerHTML = '<span style="font-size:0.8rem;color:var(--text-subtle)">No items yet</span>'; }
+  else {
+    let h = '';
     for (const cat of data.categories) {
-      const items = data.menuItems.filter(m => m.categoryId === cat.id);
-      if (items.length === 0) continue;
-      html += `<div style="font-family:'Orbitron',sans-serif;font-size:0.6rem;font-weight:700;color:var(--gold);margin:10px 0 6px;letter-spacing:2px;text-transform:uppercase">${esc(cat.name)}</div>`;
-      for (const item of items) {
-        html += `<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 14px;border:1px solid rgba(255,255,255,0.04);border-radius:8px;margin-bottom:4px;">
-          <span style="font-size:0.88rem;font-weight:600">${esc(item.name)}</span>
-          <button class="btn btn-danger btn-sm" onclick="removeMenuItem('${item.id}')" style="padding:3px 8px"><i class="fas fa-times" style="font-size:0.6rem"></i></button>
-        </div>`;
-      }
+      const items = data.menuItems.filter(m => m.categoryId === cat.id); if (!items.length) continue;
+      h += '<div style="font-family:Orbitron,sans-serif;font-size:0.55rem;font-weight:700;color:var(--gold);margin:10px 0 6px;letter-spacing:2px;text-transform:uppercase">' + esc(cat.name) + '</div>';
+      for (const item of items) h += '<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 12px;border:1px solid rgba(255,255,255,0.03);border-radius:8px;margin-bottom:3px;"><span style="font-size:0.85rem;font-weight:600">' + esc(item.name) + '</span><button class="btn btn-danger btn-sm" onclick="removeMenuItem(\'' + item.id + '\')" style="padding:3px 8px"><i class="fas fa-times" style="font-size:0.55rem"></i></button></div>';
     }
-    menuList.innerHTML = html;
+    ml.innerHTML = h;
   }
 
-  const restList = document.getElementById('restrictions-list');
-  if (data.categories.length === 0) {
-    restList.innerHTML = '<span style="font-size:0.8rem;color:var(--text-subtle)">Add categories first</span>';
-  } else {
-    restList.innerHTML = data.categories.map(c => {
-      const on = !!data.restrictions[c.id];
-      return `<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
-        <div>
-          <div style="font-weight:700;font-size:0.9rem">${esc(c.name)}</div>
-          <div style="font-size:0.72rem;color:var(--text-subtle);font-weight:500">Only one item per kid from this category</div>
-        </div>
-        <div class="toggle ${on ? 'on' : ''}" onclick="toggleRestriction('${c.id}')"><div class="knob"></div></div>
-      </div>`;
-    }).join('');
-  }
+  document.getElementById('restrictions-list').innerHTML = data.categories.length === 0
+    ? '<span style="font-size:0.8rem;color:var(--text-subtle)">Add categories first</span>'
+    : data.categories.map(c => '<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.03);"><div><div style="font-weight:700;font-size:0.88rem">' + esc(c.name) + '</div><div style="font-size:0.7rem;color:var(--text-subtle);">Only one item per kid</div></div><button class="toggle ' + (data.restrictions[c.id] ? 'on' : '') + '" onclick="toggleRestriction(\'' + c.id + '\')" style="cursor:pointer;"><div class="knob"></div></button></div>').join('');
 }
 
 // ==================== RENDER: DASHBOARD ====================
 function renderDashboard() {
-  const summaryDiv = document.getElementById('dashboard-summary');
-  const byKidDiv = document.getElementById('dashboard-by-kid');
-  const totalsDiv = document.getElementById('dashboard-totals');
-
-  const itemTotals = {};
-  const kidSummaries = {};
-
+  const itemTotals = {}, kidSummaries = {};
   for (const kidId in data.orders) {
     if (!kidSummaries[kidId]) kidSummaries[kidId] = [];
     for (const itemId in data.orders[kidId]) {
-      const qty = data.orders[kidId][itemId];
-      if (qty > 0) {
-        const item = data.menuItems.find(m => m.id === itemId);
-        if (item) {
-          kidSummaries[kidId].push({ itemName: item.name, qty, joint: false, categoryId: item.categoryId });
-          itemTotals[itemId] = (itemTotals[itemId] || 0) + qty;
-        }
+      const q = data.orders[kidId][itemId]; if (q > 0) {
+        const it = data.menuItems.find(m => m.id === itemId);
+        if (it) { kidSummaries[kidId].push({itemName:it.name, qty:q, joint:false}); itemTotals[itemId] = (itemTotals[itemId]||0) + q; }
       }
     }
   }
-
   for (const jo of data.jointOrders) {
-    if (jo.qty > 0) {
-      const item = data.menuItems.find(m => m.id === jo.itemId);
-      if (item) {
-        const names = jo.kidIds.map(id => data.kids.find(k => k.id === id)?.name).filter(Boolean);
-        for (const kidId of jo.kidIds) {
-          if (!kidSummaries[kidId]) kidSummaries[kidId] = [];
-          const otherNames = names.filter(n => n !== data.kids.find(k => k.id === kidId)?.name);
-          kidSummaries[kidId].push({ itemName: item.name, qty: jo.qty, joint: true, sharedWith: otherNames });
-        }
-        itemTotals[jo.itemId] = (itemTotals[jo.itemId] || 0) + jo.qty;
-      }
-    }
+    if (jo.qty > 0) { const it = data.menuItems.find(m => m.id === jo.itemId); if (it) {
+      const names = jo.kidIds.map(id => data.kids.find(k => k.id === id)?.name).filter(Boolean);
+      for (const kidId of jo.kidIds) { if (!kidSummaries[kidId]) kidSummaries[kidId] = []; const others = names.filter(n => n !== data.kids.find(k => k.id === kidId)?.name); kidSummaries[kidId].push({itemName:it.name, qty:jo.qty, joint:true, sharedWith:others}); }
+      itemTotals[jo.itemId] = (itemTotals[jo.itemId]||0) + jo.qty;
+    }}
   }
-
-  const totalItems = Object.values(itemTotals).reduce((a, b) => a + b, 0);
-  const totalKidsOrdering = data.kids.filter(k => kidSummaries[k.id] && kidSummaries[k.id].length > 0).length;
+  const totalItems = Object.values(itemTotals).reduce((a,b)=>a+b, 0);
+  const totalKids = data.kids.filter(k => kidSummaries[k.id]?.length > 0).length;
   const totalJoint = data.jointOrders.filter(j => j.qty > 0).length;
 
-  summaryDiv.innerHTML = `
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
-      <div class="stat-box" style="background:rgba(212,160,23,0.08);border-color:rgba(212,160,23,0.2);">
-        <div class="stat-num" style="color:var(--gold)">${totalItems}</div>
-        <div class="stat-label" style="color:var(--gold)">Items</div>
-      </div>
-      <div class="stat-box" style="background:rgba(233,69,96,0.08);border-color:rgba(233,69,96,0.2);">
-        <div class="stat-num" style="color:var(--red)">${totalKidsOrdering}</div>
-        <div class="stat-label" style="color:var(--red)">Drivers</div>
-      </div>
-      <div class="stat-box" style="background:rgba(16,185,129,0.08);border-color:rgba(16,185,129,0.2);">
-        <div class="stat-num" style="color:#10b981">${totalJoint}</div>
-        <div class="stat-label" style="color:#10b981">Shared</div>
-      </div>
-    </div>`;
+  document.getElementById('dashboard-summary').innerHTML = '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;"><div class="stat-box" style="border-color:rgba(255,215,0,0.15);"><div class="stat-num" style="color:var(--gold)">' + totalItems + '</div><div class="stat-label" style="color:var(--gold)">Items</div></div><div class="stat-box" style="border-color:rgba(255,71,87,0.15);"><div class="stat-num" style="color:var(--red)">' + totalKids + '</div><div class="stat-label" style="color:var(--red)">Drivers</div></div><div class="stat-box" style="border-color:rgba(16,185,129,0.15);"><div class="stat-num" style="color:var(--green)">' + totalJoint + '</div><div class="stat-label" style="color:var(--green)">Shared</div></div></div>';
 
-  if (totalKidsOrdering === 0) {
-    byKidDiv.innerHTML = '<div class="empty-state" style="padding:20px"><i class="fas fa-flag-checkered"></i><p>No orders yet - race to the Order tab!</p></div>';
-  } else {
-    let html = '';
+  const byKid = document.getElementById('dashboard-by-kid');
+  if (totalKids === 0) { byKid.innerHTML = '<div class="empty-state" style="padding:20px"><i class="fas fa-flag-checkered"></i><p>No orders yet!</p></div>'; }
+  else {
+    let h = '';
     for (const kid of data.kids) {
-      const items = kidSummaries[kid.id];
-      if (!items || items.length === 0) continue;
-      html += `<div style="margin-bottom:14px;">
-        <div class="order-kid-name"><i class="fas fa-user-astronaut"></i> ${esc(kid.name)}</div>`;
-      for (const entry of items) {
-        const itemId = data.menuItems.find(m => m.name === entry.itemName)?.id;
-        html += `<div class="order-row" style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;">
-          <span style="flex:1;">${esc(entry.itemName)}${entry.joint ? '<span class="joint-badge">shared' + (entry.sharedWith && entry.sharedWith.length ? ' w/ ' + entry.sharedWith.map(esc).join(', ') : '') + '</span>' : ''}</span>
-          <div style="display:flex;align-items:center;gap:8px;">
-            ${!entry.joint && itemId ? `
-              <button class="qty-btn minus" onclick="editKidOrder('${kid.id}', '${itemId}', -1)" style="width:28px;height:28px;font-size:0.9rem;"><i class="fas fa-minus"></i></button>
-              <span style="font-weight:800;color:var(--gold-light);min-width:32px;text-align:center;">x${entry.qty}</span>
-              <button class="qty-btn plus" onclick="editKidOrder('${kid.id}', '${itemId}', 1)" style="width:28px;height:28px;font-size:0.9rem;"><i class="fas fa-plus"></i></button>
-            ` : `<span style="font-weight:800;color:var(--gold-light);">x${entry.qty}</span>`}
-          </div>
-        </div>`;
+      const items = kidSummaries[kid.id]; if (!items?.length) continue;
+      h += '<div style="margin-bottom:14px;"><div class="order-kid-name"><i class="fas fa-user-astronaut"></i> ' + esc(kid.name) + '</div>';
+      for (const e of items) {
+        const iid = data.menuItems.find(m => m.name === e.itemName)?.id;
+        h += '<div class="order-row"><span style="flex:1;">' + esc(e.itemName) + (e.joint ? '<span class="joint-badge">shared' + (e.sharedWith?.length ? ' w/ ' + e.sharedWith.map(esc).join(', ') : '') + '</span>' : '') + '</span><div style="display:flex;align-items:center;gap:6px;">';
+        if (!e.joint && iid) h += '<button type="button" class="qty-btn minus-btn" style="width:28px;height:28px;font-size:0.85rem;border-radius:8px;" onclick="editKidOrder(\'' + kid.id + '\',\'' + iid + '\',-1)">&#8722;</button><span style="font-weight:800;color:var(--gold-light);min-width:28px;text-align:center;">x' + e.qty + '</span><button type="button" class="qty-btn plus-btn" style="width:28px;height:28px;font-size:0.85rem;border-radius:8px;" onclick="editKidOrder(\'' + kid.id + '\',\'' + iid + '\',1)">+</button>';
+        else h += '<span style="font-weight:800;color:var(--gold-light);">x' + e.qty + '</span>';
+        h += '</div></div>';
       }
-      html += '</div>';
+      h += '</div>';
     }
-    byKidDiv.innerHTML = html;
+    byKid.innerHTML = h;
   }
 
-  if (Object.keys(itemTotals).length === 0) {
-    totalsDiv.innerHTML = '<div class="empty-state" style="padding:20px"><p style="font-size:0.8rem">No items ordered yet</p></div>';
-  } else {
-    let html = '';
-    for (const cat of data.categories) {
-      const catItems = data.menuItems.filter(m => m.categoryId === cat.id && itemTotals[m.id]);
-      if (catItems.length === 0) continue;
-      html += `<div style="font-family:'Orbitron',sans-serif;font-size:0.6rem;font-weight:700;color:var(--gold);margin:10px 0 4px;letter-spacing:2px;text-transform:uppercase">${esc(cat.name)}</div>`;
-      for (const item of catItems) {
-        html += `<div class="summary-row">
-          <span>${esc(item.name)}</span>
-          <span style="font-weight:800;color:var(--gold-light)">x${itemTotals[item.id]}</span>
-        </div>`;
-      }
-    }
-    html += `<div class="summary-row total"><span>TOTAL</span><span>${totalItems}</span></div>`;
-    totalsDiv.innerHTML = html;
+  const totDiv = document.getElementById('dashboard-totals');
+  if (!Object.keys(itemTotals).length) { totDiv.innerHTML = '<div class="empty-state" style="padding:20px"><p>No items ordered</p></div>'; }
+  else {
+    let h = '';
+    for (const cat of data.categories) { const ci = data.menuItems.filter(m => m.categoryId === cat.id && itemTotals[m.id]); if (!ci.length) continue; h += '<div style="font-family:Orbitron,sans-serif;font-size:0.55rem;font-weight:700;color:var(--gold);margin:10px 0 4px;letter-spacing:2px;text-transform:uppercase">' + esc(cat.name) + '</div>'; for (const it of ci) h += '<div class="summary-row"><span>' + esc(it.name) + '</span><span style="font-weight:800;color:var(--gold-light)">x' + itemTotals[it.id] + '</span></div>'; }
+    h += '<div class="summary-row total"><span>TOTAL</span><span>' + totalItems + '</span></div>';
+    totDiv.innerHTML = h;
   }
 }
 
 // ==================== EXPORT ====================
 function exportOrder() {
-  const itemTotals = {};
-  const itemNames = {};
-
-  for (const kidId in data.orders) {
-    for (const itemId in data.orders[kidId]) {
-      const qty = data.orders[kidId][itemId];
-      if (qty > 0) {
-        itemTotals[itemId] = (itemTotals[itemId] || 0) + qty;
-        const item = data.menuItems.find(m => m.id === itemId);
-        if (item) itemNames[itemId] = item.name;
-      }
-    }
-  }
-  for (const jo of data.jointOrders) {
-    if (jo.qty > 0) {
-      itemTotals[jo.itemId] = (itemTotals[jo.itemId] || 0) + jo.qty;
-      const item = data.menuItems.find(m => m.id === jo.itemId);
-      if (item) itemNames[jo.itemId] = item.name;
-    }
-  }
-
-  let lines = [];
-  lines.push("=============================================");
-  lines.push("   RISHAAN'S 10TH BIRTHDAY - FOOD ORDER");
-  lines.push("   13th February 2026");
-  lines.push("=============================================");
-  lines.push("");
-  lines.push("ORDER LIST (by Category):");
-  lines.push("---------------------------------------------");
-  let grandTotal = 0;
-  for (const cat of data.categories) {
-    const catItems = data.menuItems.filter(m => m.categoryId === cat.id && itemTotals[m.id]);
-    if (catItems.length === 0) continue;
-    lines.push("");
-    lines.push(`[ ${cat.name.toUpperCase()} ]`);
-    for (const item of catItems) {
-      const qty = itemTotals[item.id];
-      grandTotal += qty;
-      const pad = Math.max(1, 30 - item.name.length);
-      lines.push(`  ${item.name}${' '.repeat(pad)}x ${qty}`);
-    }
-  }
-  lines.push("");
-  lines.push("---------------------------------------------");
-  lines.push(`  TOTAL ITEMS:                        ${grandTotal}`);
-  lines.push("---------------------------------------------");
-  lines.push("");
-  lines.push("INDIVIDUAL ORDERS:");
-  lines.push("---------------------------------------------");
-  for (const kid of data.kids) {
-    const items = [];
-    if (data.orders[kid.id]) {
-      for (const itemId in data.orders[kid.id]) {
-        const qty = data.orders[kid.id][itemId];
-        if (qty > 0) {
-          const item = data.menuItems.find(m => m.id === itemId);
-          if (item) items.push({ name: item.name, qty });
-        }
-      }
-    }
-    for (const jo of data.jointOrders) {
-      if (jo.qty > 0 && jo.kidIds.includes(kid.id)) {
-        const item = data.menuItems.find(m => m.id === jo.itemId);
-        const others = jo.kidIds.filter(id => id !== kid.id).map(id => data.kids.find(k => k.id === id)?.name).filter(Boolean);
-        if (item) items.push({ name: item.name + ` (shared w/ ${others.join(', ')})`, qty: jo.qty });
-      }
-    }
-    if (items.length === 0) continue;
-    lines.push("");
-    lines.push(`  ${kid.name}:`);
-    for (const i of items) lines.push(`    - ${i.name}  x${i.qty}`);
-  }
-  lines.push("");
-  lines.push("=============================================");
-
+  const it = {}; for (const kid in data.orders) for (const id in data.orders[kid]) { const q = data.orders[kid][id]; if (q > 0) it[id] = (it[id]||0) + q; }
+  for (const jo of data.jointOrders) if (jo.qty > 0) it[jo.itemId] = (it[jo.itemId]||0) + jo.qty;
+  let lines = ["=============================================","   RISHAAN'S 10TH BIRTHDAY - FOOD ORDER","   13th February 2026","=============================================","","ORDER LIST:","---------------------------------------------"], gt = 0;
+  for (const cat of data.categories) { const ci = data.menuItems.filter(m => m.categoryId === cat.id && it[m.id]); if (!ci.length) continue; lines.push("","[ " + cat.name.toUpperCase() + " ]"); for (const item of ci) { gt += it[item.id]; lines.push("  " + item.name + " ".repeat(Math.max(1, 30-item.name.length)) + "x " + it[item.id]); } }
+  lines.push("","---------------------------------------------","  TOTAL: " + gt,"---------------------------------------------","","INDIVIDUAL ORDERS:","---------------------------------------------");
+  for (const kid of data.kids) { const items = []; if (data.orders[kid.id]) for (const id in data.orders[kid.id]) { const q = data.orders[kid.id][id]; if (q > 0) { const m = data.menuItems.find(x => x.id === id); if (m) items.push({name:m.name, qty:q}); } } for (const jo of data.jointOrders) if (jo.qty > 0 && jo.kidIds.includes(kid.id)) { const m = data.menuItems.find(x => x.id === jo.itemId); if (m) items.push({name:m.name + " (shared)", qty:jo.qty}); } if (!items.length) continue; lines.push("","  " + kid.name + ":"); for (const i of items) lines.push("    - " + i.name + "  x" + i.qty); }
+  lines.push("","=============================================");
   document.getElementById('export-content').textContent = lines.join('\n');
   document.getElementById('export-modal').style.display = 'flex';
 }
+function copyExport() { navigator.clipboard.writeText(document.getElementById('export-content').textContent).then(() => showToast('COPIED!')); }
+function downloadExport() { const b = new Blob([document.getElementById('export-content').textContent],{type:'text/plain'}); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'rishaan_birthday_order.txt'; a.click(); }
+function clearAllOrders() { if (!confirm('Clear ALL orders?')) return; for (const k in data.orders) data.orders[k] = {}; data.jointOrders = []; saveData(data); renderDashboard(); showToast('CLEARED'); }
+function resetApp() { if (!confirm('RESET EVERYTHING?')) return; if (!confirm('Sure?')) return; localStorage.removeItem(DB_KEY); data = defaultData(); selectedKids = []; renderSettings(); renderOrderTab(); showToast('RESET'); }
 
-function copyExport() {
-  navigator.clipboard.writeText(document.getElementById('export-content').textContent)
-    .then(() => showToast('COPIED!'));
-}
+// ==================== BACKUP ====================
+function downloadBackup() { const b = new Blob([JSON.stringify(data,null,2)],{type:'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'rishaan-backup-' + new Date().toISOString().slice(0,10) + '.json'; a.click(); showToast('DOWNLOADED!'); }
+function restoreBackup(event) { const f = event.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = function(e) { try { const d = JSON.parse(e.target.result); if (!d.kids || !d.orders) { showToast('Invalid!'); return; } if (!confirm('Replace data?')) return; data = d; saveData(data); selectedKids = []; renderSettings(); renderOrderTab(); showToast('RESTORED!'); } catch(e) { showToast('Failed!'); } }; r.readAsText(f); event.target.value = ''; }
 
-function downloadExport() {
-  const blob = new Blob([document.getElementById('export-content').textContent], { type: 'text/plain' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'rishaan_birthday_food_order.txt';
-  a.click();
-}
-
-function clearAllOrders() {
-  if (!confirm('Clear ALL orders? Cannot be undone!')) return;
-  for (const kidId in data.orders) data.orders[kidId] = {};
-  data.jointOrders = [];
-  saveData(data);
-  renderDashboard();
-  showToast('ALL ORDERS CLEARED');
-}
-
-function resetApp() {
-  if (!confirm('RESET EVERYTHING? All kids, menu items, and orders will be deleted!')) return;
-  if (!confirm('Are you absolutely sure?')) return;
-  localStorage.removeItem(DB_KEY);
-  data = defaultData();
-  selectedKids = [];
-  renderSettings();
-  renderOrderTab();
-  showToast('APP RESET');
-}
-
-// ==================== BACKUP/RESTORE ====================
-function downloadBackup() {
-  const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
-  const filename = `rishaan-bday-backup-${timestamp}.json`;
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = filename;
-  a.click();
-  showToast('BACKUP DOWNLOADED!');
-}
-
-function restoreBackup(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    try {
-      const restored = JSON.parse(e.target.result);
-
-      // Validate structure
-      if (!restored.kids || !restored.categories || !restored.menuItems || !restored.orders) {
-        showToast('Invalid backup file!');
-        return;
-      }
-
-      if (!confirm('Restore from backup? Current data will be replaced!')) return;
-
-      data = restored;
-      saveData(data);
-      selectedKids = [];
-      renderSettings();
-      renderOrderTab();
-      showToast('BACKUP RESTORED!');
-    } catch (err) {
-      showToast('Failed to restore backup!');
-      console.error(err);
-    }
-  };
-  reader.readAsText(file);
-  event.target.value = ''; // Reset input
-}
-
-// ==================== FUN JOKES & HUMOR ====================
-const funnyJokes = [
-  "🍕 What does a pizza say when it introduces itself? Slice to meet you!",
-  "🏎️ What do race cars eat for breakfast? Fast food!",
-  "🍟 Why did the French fry go to school? To become a SMART chip!",
-  "🎂 What kind of music do birthday cakes like? Anything they can LAYER on!",
-  "🏁 Why did the race car always win? It never took a BRAKE!",
-  "🍔 What's a burger's favorite sport? Bun-dling!",
-  "🎈 What do you call a fake noodle? An im-PASTA!",
-  "🏎️ What do you call a sleeping race car? A nap-mobile!",
-  "🎉 Why was the birthday cake so happy? It was tier-iffic!",
-  "🍕 What did the pizza say to the topping? You complete me!",
-  "🏎️ What's a race car's favorite game? Tag - you're it!",
-  "🍟 What's orange and sounds like a parrot? A CARROT!",
-  "🎊 What do you call cheese that isn't yours? NACHO cheese!",
-  "🎁 Why do presents love birthdays? They get to be un-WRAPPED!",
-  "🏁 What do race cars do at bedtime? They go vroom vroom to sleep!",
-  "🍕 Why was the pizza slice lonely? It wanted the HOLE pizza!",
-  "🎂 What did the cake say to the fork? Want a PIECE of me?",
-  "🏎️ Why don't race cars play cards? They might get a flat tire!",
-  "🎉 What's a balloon's favorite type of music? POP music!",
-  "🍔 Why did the tomato turn red? It saw the salad dressing!",
-];
-
-const funnyToasts = [
-  "TURBO MODE ACTIVATED! 🚀",
-  "ZOOM ZOOM! Order placed! 💨",
-  "That's a spicy choice! 🌶️",
-  "Excellent taste detected! 👨‍🍳",
-  "The chef approves! 👍",
-  "Now that's what I call SPEED! ⚡",
-  "Buckle up, order incoming! 🏁",
-  "You've got great taste! 😎",
-  "VIP order detected! ⭐",
-  "This kid knows food! 🍕",
-];
-
-let lastJokeIndex = -1;
-
-// Personalized joke templates using kids' names
-function getPersonalizedJoke() {
-  if (data.kids.length === 0) return null;
-
-  const randomKid = data.kids[Math.floor(Math.random() * data.kids.length)];
-  const jokeTemplates = [
-    `🏎️ ${randomKid.name} is so fast, even Koenigsegg wants to hire them as a test driver!`,
-    `🍕 Why did ${randomKid.name} order extra cheese? Because they're EXTRA awesome!`,
-    `🏁 Breaking news: ${randomKid.name} just broke the speed record for ordering food!`,
-    `⚡ ${randomKid.name}'s racing skills are so good, they could lap Formula 1 drivers!`,
-    `🎂 ${randomKid.name} is celebrating today like a champion on the podium! 🏆`,
-    `🚀 Rumor has it ${randomKid.name} can go from 0 to HUNGRY in 2.5 seconds!`,
-    `🏎️ ${randomKid.name} just unlocked the secret achievement: ULTIMATE PARTY DRIVER! 🎉`,
-    `🍔 ${randomKid.name}'s food choices are faster than pit crew tire changes!`,
-    `⭐ ${randomKid.name} drives so smooth, even the birthday cake isn't shaking!`,
-    `🏁 ${randomKid.name} crossed the finish line first... straight to the food table!`,
-  ];
-
-  return jokeTemplates[Math.floor(Math.random() * jokeTemplates.length)];
-}
-
+// ==================== JOKES ====================
+const jokes = ["What does a pizza say? Slice to meet you!","Race cars eat fast food!","French fry went to school to be a SMART chip!","Birthday cakes like music they can LAYER on!","Race car won because it never took a BRAKE!","Fake noodle? An im-PASTA!","Sleeping race car? A nap-mobile!","Birthday cake was tier-iffic!","Not your cheese? NACHO cheese!","Balloon's fave music? POP!"];
+let lastJ = -1;
 function showRandomJoke() {
-  const jokeBanner = document.getElementById('joke-banner');
-  const jokeText = document.getElementById('joke-text');
+  const b = document.getElementById('joke-banner'), t = document.getElementById('joke-text');
+  let idx; do { idx = Math.floor(Math.random() * jokes.length); } while (idx === lastJ && jokes.length > 1); lastJ = idx;
+  if (Math.random() < 0.35 && data.kids.length) { const k = data.kids[Math.floor(Math.random() * data.kids.length)]; t.textContent = k.name + " just broke the speed record for ordering food!"; }
+  else t.textContent = jokes[idx];
+  b.style.display = 'block'; setTimeout(() => { b.style.display = 'none'; }, 5000);
+}
+setInterval(showRandomJoke, 20000); setTimeout(showRandomJoke, 5000);
 
-  let joke;
-  // 40% chance to show personalized joke
-  if (Math.random() < 0.4 && data.kids.length > 0) {
-    joke = getPersonalizedJoke();
+// ==================== MUSIC ====================
+let musicPlaying = false;
+function toggleMusic() {
+  const a = document.getElementById('bg-music'), i = document.getElementById('music-toggle').querySelector('i');
+  const label = document.getElementById('music-player').querySelector('div:last-child');
+  if (musicPlaying) {
+    a.pause();
+    i.className = 'fas fa-play';
+    i.style.marginLeft = '2px';
+    label.textContent = 'CLICK TO PLAY';
+    musicPlaying = false;
   } else {
-    let randomIndex;
-    do {
-      randomIndex = Math.floor(Math.random() * funnyJokes.length);
-    } while (randomIndex === lastJokeIndex && funnyJokes.length > 1);
-    lastJokeIndex = randomIndex;
-    joke = funnyJokes[randomIndex];
+    a.volume = 0.6;
+    a.play().then(() => {
+      i.className = 'fas fa-pause';
+      i.style.marginLeft = '0';
+      label.textContent = 'NOW PLAYING';
+      musicPlaying = true;
+    }).catch(err => {
+      console.error('Audio playback failed:', err);
+      showToast('Audio failed to load!');
+      i.className = 'fas fa-play';
+      i.style.marginLeft = '2px';
+    });
   }
-
-  jokeText.textContent = joke;
-  jokeBanner.style.display = 'block';
-
-  setTimeout(() => {
-    jokeBanner.style.animation = 'bounceIn 0.5s ease reverse';
-    setTimeout(() => {
-      jokeBanner.style.display = 'none';
-      jokeBanner.style.animation = 'bounceIn 0.5s ease';
-    }, 500);
-  }, 5000);
 }
+// Set volume on page load
+document.addEventListener('DOMContentLoaded', () => {
+  const a = document.getElementById('bg-music');
+  if (a) a.volume = 0.6;
+});
 
-function showFunnyToast() {
-  // Personalized toast if single kid selected
-  if (selectedKids.length === 1 && Math.random() < 0.5) {
-    const kid = data.kids.find(k => k.id === selectedKids[0]);
-    if (kid) {
-      const personalToasts = [
-        `${kid.name} is on FIRE! 🔥`,
-        `${kid.name}'s order just hit TURBO! 🚀`,
-        `Great choice, ${kid.name}! 🏆`,
-        `${kid.name} knows what's good! 😎`,
-        `${kid.name} just scored a PODIUM finish! 🏁`,
-      ];
-      showToast(personalToasts[Math.floor(Math.random() * personalToasts.length)]);
-      return;
-    }
-  }
-  const randomToast = funnyToasts[Math.floor(Math.random() * funnyToasts.length)];
-  showToast(randomToast);
+// ==================== FIREBASE ====================
+let firebaseApp = null, firebaseDB = null, firebaseSyncEnabled = false;
+function setSyncStatus(c) { const d = document.getElementById('sync-dot'), l = document.getElementById('sync-status').querySelector('div:last-child'); d.style.background = c ? '#10b981' : '#e94560'; d.style.boxShadow = '0 0 6px ' + (c ? '#10b981' : '#e94560'); l.textContent = c ? 'SYNCED' : 'OFFLINE'; l.style.color = c ? '#10b981' : '#e94560'; }
+function enableFirebaseSync() {
+  const ct = document.getElementById('firebase-config-input').value.trim(); if (!ct) { showToast('Paste config!'); return; }
+  try { const cfg = JSON.parse(ct); if (!firebaseApp) { firebaseApp = firebase.initializeApp(cfg); firebaseDB = firebase.database(); } localStorage.setItem('firebase_config', ct);
+    firebaseDB.ref('rishaan-birthday').on('value', snap => { const c = snap.val(); if (c) { data = c; _saveLocal(data); const tab = document.querySelector('.tab-content.active').id.replace('tab-',''); if (tab==='order') renderOrderTab(); if (tab==='dashboard') renderDashboard(); if (tab==='settings') renderSettings(); } });
+    firebaseSyncEnabled = true; firebaseDB.ref('rishaan-birthday').set(data);
+    document.getElementById('firebase-setup').style.display = 'none'; document.getElementById('firebase-active').style.display = 'block'; setSyncStatus(true); showToast('SYNC ON!');
+  } catch(e) { showToast('Invalid config!'); }
 }
+function disableFirebaseSync() { if (!confirm('Disable sync?')) return; if (firebaseDB) firebaseDB.ref('rishaan-birthday').off(); localStorage.removeItem('firebase_config'); firebaseSyncEnabled = false; document.getElementById('firebase-setup').style.display = 'block'; document.getElementById('firebase-active').style.display = 'none'; document.getElementById('firebase-config-input').value = ''; setSyncStatus(false); showToast('Sync off'); }
+function viewRawData() { document.getElementById('export-content').textContent = JSON.stringify(data,null,2); document.getElementById('export-modal').style.display = 'flex'; }
 
-// Show jokes periodically
-setInterval(showRandomJoke, 20000); // Every 20 seconds
-setTimeout(showRandomJoke, 5000); // First joke after 5s
+// ==================== CONFETTI & CARS ====================
+function launchConfetti() { const items = ['🏎️','🏁','🎂','⭐','🎁','🥳','✨','🏆']; for (let i = 0; i < 20; i++) setTimeout(() => { const c = document.createElement('div'); c.className = 'confetti'; c.textContent = items[Math.floor(Math.random()*items.length)]; c.style.left = Math.random()*100+'vw'; c.style.animationDuration = (2+Math.random()*3)+'s'; document.body.appendChild(c); setTimeout(() => c.remove(), 5000); }, i*120); }
+function createCar() { const c = document.createElement('div'); c.className = 'koenigsegg-car'; const fwd = Math.random()>0.5; c.textContent = '🏎️'; c.style.fontSize = (Math.random()*1.5+1.5)+'rem'; c.style.bottom = (Math.random()*40+15)+'%'; const spd = Math.random()*2+3; if (fwd) { c.style.left = '-80px'; c.style.animation = 'raceAcross '+spd+'s linear'; } else { c.style.right = '-80px'; c.style.transform = 'scaleX(-1)'; c.style.animation = 'raceReverse '+spd+'s linear'; } document.body.appendChild(c); setTimeout(() => c.remove(), spd*1000+500); }
+setInterval(() => { if (Math.random() > 0.6) createCar(); }, 3000);
 
-// Enter key handlers
+// ==================== ENTER KEYS ====================
 document.getElementById('kid-name-input').addEventListener('keydown', e => { if (e.key === 'Enter') addKid(); });
 document.getElementById('cat-name-input').addEventListener('keydown', e => { if (e.key === 'Enter') addCategory(); });
 document.getElementById('item-name-input').addEventListener('keydown', e => { if (e.key === 'Enter') addMenuItem(); });
 
-// Confetti
-function launchConfetti() {
-  const items = ['🏎️','🏁','🎂','⭐','🎁','🥳','✨','🏆','💨','🔥'];
-  for (let i = 0; i < 25; i++) {
-    setTimeout(() => {
-      const c = document.createElement('div');
-      c.className = 'confetti';
-      c.textContent = items[Math.floor(Math.random() * items.length)];
-      c.style.left = Math.random() * 100 + 'vw';
-      c.style.animationDuration = (2 + Math.random() * 3) + 's';
-      document.body.appendChild(c);
-      setTimeout(() => c.remove(), 5000);
-    }, i * 120);
-  }
-}
-
-// Music Control
-let musicPlaying = false;
-function toggleMusic() {
-  const audio = document.getElementById('bg-music');
-  const btn = document.getElementById('music-toggle');
-  const icon = btn.querySelector('i');
-
-  if (musicPlaying) {
-    audio.pause();
-    icon.className = 'fas fa-play';
-    icon.style.marginLeft = '2px';
-    musicPlaying = false;
-  } else {
-    audio.play().catch(() => showToast('Enable sound first!'));
-    icon.className = 'fas fa-pause';
-    icon.style.marginLeft = '0';
-    musicPlaying = true;
-  }
-}
-
-// ==================== FIREBASE CLOUD SYNC ====================
-let firebaseApp = null;
-let firebaseDB = null;
-let firebaseSyncEnabled = false;
-
-function setSyncStatus(connected) {
-  const dot = document.getElementById('sync-dot');
-  const text = document.getElementById('sync-status').querySelector('div:last-child');
-  if (connected) {
-    dot.style.background = '#10b981';
-    dot.style.boxShadow = '0 0 8px #10b981';
-    text.textContent = 'SYNCED';
-    text.style.color = '#10b981';
-  } else {
-    dot.style.background = '#e94560';
-    dot.style.boxShadow = '0 0 8px #e94560';
-    text.textContent = 'OFFLINE';
-    text.style.color = '#e94560';
-  }
-}
-
-function enableFirebaseSync() {
-  const configInput = document.getElementById('firebase-config-input');
-  const configText = configInput.value.trim();
-
-  if (!configText) {
-    showToast('Please paste Firebase config!');
-    return;
-  }
-
-  try {
-    const firebaseConfig = JSON.parse(configText);
-
-    // Initialize Firebase
-    if (!firebaseApp) {
-      firebaseApp = firebase.initializeApp(firebaseConfig);
-      firebaseDB = firebase.database();
-    }
-
-    // Save config to localStorage
-    localStorage.setItem('firebase_config', configText);
-
-    // Setup real-time sync
-    const dbRef = firebaseDB.ref('rishaan-birthday');
-
-    // Listen for changes from cloud
-    dbRef.on('value', (snapshot) => {
-      const cloudData = snapshot.val();
-      if (cloudData && !firebaseSyncEnabled) {
-        // First load from cloud
-        data = cloudData;
-        saveData(data);
-        renderSettings();
-        renderOrderTab();
-      } else if (cloudData) {
-        // Real-time updates from other devices
-        data = cloudData;
-        saveData(data);
-        const currentTab = document.querySelector('.tab-content.active').id.replace('tab-', '');
-        if (currentTab === 'order') renderOrderTab();
-        if (currentTab === 'dashboard') renderDashboard();
-        if (currentTab === 'settings') renderSettings();
-      }
-    });
-
-    firebaseSyncEnabled = true;
-
-    // Upload current data to cloud
-    dbRef.set(data);
-
-    // Update UI
-    document.getElementById('firebase-setup').style.display = 'none';
-    document.getElementById('firebase-active').style.display = 'block';
-    setSyncStatus(true);
-
-    showToast('CLOUD SYNC ENABLED!');
-  } catch (err) {
-    showToast('Invalid Firebase config!');
-    console.error(err);
-  }
-}
-
-function disableFirebaseSync() {
-  if (!confirm('Disable cloud sync? App will use local storage only.')) return;
-
-  if (firebaseDB) {
-    firebaseDB.ref('rishaan-birthday').off();
-  }
-
-  localStorage.removeItem('firebase_config');
-  firebaseSyncEnabled = false;
-
-  document.getElementById('firebase-setup').style.display = 'block';
-  document.getElementById('firebase-active').style.display = 'none';
-  document.getElementById('firebase-config-input').value = '';
-  setSyncStatus(false);
-
-  showToast('Cloud sync disabled');
-}
-
-function viewRawData() {
-  const json = JSON.stringify(data, null, 2);
-  const modal = document.getElementById('export-modal');
-  document.getElementById('export-content').textContent = json;
-  modal.style.display = 'flex';
-}
-
-// Override saveData to sync with Firebase
-const originalSaveData = saveData;
-function saveData(d) {
-  originalSaveData(d);
-  if (firebaseSyncEnabled && firebaseDB) {
-    firebaseDB.ref('rishaan-birthday').set(d);
-  }
-}
-
-// ==================== KOENIGSEGG RACING CARS ANIMATION ====================
-function createKoenigseggCar() {
-  const carContainer = document.createElement('div');
-  carContainer.className = 'koenigsegg-car';
-
-  const direction = Math.random() > 0.5 ? 'forward' : 'reverse';
-  const speed = Math.random() * 2 + 2.5; // 2.5-4.5s
-  const lane = Math.random() * 40 + 15; // 15-55% from bottom
-  const size = Math.random() * 0.8 + 1.2; // 1.2-2rem
-
-  // SVG Koenigsegg-style supercar
-  const carSVG = `
-    <svg width="${size * 80}" height="${size * 30}" viewBox="0 0 100 35" style="filter: drop-shadow(0 2px 6px rgba(212,160,23,0.4));">
-      <!-- Car body -->
-      <path d="M 15 25 L 20 18 L 35 15 L 65 15 L 80 18 L 85 25 Z"
-            fill="url(#carGrad)" stroke="var(--gold)" stroke-width="0.8"/>
-      <!-- Windshield -->
-      <path d="M 35 15 L 40 12 L 60 12 L 65 15 Z"
-            fill="rgba(0,0,0,0.3)" stroke="var(--gold)" stroke-width="0.5"/>
-      <!-- Side details -->
-      <path d="M 25 20 L 30 18 L 70 18 L 75 20"
-            stroke="var(--gold-light)" stroke-width="1" fill="none"/>
-      <!-- Wheels -->
-      <circle cx="30" cy="26" r="4" fill="#2a2a2a" stroke="var(--gold)" stroke-width="1"/>
-      <circle cx="30" cy="26" r="2.5" fill="var(--gold)"/>
-      <circle cx="70" cy="26" r="4" fill="#2a2a2a" stroke="var(--gold)" stroke-width="1"/>
-      <circle cx="70" cy="26" r="2.5" fill="var(--gold)"/>
-      <!-- Headlights -->
-      <circle cx="${direction === 'forward' ? '82' : '18'}" cy="20" r="2" fill="var(--gold-light)" opacity="0.8"/>
-      <!-- Exhaust glow -->
-      <circle cx="${direction === 'forward' ? '15' : '85'}" cy="24" r="3" fill="var(--red)" opacity="0.6">
-        <animate attributeName="opacity" values="0.6;1;0.6" dur="0.3s" repeatCount="indefinite"/>
-      </circle>
-      <defs>
-        <linearGradient id="carGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stop-color="var(--gold)" stop-opacity="0.9"/>
-          <stop offset="50%" stop-color="#b8860b" stop-opacity="0.95"/>
-          <stop offset="100%" stop-color="#8b6914" stop-opacity="0.9"/>
-        </linearGradient>
-      </defs>
-    </svg>
-  `;
-
-  carContainer.innerHTML = carSVG;
-
-  if (direction === 'forward') {
-    carContainer.style.bottom = lane + '%';
-    carContainer.style.left = '-150px';
-    carContainer.style.animation = `raceAcross ${speed}s linear, speedBoost 0.5s ease-in-out infinite`;
-  } else {
-    carContainer.style.bottom = lane + '%';
-    carContainer.style.right = '-150px';
-    carContainer.style.animation = `raceReverse ${speed}s linear, speedBoost 0.5s ease-in-out infinite`;
-  }
-
-  // Add speed trail
-  const trail = document.createElement('div');
-  trail.className = 'car-trail';
-  if (direction === 'reverse') trail.style.left = '100%';
-  carContainer.appendChild(trail);
-
-  document.body.appendChild(carContainer);
-
-  setTimeout(() => carContainer.remove(), speed * 1000 + 500);
-}
-
-// Create BIG Koenigsegg overlay car
-function createBigCarOverlay() {
-  const carContainer = document.createElement('div');
-  carContainer.className = 'big-car-overlay';
-
-  const direction = Math.random() > 0.5 ? 'forward' : 'reverse';
-  const speed = Math.random() * 2 + 4; // 4-6s for dramatic effect
-  const verticalPos = Math.random() * 30 + 35; // 35-65% from bottom
-
-  // Massive SVG Koenigsegg Agera/Jesko style supercar
-  const bigCarSVG = `
-    <svg width="400" height="150" viewBox="0 0 200 60" style="filter: drop-shadow(0 10px 40px rgba(255,215,0,0.6));">
-      <!-- Aerodynamic front splitter -->
-      <path d="M ${direction === 'forward' ? '165' : '15'} 46 L ${direction === 'forward' ? '180' : '0'} 46 L ${direction === 'forward' ? '178' : '2'} 48 L ${direction === 'forward' ? '165' : '15'} 48 Z"
-            fill="#ffd700" opacity="0.7"/>
-
-      <!-- Main body - ultra-aggressive hypercar shape -->
-      <path d="M 25 45 L 35 30 L 55 24 L 75 22 L 95 21 L 125 22 L 145 24 L 165 30 L 175 45 L 170 47 L 30 47 Z"
-            fill="url(#bigCarGrad)" stroke="#ffd700" stroke-width="2"/>
-
-      <!-- Side air scoop -->
-      <polygon points="${direction === 'forward' ? '135,28 145,26 148,32 138,34' : '52,28 62,26 65,32 55,34'}"
-               fill="#1a1a2e" stroke="#ffe55c" stroke-width="1.2"/>
-
-      <!-- Aggressive windshield with racing slant -->
-      <path d="M 75 24 L 85 16 L 115 16 L 125 24 Z"
-            fill="rgba(20,20,40,0.6)" stroke="#ffe55c" stroke-width="1.2"/>
-
-      <!-- Cabin roof line -->
-      <path d="M 82 16 L 90 12 L 110 12 L 118 16"
-            fill="none" stroke="#ffd700" stroke-width="1"/>
-
-      <!-- Air intakes -->
-      <rect x="45" y="32" width="8" height="6" fill="#1a1a2e" stroke="#ffd700" stroke-width="0.8"/>
-      <rect x="145" y="32" width="8" height="6" fill="#1a1a2e" stroke="#ffd700" stroke-width="0.8"/>
-
-      <!-- Side vents -->
-      <path d="M 40 30 L 50 28 L 140 28 L 150 30"
-            stroke="#ffe55c" stroke-width="2" fill="none" opacity="0.8"/>
-
-      <!-- Racing wheels with carbon fiber spokes -->
-      <circle cx="55" cy="48" r="9" fill="#2a2a2a" stroke="#ffd700" stroke-width="1.5"/>
-      <circle cx="55" cy="48" r="7" fill="#1a1a2e"/>
-      <circle cx="55" cy="48" r="4.5" fill="#ffd700" opacity="0.3">
-        <animateTransform attributeName="transform" type="rotate" from="0 55 48" to="360 55 48" dur="0.3s" repeatCount="indefinite"/>
-      </circle>
-      <line x1="55" y1="43" x2="55" y2="53" stroke="#ffd700" stroke-width="1.5">
-        <animateTransform attributeName="transform" type="rotate" from="0 55 48" to="360 55 48" dur="0.3s" repeatCount="indefinite"/>
-      </line>
-      <line x1="50" y1="48" x2="60" y2="48" stroke="#ffd700" stroke-width="1.5">
-        <animateTransform attributeName="transform" type="rotate" from="0 55 48" to="360 55 48" dur="0.3s" repeatCount="indefinite"/>
-      </line>
-      <circle cx="55" cy="48" r="2" fill="#ff6b6b"/>
-
-      <circle cx="135" cy="48" r="9" fill="#2a2a2a" stroke="#ffd700" stroke-width="1.5"/>
-      <circle cx="135" cy="48" r="7" fill="#1a1a2e"/>
-      <circle cx="135" cy="48" r="4.5" fill="#ffd700" opacity="0.3">
-        <animateTransform attributeName="transform" type="rotate" from="0 135 48" to="360 135 48" dur="0.3s" repeatCount="indefinite"/>
-      </circle>
-      <line x1="135" y1="43" x2="135" y2="53" stroke="#ffd700" stroke-width="1.5">
-        <animateTransform attributeName="transform" type="rotate" from="0 135 48" to="360 135 48" dur="0.3s" repeatCount="indefinite"/>
-      </line>
-      <line x1="130" y1="48" x2="140" y2="48" stroke="#ffd700" stroke-width="1.5">
-        <animateTransform attributeName="transform" type="rotate" from="0 135 48" to="360 135 48" dur="0.3s" repeatCount="indefinite"/>
-      </line>
-      <circle cx="135" cy="48" r="2" fill="#ff6b6b"/>
-
-      <!-- Headlights -->
-      <circle cx="${direction === 'forward' ? '168' : '22'}" cy="32" r="4" fill="#ffe55c" opacity="0.9">
-        <animate attributeName="opacity" values="0.9;1;0.9" dur="1s" repeatCount="indefinite"/>
-      </circle>
-
-      <!-- Exhaust flames -->
-      <ellipse cx="${direction === 'forward' ? '18' : '172'}" cy="44" rx="6" ry="4" fill="#ff6b6b" opacity="0.7">
-        <animate attributeName="opacity" values="0.5;1;0.5" dur="0.2s" repeatCount="indefinite"/>
-        <animate attributeName="rx" values="6;8;6" dur="0.2s" repeatCount="indefinite"/>
-      </ellipse>
-
-      <!-- Aggressive racing spoiler -->
-      <path d="M ${direction === 'forward' ? '135' : '30'} 20 L ${direction === 'forward' ? '145' : '40'} 14 L ${direction === 'forward' ? '165' : '60'} 14 L ${direction === 'forward' ? '175' : '70'} 20"
-            stroke="#ffd700" stroke-width="2" fill="none"/>
-      <rect x="${direction === 'forward' ? '140' : '35'}" y="12" width="30" height="2.5" fill="#ffd700" opacity="0.8"/>
-      <line x1="${direction === 'forward' ? '145' : '40'}" y1="14" x2="${direction === 'forward' ? '145' : '40'}" y2="20" stroke="#ffd700" stroke-width="1.5"/>
-      <line x1="${direction === 'forward' ? '165' : '60'}" y1="14" x2="${direction === 'forward' ? '165' : '60'}" y2="20" stroke="#ffd700" stroke-width="1.5"/>
-
-      <defs>
-        <linearGradient id="bigCarGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stop-color="#ffd700" stop-opacity="1"/>
-          <stop offset="40%" stop-color="#ffed4e" stop-opacity="0.95"/>
-          <stop offset="100%" stop-color="#d4a017" stop-opacity="0.9"/>
-        </linearGradient>
-      </defs>
-    </svg>
-  `;
-
-  carContainer.innerHTML = bigCarSVG;
-
-  if (direction === 'forward') {
-    carContainer.style.top = verticalPos + '%';
-    carContainer.style.left = '-400px';
-    carContainer.style.animation = `driftIn ${speed}s cubic-bezier(0.25, 0.46, 0.45, 0.94)`;
-  } else {
-    carContainer.style.top = verticalPos + '%';
-    carContainer.style.right = '-400px';
-    carContainer.style.animation = `driftReverse ${speed}s cubic-bezier(0.25, 0.46, 0.45, 0.94)`;
-  }
-
-  document.body.appendChild(carContainer);
-
-  setTimeout(() => carContainer.remove(), speed * 1000 + 500);
-}
-
-// Create birthday balloons occasionally
-function createBirthdayBalloon() {
-  const balloon = document.createElement('div');
-  balloon.style.cssText = `
-    position: fixed;
-    bottom: -50px;
-    left: ${Math.random() * 90 + 5}%;
-    font-size: ${Math.random() * 1.5 + 1.5}rem;
-    z-index: 1;
-    pointer-events: none;
-    animation: floatUp ${Math.random() * 4 + 5}s ease-out forwards;
-  `;
-  balloon.textContent = ['🎈', '🎂', '🎁', '⭐', '🎉'][Math.floor(Math.random() * 5)];
-
-  const style = document.createElement('style');
-  style.textContent = `
-    @keyframes floatUp {
-      0% { bottom: -50px; opacity: 1; transform: translateX(0) rotate(0deg); }
-      100% { bottom: 110vh; opacity: 0; transform: translateX(${Math.random() * 40 - 20}px) rotate(${Math.random() * 360}deg); }
-    }
-  `;
-  document.head.appendChild(style);
-  document.body.appendChild(balloon);
-
-  setTimeout(() => {
-    balloon.remove();
-    style.remove();
-  }, 10000);
-}
-
-// Launch Koenigsegg cars and birthday effects
-function startBirthdayAnimations() {
-  // Koenigsegg cars
-  setInterval(() => {
-    if (Math.random() > 0.65) createKoenigseggCar();
-  }, 2500);
-
-  // Birthday balloons
-  setInterval(() => {
-    if (Math.random() > 0.8) createBirthdayBalloon();
-  }, 4000);
-
-  // BIG dramatic car overlays
-  setInterval(() => {
-    if (Math.random() > 0.7) createBigCarOverlay();
-  }, 18000);
-
-  // Initial burst of cars
-  setTimeout(() => createKoenigseggCar(), 500);
-  setTimeout(() => createKoenigseggCar(), 1500);
-  setTimeout(() => createBigCarOverlay(), 3000);
-}
-
-// Init
-renderSettings();
-renderOrderTab();
-launchConfetti();
-startBirthdayAnimations();
-
-// Auto-load Firebase if config exists
-setTimeout(() => {
-  const savedConfig = localStorage.getItem('firebase_config');
-  if (savedConfig) {
-    document.getElementById('firebase-config-input').value = savedConfig;
-    // Auto-enable if valid
-    try {
-      JSON.parse(savedConfig);
-      // Optionally auto-enable: enableFirebaseSync();
-    } catch(e) {}
-  }
-}, 500);
+// ==================== INIT ====================
+renderSettings(); renderOrderTab(); launchConfetti();
+setTimeout(() => { const s = localStorage.getItem('firebase_config'); if (s) document.getElementById('firebase-config-input').value = s; }, 500);
 </script>
 </body>
 </html>
