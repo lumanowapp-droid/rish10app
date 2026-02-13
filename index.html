@@ -789,19 +789,198 @@ function downloadBackup() { const b = new Blob([JSON.stringify(data,null,2)],{ty
 function restoreBackup(event) { const f = event.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = function(e) { try { const d = JSON.parse(e.target.result); if (!d.kids || !d.orders) { showToast('Invalid!'); return; } if (!confirm('Replace data?')) return; data = d; saveData(data); selectedKids = []; renderSettings(); renderOrderTab(); showToast('RESTORED!'); } catch(e) { showToast('Failed!'); } }; r.readAsText(f); event.target.value = ''; }
 
 // ==================== JOKES ====================
-const jokes = ["What does a pizza say? Slice to meet you!","Race cars eat fast food!","French fry went to school to be a SMART chip!","Birthday cakes like music they can LAYER on!","Race car won because it never took a BRAKE!","Fake noodle? An im-PASTA!","Sleeping race car? A nap-mobile!","Birthday cake was tier-iffic!","Not your cheese? NACHO cheese!","Balloon's fave music? POP!","Why did the cookie go to the doctor? It felt crummy!","Racing driver's favorite meal? Fast food!","What's a race car's favorite snack? Traffic jam!","Birthday boy is WHEELIE awesome!","Speed limit at this party? No limits!","Why did the pizza win the race? It was well-rounded!","Rishaan is turning 10 with TURBO power!","These nachos are on FIRE! 🔥","Life is a highway, eat at every pit stop!","Ready, set, NOM NOM NOM!"];
-const kidMessages = [" is racing to the finish line!"," just hit the turbo boost!"," is drifting into the party zone!"," crossed the checkered flag!"," is burning rubber on the dance floor!"," just lapped everyone!"," is the speed champion!"," shifted into PARTY gear!"," is leaving everyone in the dust!"," just unlocked nitrous mode!"," scored a pole position!"," is revving up the fun!"];
-let lastJ = -1;
+const funMessages = [
+  "🏎️ VROOM VROOM! Race mode activated!",
+  "🍕 Pizza party in the fast lane!",
+  "🏁 Checkered flag vibes only!",
+  "⚡ Turbocharged birthday energy!",
+  "🎂 Rishaan's turning 10 at TOP SPEED!",
+  "🔥 This party is ON FIRE!",
+  "🚀 Blast off to flavor town!",
+  "💨 Burning rubber, eating burgers!",
+  "🏆 Victory lap for the birthday king!",
+  "⭐ Star driver of the day!",
+  "🎉 Party mode: MAXIMUM OVERDRIVE!",
+  "🍟 French fries fueling the fun!",
+  "🥤 Hydration station pit stop!",
+  "🎵 DJ dropping sick beats!",
+  "✨ Sparkle & shine, it's party time!",
+  "🌟 Racing into another epic year!",
+  "💫 Drift king in the house!",
+  "🎊 Confetti cannon ready to EXPLODE!",
+  "🔊 Turn up the VOLUME!",
+  "🎸 Rock and roll birthday soul!",
+  "🌈 Rainbow road to awesome!",
+  "⚡ Lightning McQueen got nothing on us!",
+  "🏎️ Koenigsegg level celebration!",
+  "🔥 Hotter than a Ferrari engine!",
+  "💎 Premium fuel, premium fun!",
+  "🎯 Bullseye on FUN!",
+  "🌪️ Tornado of excitement!",
+  "🎭 Drama? Nah, just PARTY!",
+  "🎪 Circus of delicious food!",
+  "🎨 Painting the town FAST!",
+  "🎬 Action! Birthday scene take 10!",
+  "📸 Picture perfect party!",
+  "🎮 Level 10 unlocked!",
+  "🏅 Gold medal celebration!",
+  "👑 Crown the birthday champion!",
+  "🌊 Waves of awesome incoming!",
+  "🌸 Blooming into double digits!",
+  "🦅 Soaring to new heights!",
+  "🌍 World's best party RIGHT HERE!",
+  "🎆 Fireworks of flavor!",
+  "🎇 Sparklers can't compete!",
+  "🌠 Shooting star wishes coming true!",
+  "☄️ Meteor shower of fun!",
+  "🌙 Over the moon excited!",
+  "☀️ Sunshine and good times!",
+  "⚡ Electric atmosphere!",
+  "🌀 Whirlwind of joy!",
+  "❄️ Too cool for school!",
+  "🔥 Fire up those engines!",
+  "💥 BOOM! Party explosion!",
+  "✨ Magic in the air!",
+  "🎁 Best gift? This PARTY!",
+  "🍰 Cake o'clock approaching!",
+  "🧁 Cupcake power activate!",
+  "🍪 Cookie monster mode ON!",
+  "🍩 Donut stop believing!",
+  "🌮 Taco 'bout a party!",
+  "🌯 Wrap it up, it's party time!",
+  "🥙 Pocket full of awesome!",
+  "🍔 Burger royalty present!",
+  "🍗 Finger lickin' good vibes!",
+  "🥓 Bacon makes everything better!",
+  "🥩 Steak your claim to fun!",
+  "🌭 Hot dog! What a party!",
+  "🥨 Twisted fun ahead!",
+  "🥐 Croissant? More like crois-YAY!",
+  "🧀 Say CHEESE! Party time!",
+  "🥛 Milk those good times!",
+  "🍦 Ice cream dream team!",
+  "🍧 Shaved ice, maxed fun!",
+  "🍨 Sundae funday vibes!",
+  "🎂 Let them eat cake!",
+  "🍰 Sweet victory ahead!",
+  "🧁 Muffin compares to this!",
+  "🍪 Smart cookie gang!",
+  "🍩 Hole-y amazing party!",
+  "🍫 Chocolate dreams come true!",
+  "🍬 Candy-coated memories!",
+  "🍭 Lollipop good times!",
+  "🍮 Pudding on the ritz!",
+  "🍯 Honey, this is SWEET!",
+  "🍓 Berry good party!",
+  "🍇 Grape expectations exceeded!",
+  "🍉 One in a melon celebration!",
+  "🍊 Orange you glad you came?",
+  "🍋 When life gives lemons, PARTY!",
+  "🍌 Going bananas with fun!",
+  "🍍 Pineapple of perfection!",
+  "🥥 Coconuts about this party!",
+  "🥝 Kiwi-p the party going!",
+  "🍑 Peachy keen celebration!",
+  "🍒 Cherry on top vibes!",
+  "🍅 Tomato say you're having fun!",
+  "🥑 Avo great time!",
+  "🌽 Corn-gratulations birthday star!",
+  "🥕 Carrot stop this party!",
+  "🥒 Cool as a cucumber!",
+  "🌶️ Spicing things up!",
+  "🥔 Potato quality entertainment!",
+  "🍄 Room to grow and glow!"
+];
+const kidMessages = [
+  " is the SPEED DEMON of this party!",
+  " just broke the sound barrier!",
+  " is drifting like a PRO!",
+  " activated NITROUS BOOST!",
+  " crossed the finish line in STYLE!",
+  " is the POLE POSITION champion!",
+  " just set a new LAP RECORD!",
+  " is in the FAST LANE!",
+  " shifted to MAXIMUM POWER!",
+  " is BURNING RUBBER!",
+  " just hit WARP SPEED!",
+  " is the DRIFT KING!",
+  " went FULL THROTTLE!",
+  " achieved LUDICROUS SPEED!",
+  " is TURBO CHARGING the party!",
+  " just unlocked BEAST MODE!",
+  " is ACCELERATING the fun!",
+  " took the RACING LINE!",
+  " nailed that APEX!",
+  " is the TRACK CHAMPION!",
+  " just pulled off a PERFECT START!",
+  " is DOMINATING the circuit!",
+  " entered the SLIPSTREAM!",
+  " executed a FLAWLESS overtake!",
+  " is the PIT STOP MASTER!",
+  " just earned a PODIUM finish!",
+  " is REVVING those engines!",
+  " hit the SWEET SPOT!",
+  " is the SPEED KING!",
+  " just went SUPER SONIC!",
+  " activated PARTY MODE!",
+  " is the CELEBRATION CHAMPION!",
+  " brought the HYPE!",
+  " is the ENERGY MASTER!",
+  " just scored BIG!",
+  " is VIBING HARD!",
+  " is the FUN LEADER!",
+  " brought the THUNDER!",
+  " is ROCKING this party!",
+  " is the DANCE FLOOR KING!",
+  " just did something LEGENDARY!",
+  " is UNSTOPPABLE!",
+  " is the MVP!",
+  " just went NEXT LEVEL!",
+  " is CRUSHING IT!",
+  " is the PARTY STARTER!",
+  " just went SICKO MODE!",
+  " is LIVING their BEST LIFE!",
+  " is the HYPE TRAIN conductor!",
+  " just reached PEAK AWESOME!"
+];
+let shownMessages = new Set();
+let shownKidMessages = new Set();
 function showRandomJoke() {
   const b = document.getElementById('joke-banner'), t = document.getElementById('joke-text');
+
+  // Reset if we've shown all messages
+  const totalPossible = funMessages.length + (data.kids.length * kidMessages.length);
+  if (shownMessages.size + shownKidMessages.size >= totalPossible) {
+    shownMessages.clear();
+    shownKidMessages.clear();
+  }
+
   if (Math.random() < 0.5 && data.kids.length) {
-    const k = data.kids[Math.floor(Math.random() * data.kids.length)];
-    const msg = kidMessages[Math.floor(Math.random() * kidMessages.length)];
+    // Kid message
+    let key, k, msg;
+    let attempts = 0;
+    do {
+      k = data.kids[Math.floor(Math.random() * data.kids.length)];
+      msg = kidMessages[Math.floor(Math.random() * kidMessages.length)];
+      key = k.name + msg;
+      attempts++;
+    } while (shownKidMessages.has(key) && attempts < 50);
+
+    shownKidMessages.add(key);
     t.textContent = k.name + msg;
   } else {
-    let idx; do { idx = Math.floor(Math.random() * jokes.length); } while (idx === lastJ && jokes.length > 1); lastJ = idx;
-    t.textContent = jokes[idx];
+    // Fun message
+    let idx;
+    let attempts = 0;
+    do {
+      idx = Math.floor(Math.random() * funMessages.length);
+      attempts++;
+    } while (shownMessages.has(idx) && attempts < 200);
+
+    shownMessages.add(idx);
+    t.textContent = funMessages[idx];
   }
+
   b.style.display = 'block'; setTimeout(() => { b.style.display = 'none'; }, 7000);
 }
 setInterval(showRandomJoke, 10000); setTimeout(showRandomJoke, 2000);
