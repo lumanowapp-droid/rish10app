@@ -1231,7 +1231,21 @@ function clearAllBatches() { if (!confirm('DELETE all batches? This cannot be un
 
 // ==================== EXPORT ====================
 function exportOrder() {
-  let lines = ["=============================================","   RISHAAN'S 10TH BIRTHDAY - FOOD ORDER","   13th February 2026","=============================================","","BATCH SUMMARY:","Total Batches: " + (data.batches.length + (getCurrentBatchItems().count > 0 ? 1 : 0)),"=============================================",""];
+  const now = new Date().toLocaleString();
+  let lines = [
+    "=============================================",
+    "   RISHAAN'S 10TH BIRTHDAY - FOOD ORDER",
+    "   13th February 2026",
+    "   Exported: " + now,
+    "=============================================",
+    "",
+    "BATCH SUMMARY:",
+    "Total Batches: " + (data.batches.length + (getCurrentBatchItems().count > 0 ? 1 : 0)),
+    "Total Items: [Will be calculated]",
+    "Total Drivers: " + data.kids.length,
+    "=============================================",
+    ""
+  ];
   let grandTotal = 0;
   function addBatchToExport(orders, jointOrders, batchNum, timestamp) {
     const it = {}; for (const kid in orders) for (const id in orders[kid]) { const q = orders[kid][id]; if (q > 0) it[id] = (it[id]||0) + q; } for (const jo of jointOrders) if (jo.qty > 0) it[jo.itemId] = (it[jo.itemId]||0) + jo.qty;
@@ -1243,7 +1257,25 @@ function exportOrder() {
   }
   for (let i = 0; i < data.batches.length; i++) { const b = data.batches[i]; grandTotal += addBatchToExport(b.orders, b.jointOrders, b.batchNumber, b.timestamp); lines.push(""); }
   const draftItems = getCurrentBatchItems().count; if (draftItems > 0) { grandTotal += addBatchToExport(data.orders, data.jointOrders, data.batches.length + 1, null); lines.push(""); }
-  lines.push("=============================================","GRAND TOTAL: " + grandTotal + " items","=============================================");
+
+  // Add detailed summary at the end
+  lines.push("=============================================", "DETAILED SUMMARY", "=============================================", "");
+  const kidOrderCounts = {};
+  for (const kid of data.kids) {
+    let count = 0;
+    if (data.orders[kid.id]) for (const id in data.orders[kid.id]) count += data.orders[kid.id][id];
+    for (const batch of data.batches) if (batch.orders[kid.id]) for (const id in batch.orders[kid.id]) count += batch.orders[kid.id][id];
+    if (count > 0) kidOrderCounts[kid.name] = count;
+  }
+  for (const jo of data.jointOrders) if (jo.qty > 0) { for (const kidId of jo.kidIds) { const kid = data.kids.find(k => k.id === kidId); if (kid) kidOrderCounts[kid.name] = (kidOrderCounts[kid.name] || 0) + jo.qty; } }
+  for (const batch of data.batches) for (const jo of batch.jointOrders) if (jo.qty > 0) { for (const kidId of jo.kidIds) { const kid = data.kids.find(k => k.id === kidId); if (kid) kidOrderCounts[kid.name] = (kidOrderCounts[kid.name] || 0) + jo.qty; } }
+
+  lines.push("ITEMS PER DRIVER:");
+  for (const kidName in kidOrderCounts) {
+    lines.push("  " + kidName + ": " + kidOrderCounts[kidName] + " items");
+  }
+
+  lines.push("", "=============================================","GRAND TOTAL: " + grandTotal + " items","=============================================");
   document.getElementById('export-content').textContent = lines.join('\n');
   document.getElementById('export-modal').style.display = 'flex';
 }
