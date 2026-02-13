@@ -577,11 +577,13 @@ function removeGame(gameId) {
 }
 
 function openResultsModal(gameId) {
-  const game = data.games.find(g => g.id === gameId);
+  const gameIdx = data.games.findIndex(g => g.id === gameId);
+  const game = data.games[gameIdx];
   if (!game) return;
 
+  const gameNum = gameIdx + 1;
   document.getElementById('results-modal-title').innerHTML =
-    '<i class="fas fa-medal"></i> ' + esc(game.name).toUpperCase();
+    '<i class="fas fa-medal"></i> GAME ' + gameNum + ': ' + esc(game.name).toUpperCase();
 
   let html = '<div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:14px;">';
   html += 'Select winners in order. You can mark positions as shared and assign custom points.';
@@ -986,14 +988,15 @@ function renderGames() {
 
   let html = '';
 
-  data.games.forEach(game => {
+  data.games.forEach((game, idx) => {
+    const gameNum = idx + 1;
     const resultsCount = data.gameResults.filter(r => r.gameId === game.id).length;
 
     html += '<div class="card">';
     html += '<div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:10px;">';
     html += '<div style="flex:1;">';
     html += '<div style="font-family:Orbitron,sans-serif;font-weight:700;font-size:0.95rem;color:var(--gold);">';
-    html += esc(game.name);
+    html += '<span style="font-size:0.75rem;color:var(--text-muted);margin-right:6px;">GAME ' + gameNum + ':</span>' + esc(game.name);
     html += '</div>';
 
     if (game.instructions) {
@@ -1143,7 +1146,8 @@ function renderGameBreakdown() {
 
   let html = '';
 
-  data.games.forEach(game => {
+  data.games.forEach((game, idx) => {
+    const gameNum = idx + 1;
     const gameResults = data.gameResults
       .filter(r => r.gameId === game.id)
       .sort((a, b) => b.timestamp - a.timestamp);
@@ -1153,7 +1157,7 @@ function renderGameBreakdown() {
     html += '<div style="margin-bottom:20px;">';
     html += '<div style="font-family:Orbitron,sans-serif;font-size:0.7rem;font-weight:700;color:var(--gold);';
     html += 'margin-bottom:8px;letter-spacing:1px;text-transform:uppercase;">';
-    html += '<i class="fas fa-gamepad"></i> ' + esc(game.name);
+    html += '<i class="fas fa-gamepad"></i> Game ' + gameNum + ': ' + esc(game.name);
     html += '</div>';
 
     gameResults.forEach(result => {
