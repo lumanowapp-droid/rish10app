@@ -251,11 +251,13 @@ body::before {
   <div style="font-family:'Orbitron',sans-serif;font-size:0.55rem;color:#10b981;font-weight:700;">SYNCED</div>
 </div>
 
-<!-- Background Music Player - Spotify Embed -->
-<div id="music-player" style="position:fixed;bottom:20px;right:20px;z-index:100;background:var(--bg-card);border:2px solid var(--border-bright);border-radius:16px;padding:10px;box-shadow:0 8px 32px rgba(255,215,0,0.3);">
-  <div style="font-family:'Orbitron',sans-serif;font-size:0.6rem;color:var(--gold);font-weight:700;margin-bottom:6px;text-align:center;letter-spacing:1px;">🏎️ TOKYO DRIFT 🏎️</div>
-  <iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/3sw0TrCiRqOPP2FbCVZfpW?utm_source=generator&theme=0" width="280" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-</div>
+<!-- Background Music Player -->
+<button id="music-toggle" onclick="toggleMusic()" style="position:fixed;bottom:20px;right:20px;z-index:100;background:linear-gradient(135deg,var(--gold),var(--gold-dim));border:2px solid var(--gold-light);border-radius:50%;width:60px;height:60px;cursor:pointer;box-shadow:0 8px 32px rgba(255,215,0,0.5);display:flex;align-items:center;justify-content:center;transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+  <i id="music-icon" class="fas fa-volume-up" style="font-size:1.5rem;color:#000;"></i>
+</button>
+<audio id="bg-music" loop>
+  <source src="https://assets.mixkit.co/music/preview/mixkit-tech-house-vibes-130.mp3" type="audio/mpeg">
+</audio>
 
 
 <!-- TAB: ORDER -->
@@ -716,6 +718,37 @@ function showRandomJoke() {
 }
 setInterval(showRandomJoke, 20000); setTimeout(showRandomJoke, 5000);
 
+
+// ==================== BACKGROUND MUSIC ====================
+let musicPlaying = false;
+const bgMusic = document.getElementById('bg-music');
+const musicIcon = document.getElementById('music-icon');
+
+function toggleMusic() {
+  if (musicPlaying) {
+    bgMusic.pause();
+    musicIcon.className = 'fas fa-volume-mute';
+    musicPlaying = false;
+  } else {
+    bgMusic.volume = 0.3;
+    bgMusic.play().catch(err => console.log('Audio blocked:', err));
+    musicIcon.className = 'fas fa-volume-up';
+    musicPlaying = true;
+  }
+}
+
+// Auto-play on first user interaction
+let autoPlayAttempted = false;
+document.addEventListener('click', function() {
+  if (!autoPlayAttempted && !musicPlaying) {
+    autoPlayAttempted = true;
+    bgMusic.volume = 0.3;
+    bgMusic.play().then(() => {
+      musicPlaying = true;
+      musicIcon.className = 'fas fa-volume-up';
+    }).catch(() => {});
+  }
+}, { once: true });
 
 // ==================== FIREBASE ====================
 let firebaseApp = null, firebaseDB = null, firebaseSyncEnabled = false;
